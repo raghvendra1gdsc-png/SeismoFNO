@@ -1,0 +1,145 @@
+{
+  "experiment": "SeismoFNO_EXP5",
+  "audit_type": "FORENSIC_INDEPENDENT_AUDIT",
+  "audit_timestamp": "2026-09-07T10:10:00Z",
+  "overall_verdict": "PASS WITH CAVEATS",
+  "summary": {
+    "total_claims_audited": 16,
+    "verified_claims": 15,
+    "partially_verified_claims": 1,
+    "failed_claims": 0
+  },
+  "claims_verification": {
+    "native_graph_representation": {
+      "status": "VERIFIED",
+      "evidence": "Source code in src/data_pipeline/graph_dataset.py constructs exactly 3 nodes for 3-story and 5 nodes for 5-story buildings with physical column connectivity."
+    },
+    "no_physical_zero_padding": {
+      "status": "VERIFIED",
+      "evidence": "Inspection of tensor shapes and collate_structural_graphs confirmed zero spatial padding nodes. Total batch nodes equal exact sum of floor counts."
+    },
+    "ood_a_earthquake_isolation": {
+      "status": "VERIFIED",
+      "evidence": "RSN0011 and RSN0012 have exactly 0 samples in train, val, and ID test partitions across all 2,160 rows in split_manifest.csv."
+    },
+    "ood_b_structural_isolation": {
+      "status": "VERIFIED",
+      "evidence": "Structural archetype 5S_T120 has exactly 0 samples in train, val, and ID test partitions. Evaluated on 240 completely unseen simulations."
+    },
+    "ood_c_combined_isolation": {
+      "status": "VERIFIED",
+      "evidence": "All 60 samples in OOD-C simultaneously satisfy struct_id == 5S_T120 and earthquake_id in {RSN0011, RSN0012}."
+    },
+    "training_only_scaler": {
+      "status": "VERIFIED",
+      "evidence": "GraphNormalizer fitted strictly on train_df (1,080 samples) before training loop execution."
+    },
+    "validation_only_checkpoint_selection": {
+      "status": "VERIFIED",
+      "evidence": "Checkpoint saved strictly on validation loss minimum (Epoch 16, Val Loss = 0.2485). Test and OOD sets were never accessed during training."
+    },
+    "three_story_id_metric": {
+      "status": "VERIFIED",
+      "claimed": 11.28,
+      "recomputed": 11.2751,
+      "evidence": "Recomputed independently from id_results.csv."
+    },
+    "three_story_ood_a_metric": {
+      "status": "VERIFIED",
+      "claimed": 22.09,
+      "recomputed": 22.0862,
+      "evidence": "Recomputed independently from ood_a_results.csv."
+    },
+    "ood_b_peak_error": {
+      "status": "VERIFIED",
+      "claimed": 15.11,
+      "recomputed": 15.1101,
+      "evidence": "Recomputed independently from ood_b_results.csv."
+    },
+    "ood_b_rel_l2_error": {
+      "status": "VERIFIED",
+      "claimed": 125.39,
+      "recomputed": 125.3922,
+      "evidence": "Recomputed independently from ood_b_results.csv. Plausibility verified via FFT dominant frequency analysis showing modal period extrapolation phase drift."
+    },
+    "ood_c_peak_error": {
+      "status": "VERIFIED",
+      "claimed": 24.23,
+      "recomputed": 24.2277,
+      "evidence": "Recomputed independently from ood_c_results.csv."
+    },
+    "topology_ablation": {
+      "status": "VERIFIED",
+      "claimed_val_loss_diff": 0.0018,
+      "recomputed_val_loss_diff": 0.001781,
+      "claimed_l2_diff": 1.28,
+      "recomputed_l2_diff": 1.2816,
+      "evidence": "Verified between best_checkpoint.pt and best_ablation_no_topology.pt. Modest effect size on single seed."
+    },
+    "inference_speedup": {
+      "status": "VERIFIED",
+      "claimed_speedup_single": 2.0,
+      "recomputed_speedup_single": 2.016,
+      "claimed_speedup_batched": 1.6,
+      "recomputed_speedup_batched": 1.574,
+      "evidence": "Verified from inference_benchmark.csv and raw MPS re-run."
+    },
+    "parameter_count": {
+      "status": "VERIFIED",
+      "claimed": 674115,
+      "recomputed": 674115,
+      "evidence": "Direct count from PyTorch model instance reconstructed from best_checkpoint.pt."
+    },
+    "exp4_comparison": {
+      "status": "PARTIALLY_VERIFIED",
+      "evidence": "The 180 3-story test simulations are 100% identical between EXP4 and EXP5. However, claiming a 77.5% 'absolute error reduction' is phrasing error: it is a 77.51 percentage-point reduction and a 77.82% relative error reduction."
+    }
+  },
+  "leakage_matrix": {
+    "total_simulations": 2160,
+    "train_simulations": 1080,
+    "val_simulations": 300,
+    "id_test_simulations": 120,
+    "ood_a_simulations": 300,
+    "ood_b_simulations": 240,
+    "ood_c_simulations": 60,
+    "excluded_unseen_val": 60,
+    "structural_leakage_detected": false,
+    "earthquake_leakage_detected": false
+  },
+  "investigation_ood_b_125pct": {
+    "is_metric_bug": false,
+    "is_normalization_bug": false,
+    "is_indexing_bug": false,
+    "true_dominant_frequency_hz": 0.83,
+    "true_fundamental_period_s": 1.20,
+    "predicted_dominant_frequency_hz": 1.12,
+    "predicted_fundamental_period_s": 0.89,
+    "pearson_correlation": 0.078,
+    "median_peak_error_pct": 15.11,
+    "root_cause": "The training set only contains structures with T1 <= 0.85s (for 5S) and T1 <= 0.90s (for 3S). When presented with T1 = 1.20s, the model predicts the correct displacement envelope (peak error ~15%) but its temporal Fourier modes default towards the upper bound of the training period envelope (~0.89s). Two sinusoidal oscillations of equal amplitude at 1.12 Hz and 0.83 Hz rapidly drift out of phase, yielding a mathematical relative L2 error of sqrt(2) approx 141%, consistent with the observed 125-132%."
+  },
+  "critical_issues": [],
+  "minor_issues": [
+    {
+      "severity": "LOW",
+      "issue": "Language imprecision in comparing EXP4 vs EXP5 3-story results",
+      "description": "Report described 99.60% to 22.09% as a '77.5% absolute error reduction'. It is a 77.51 percentage-point reduction and a 77.82% relative reduction.",
+      "correction": "Adopt precise metrology terminology: 'reduced by 77.51 percentage points (77.82% relative reduction)'."
+    },
+    {
+      "severity": "LOW",
+      "issue": "Batched GNO latency higher than single-sample latency on Apple Silicon MPS",
+      "description": "Single sample GNO takes 15.82 ms/sim while B=32 takes 20.25 ms/sim on MPS due to 128-node complex einsum scaling.",
+      "correction": "Document that single-sample inference is the optimal serving configuration for GNO on Apple Silicon unified memory."
+    }
+  ],
+  "reproducibility": "REPRODUCIBLE",
+  "test_suite_results": {
+    "total_tests": 259,
+    "passed": 257,
+    "skipped": 2,
+    "failed": 0
+  },
+  "readiness_for_expert_review": "YES_WITH_DOCUMENTED_FINDINGS"
+}

@@ -1,0 +1,41 @@
+# Phase 8: MDOF FNO on Held-Out Structure Parameters Split (Zero-Shot Archetype Generalization)
+experiment_name: phase8_mdof_held_out_structure
+
+model:
+  model_type: fno2d
+  in_channels: 10
+  out_channels: 3
+  modes1: 4
+  modes2: 64
+  width: 48
+  n_layers: 4
+  activation: gelu
+
+data:
+  index_csv: data/simulations/mdof/simulation_index.csv
+  split_strategy: held_out_structure
+  split_file: data/processed/splits/mdof_held_out_structure_split.json
+  filter_material: null
+  target_time_steps: 2048
+  target_channels: ["u", "f_r", "e_h"]
+  batch_size: 32
+  seed: 42
+  normalize: true
+
+loss:
+  data_weights: [1.0, 1.0, 1.0]
+  lambda_energy: 0.1
+  lambda_boundary: 0.05
+
+training:
+  epochs: 35
+  learning_rate: 0.005
+  weight_decay: 1.0e-5
+  scheduler: cosine
+  min_lr: 1.0e-5
+  clip_grad_norm: 1.0
+
+output:
+  checkpoint_dir: experiments/phase8_mdof_held_out_structure/checkpoints
+  results_dir: experiments/phase8_mdof_held_out_structure/results
+  log_dir: experiments/phase8_mdof_held_out_structure/logs

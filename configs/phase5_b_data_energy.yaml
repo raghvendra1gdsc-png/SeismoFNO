@@ -1,0 +1,41 @@
+# Phase 5 (b): Bilinear SDOF — Data + Energy Consistency Loss on Held-Out-Earthquake Split
+experiment_name: phase5_b_data_energy
+
+model:
+  in_channels: 10              # a_g, T, omega_n, k0, zeta, is_bilinear, u_y, alpha, PGA, time_grid
+  out_channels: 3              # u(t), F_R(t), E_h(t)
+  modes: 128
+  width: 48
+  n_layers: 4
+  activation: gelu
+  use_norm: false
+
+data:
+  index_csv: data/simulations/simulation_index.csv
+  split_strategy: held_out_earthquake
+  split_file: data/processed/splits/held_out_earthquake_split.json
+  filter_material: bilinear    # Bilinear-hysteretic dataset
+  target_time_steps: 2048
+  target_channels: ["u", "f_r", "e_h"]
+  use_history_channel: false
+  batch_size: 32
+  seed: 42
+  normalize: true
+
+loss:
+  data_weights: [1.0, 1.0, 1.0]
+  lambda_energy: 0.1           # Energy consistency penalty: |int(F_R du) - E_h|
+  lambda_boundary: 0.0
+
+training:
+  epochs: 40
+  learning_rate: 0.005
+  weight_decay: 1.0e-5
+  scheduler: cosine
+  min_lr: 1.0e-5
+  clip_grad_norm: 1.0
+
+output:
+  checkpoint_dir: experiments/phase5_b_data_energy/checkpoints
+  results_dir: experiments/phase5_b_data_energy/results
+  log_dir: experiments/phase5_b_data_energy/logs

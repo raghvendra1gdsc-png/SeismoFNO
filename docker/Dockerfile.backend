@@ -1,0 +1,55 @@
+# Multi-stage production container for SeismoFNO FastAPI Backend
+FROM python:3.11-slim AS builder
+
+WORKDIR /app
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install PyTorch CPU and Python dependencies
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir \
+    torch --index-url https://download.pytorch.org/whl/cpu && \
+    pip install --no-cache-dir \
+    fastapi==0.115.6 \
+    uvicorn[standard]==0.34.0 \
+    pydantic==2.10.4 \
+    numpy==2.2.1 \
+    scipy==1.15.0 \
+    pandas==2.2.3 \
+    pyyaml==6.0.2 \
+    openseespy==3.8.0.0
+
+FROM python:3.11-slim AS runner
+
+WORKDIR /app
+
+# Copy python packages from builder
+COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
+
+# Copy necessary application and model assets (Read-Only)
+COPY src/ /app/src/
+COPY configs/ /app/configs/
+COPY experiments/ /app/experiments/
+COPY data/raw/metadata/ /app/data/raw/metadata/
+COPY data/raw/ground_motions/ /app/data/raw/ground_motions/
+COPY inference/ /app/inference/
+COPY api/ /app/api/
+COPY demo/ /app/demo/
+COPY dashboard/ /app/dashboard/
+
+ENV PYTHONPATH=/app
+ENV PORT=8000
+ENV HOST=0.0.0.0
+
+EXPOSE 8000
+
+HEALTHCHECK --interval=15s --timeout=5s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]

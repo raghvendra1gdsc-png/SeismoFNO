@@ -1,0 +1,41 @@
+# Phase 8: Linear-Elastic MDOF FNO MVP Baseline (3-Story & 5-Story Buildings)
+experiment_name: phase8_mdof_fno_linear
+
+model:
+  model_type: fno2d
+  in_channels: 10              # a_g, T1, T2, s/S, m_s, S, is_bilinear, u_y, PGA, tau
+  out_channels: 3              # u(s,t), F_R(s,t), E_h(s,t)
+  modes1: 4                    # Story Fourier modes
+  modes2: 64                   # Time Fourier modes
+  width: 48
+  n_layers: 4
+  activation: gelu
+
+data:
+  index_csv: data/simulations/mdof/simulation_index.csv
+  split_strategy: random
+  split_file: data/processed/splits/mdof_random_split.json
+  filter_material: elastic     # Linear-elastic validation regime
+  target_time_steps: 2048
+  target_channels: ["u", "f_r", "e_h"]
+  batch_size: 32
+  seed: 42
+  normalize: true
+
+loss:
+  data_weights: [1.0, 1.0, 1.0]
+  lambda_energy: 0.0           # Pure data loss for linear baseline
+  lambda_boundary: 0.05
+
+training:
+  epochs: 35
+  learning_rate: 0.005
+  weight_decay: 1.0e-5
+  scheduler: cosine
+  min_lr: 1.0e-5
+  clip_grad_norm: 1.0
+
+output:
+  checkpoint_dir: experiments/phase8_mdof_fno_linear/checkpoints
+  results_dir: experiments/phase8_mdof_fno_linear/results
+  log_dir: experiments/phase8_mdof_fno_linear/logs

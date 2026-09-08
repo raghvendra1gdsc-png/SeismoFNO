@@ -1,0 +1,22 @@
+{
+  "Standard FNO": {
+    "parameters": 1196931,
+    "delta_pct": 0.37594930764276513
+  },
+  "Causal TCN (State-Free)": {
+    "parameters": 1188763,
+    "delta_pct": 0.3090281504937742
+  },
+  "State-Augmented TCN": {
+    "parameters": 1182451,
+    "delta_pct": 0.8383594085444398
+  },
+  "Continuous S4 SSM": {
+    "parameters": 1192079,
+    "delta_pct": 0.030944745598969512
+  },
+  "Memory-Truncated S4": {
+    "parameters": 1192079,
+    "delta_pct": 0.030944745598969512
+  }
+}

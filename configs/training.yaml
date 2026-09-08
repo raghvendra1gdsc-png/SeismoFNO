@@ -1,0 +1,49 @@
+# training.yaml — Master Training Configuration for SeismoFNO
+
+experiment_name: "seismofno_bilinear_core"
+seed: 42
+
+data:
+  index_csv: "data/simulations/simulation_index.csv"
+  split_file: "data/processed/splits/held_out_earthquake_split.json"
+  split_strategy: "held_out_earthquake"
+  filter_material: "bilinear"
+  target_time_steps: 2048
+  target_channels:
+    - "u"
+    - "f_r"
+    - "e_h"
+  use_history_channel: true
+  batch_size: 32
+  normalize: true
+
+model:
+  in_channels: 12
+  out_channels: 3
+  modes: 128
+  width: 48
+  n_layers: 4
+  activation: "gelu"
+  use_norm: false
+  projection_dim: 96
+
+loss:
+  data_weights:
+    - 1.0   # u(t) weight
+    - 1.0   # F_R(t) weight
+    - 1.0   # E_h(t) weight
+  lambda_energy: 0.10
+  lambda_boundary: 0.05
+
+training:
+  epochs: 50
+  learning_rate: 0.005
+  weight_decay: 1.0e-5
+  scheduler: "cosine"
+  min_lr: 1.0e-5
+  clip_grad_norm: 1.0
+
+output:
+  checkpoint_dir: "experiments/seismofno_bilinear_core/checkpoints"
+  results_dir: "experiments/seismofno_bilinear_core/results"
+  log_dir: "experiments/seismofno_bilinear_core/logs"

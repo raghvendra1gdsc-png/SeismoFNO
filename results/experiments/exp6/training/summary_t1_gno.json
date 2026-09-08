@@ -1,0 +1,11 @@
+{
+  "model_name": "t1_gno",
+  "cond_mode": "t1",
+  "cond_dim": 1,
+  "seed": 42,
+  "best_epoch": 13,
+  "best_val_loss": 0.272899366915226,
+  "epochs_completed": 16,
+  "total_training_time_s": 914.1579029560089,
+  "n_params": 725059
+}

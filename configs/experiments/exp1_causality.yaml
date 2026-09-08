@@ -1,0 +1,61 @@
+# exp1_causality.yaml — Master Configuration for EXP 1: Causality vs. Spectral Mixing Study
+
+experiment_name: "exp1_causality"
+seed: 42
+
+data:
+  index_csv: "data/simulations/simulation_index.csv"
+  split_file: "data/processed/splits/held_out_earthquake_split.json"
+  target_time_steps: 2048
+  target_channels:
+    - "u"
+    - "f_r"
+    - "e_h"
+  use_history_channel: false
+  batch_size: 32
+
+models:
+  fno:
+    in_channels: 10
+    out_channels: 3
+    modes: 128
+    width: 48
+    n_layers: 4
+    checkpoint: "experiments/phase5_c_data_energy_boundary/checkpoints/best_model.pt"
+
+  causal_tcn:
+    in_channels: 10
+    out_channels: 3
+    num_channels: [136, 136, 136, 136, 136, 136, 136, 136, 136, 136, 136]  # 11 layers matching FNO params (~1.19M)
+    kernel_size: 3
+    dropout: 0.05
+    checkpoint: "experiments/exp1_causal_tcn/checkpoints/best_model.pt"
+
+  lstm:
+    in_channels: 10
+    out_channels: 3
+    hidden_dim: 128
+    num_layers: 3
+    checkpoint: "experiments/phase6_lstm_baseline/checkpoints/best_model.pt"
+
+  mlp:
+    in_channels: 10
+    out_channels: 3
+    hidden_dim: 256
+    num_layers: 4
+    checkpoint: "experiments/phase6_mlp_baseline/checkpoints/best_model.pt"
+
+training:
+  epochs: 50
+  learning_rate: 0.003
+  weight_decay: 1.0e-5
+  scheduler: "cosine"
+  early_stopping_patience: 12
+  clip_grad_norm: 1.0
+
+causality_test:
+  t0_fractions: [0.25, 0.50, 0.75]
+  perturbation_scale_factor: 5.0
+  n_test_samples: 50
+
+output_dir: "results/experiments/exp1_causality"

@@ -1,0 +1,12 @@
+# Phase 5 & 6: Bilinear-Hysteretic SDOF Benchmark (Held-Out-Earthquake Split)
+
+Evaluation across unseen earthquake events disaggregated by elastic regime ($\mu \le 1.0$) vs. post-yield regime ($\mu > 1.0$):
+
+| ID | Model Architecture & Loss Formulation | Overall Rel L2 u(t) | Overall Rel L2 E_h(t) | Elastic (mu <= 1) u(t) | Elastic (mu <= 1) E_h(t) | Post-Yield (mu > 1) u(t) | Post-Yield (mu > 1) E_h(t) | Train Time (s) | Parameters |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| (a) | FNO (Data Only) | 50.50% | 86.07% | 14.47% | 461.00% | 56.89% | 19.57% | 1067.8 | 1,196,931 |
+| (b) | FNO (+ Energy Consistency) | 49.28% | 79.59% | 10.79% | 402.21% | 56.11% | 22.37% | 1207.9 | 1,196,931 |
+| (c) | FNO (+ Energy + Boundary) | 49.11% | 81.07% | 10.81% | 413.61% | 55.90% | 22.09% | 1325.8 | 1,196,931 |
+| (d) | FNO (+ Physics + History Channel) | 44.23% | 90.85% | 10.83% | 492.30% | 50.15% | 19.64% | 1285.4 | 1,197,027 |
+| (e) | Baseline: LSTM Sequence Model | 67.74% | 638.74% | 59.20% | 3695.23% | 69.26% | 96.61% | 319.8 | 414,851 |
+| (f) | Baseline: Deep Residual MLP | 106.01% | 299.49% | 139.01% | 1354.76% | 100.15% | 112.31% | 332.1 | 564,995 |

@@ -1,0 +1,42 @@
+{
+  "status": "PASS",
+  "sample_shapes": {
+    "x": [
+      10,
+      5,
+      2048
+    ],
+    "y": [
+      3,
+      5,
+      2048
+    ]
+  },
+  "finite_tensors": true,
+  "fno2d_parameters": 4735187,
+  "device": "mps",
+  "batch_size_benchmark": {
+    "8": {
+      "batch_size": 8,
+      "duration_s": 0.6028170585632324,
+      "batches_timed": 4,
+      "throughput_samples_per_sec": 53.08409831047169,
+      "stable": true
+    },
+    "16": {
+      "batch_size": 16,
+      "duration_s": 1.0642280578613281,
+      "batches_timed": 4,
+      "throughput_samples_per_sec": 60.13748606535929,
+      "stable": true
+    },
+    "32": {
+      "batch_size": 32,
+      "duration_s": 1.5119638442993164,
+      "batches_timed": 3,
+      "throughput_samples_per_sec": 63.49358178236657,
+      "stable": true
+    }
+  },
+  "recommended_batch_size": 32
+}

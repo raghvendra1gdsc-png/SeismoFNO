@@ -1,0 +1,311 @@
+{
+  "audit_metadata": {
+    "date": "2026-09-08",
+    "auditor": "Independent Scientific Forensic Auditor",
+    "target": "EXP6: Physics/Modal-Conditioned Spatiotemporal GNO",
+    "repository": "SeismoFNO",
+    "verdict": "PASS WITH SCIENTIFIC CAVEATS"
+  },
+  "checks": {
+    "data_leakage": {
+      "status": "PASS",
+      "total_manifest_sims": 2160,
+      "partition_sizes": {
+        "train": 1080,
+        "val": 300,
+        "id_test": 120,
+        "ood_a": 300,
+        "ood_b": 240,
+        "ood_c": 60,
+        "excluded_unseen_val": 60
+      },
+      "pairwise_overlap_max": 0,
+      "progressive_ood_sims": 120,
+      "progressive_ood_overlap_with_train": 0,
+      "target_leakage_in_modal_inputs": "None (derived strictly from K and M matrices)",
+      "scalers_verified": true
+    },
+    "model_integrity": {
+      "baseline_gno": {
+        "path": "results/experiments/exp6/training/best_baseline_gno.pt",
+        "sha256": "73d986be6c070740979a90c83b0383bf749e434acbf9ace73adbeaa13b83f860",
+        "size_bytes": 15268539,
+        "epoch": 3,
+        "val_loss": 0.35305007743208033,
+        "parameter_count": 674115,
+        "cond_dim": 0
+      },
+      "t1_gno": {
+        "path": "results/experiments/exp6/training/best_t1_gno.pt",
+        "sha256": "5c4ee83dec977b0bb5231ed4fce578f3e954c0d831a43c6090331dd8130a4273",
+        "size_bytes": 15915703,
+        "epoch": 13,
+        "val_loss": 0.272899366915226,
+        "parameter_count": 725059,
+        "cond_dim": 1
+      },
+      "multimodal_gno": {
+        "path": "results/experiments/exp6/training/best_multimodal_gno.pt",
+        "sha256": "56dc141f20fbaeac447539f29600ddd3e1873ec852906c24b950123abe827947",
+        "size_bytes": 15950247,
+        "epoch": 10,
+        "val_loss": 0.2619886390472713,
+        "parameter_count": 727619,
+        "cond_dim": 6
+      },
+      "shuffled_modal_gno": {
+        "path": "results/experiments/exp6/training/best_shuffled_modal_gno.pt",
+        "sha256": "f6dc9b74b278849c28a4cf69ef2436e8a88f4cce7c1ed53c6e25fb714577d31c",
+        "size_bytes": 15921471,
+        "epoch": 11,
+        "val_loss": 0.2608490574516748,
+        "parameter_count": 725059,
+        "cond_dim": 1
+      }
+    },
+    "reconstructed_metrics": {
+      "baseline": {
+        "id": {
+          "count": 120,
+          "median_rel_l2_u": 22.093592584133148,
+          "mean_rel_l2_u": 29.245970770716667,
+          "median_peak_disp_err": 12.69909995508063,
+          "mean_peak_disp_err": 16.284353082575972,
+          "mean_pearson_r": 0.980652937556123
+        },
+        "ood_a": {
+          "count": 300,
+          "median_rel_l2_u": 29.25911694765091,
+          "mean_rel_l2_u": 32.330672865112625,
+          "median_peak_disp_err": 15.863429747852864,
+          "mean_peak_disp_err": 18.772217954655606,
+          "mean_pearson_r": 0.9727920748426709
+        },
+        "ood_b": {
+          "count": 240,
+          "median_rel_l2_u": 115.70286750793456,
+          "mean_rel_l2_u": 120.34791951378186,
+          "median_peak_disp_err": 35.205546318569375,
+          "mean_peak_disp_err": 36.22795901092265,
+          "mean_pearson_r": 0.06480281768616485
+        },
+        "ood_c": {
+          "count": 60,
+          "median_rel_l2_u": 116.15636944770813,
+          "mean_rel_l2_u": 115.37715534369151,
+          "median_peak_disp_err": 38.657190847581774,
+          "mean_peak_disp_err": 41.84688759528373,
+          "mean_pearson_r": 0.01231923124696834
+        },
+        "progressive_5S_T105": {
+          "count": 60,
+          "median_rel_l2_u": 109.12206768989564,
+          "mean_rel_l2_u": 111.930792927742,
+          "median_peak_disp_err": 17.965875367443637,
+          "mean_peak_disp_err": 23.254819984503293,
+          "mean_pearson_r": 0.207515221624422
+        },
+        "progressive_5S_T140": {
+          "count": 60,
+          "median_rel_l2_u": 111.95816397666931,
+          "mean_rel_l2_u": 115.39364159107208,
+          "median_peak_disp_err": 48.68889718073075,
+          "mean_peak_disp_err": 42.10167141765589,
+          "mean_pearson_r": -0.043365646184839075
+        }
+      },
+      "t1": {
+        "id": {
+          "count": 120,
+          "median_rel_l2_u": 5.3268782794475555,
+          "mean_rel_l2_u": 5.983024348194401,
+          "median_peak_disp_err": 2.0872273240152994,
+          "mean_peak_disp_err": 2.7791842373180327,
+          "mean_pearson_r": 0.9984141253794587
+        },
+        "ood_a": {
+          "count": 300,
+          "median_rel_l2_u": 19.59223821759224,
+          "mean_rel_l2_u": 19.932883244007826,
+          "median_peak_disp_err": 8.811048187515988,
+          "mean_peak_disp_err": 9.916485871720004,
+          "mean_pearson_r": 0.9839893531138857
+        },
+        "ood_b": {
+          "count": 240,
+          "median_rel_l2_u": 157.64140486717224,
+          "mean_rel_l2_u": 168.14269994695982,
+          "median_peak_disp_err": 13.470194646632544,
+          "mean_peak_disp_err": 22.17084610559691,
+          "mean_pearson_r": 0.09037115631753864
+        },
+        "ood_c": {
+          "count": 60,
+          "median_rel_l2_u": 145.1638638973236,
+          "mean_rel_l2_u": 147.51236140727997,
+          "median_peak_disp_err": 14.360948541406025,
+          "mean_peak_disp_err": 15.3156673251594,
+          "mean_pearson_r": 0.06291019448169137
+        },
+        "progressive_5S_T105": {
+          "count": 60,
+          "median_rel_l2_u": 123.67129325866699,
+          "mean_rel_l2_u": 125.49889187018077,
+          "median_peak_disp_err": 10.211938678111778,
+          "mean_peak_disp_err": 10.380753423514584,
+          "mean_pearson_r": 0.2582577918520029
+        },
+        "progressive_5S_T140": {
+          "count": 60,
+          "median_rel_l2_u": 173.42514395713806,
+          "mean_rel_l2_u": 188.79726588726044,
+          "median_peak_disp_err": 41.84469422491528,
+          "mean_peak_disp_err": 64.09402990859134,
+          "mean_pearson_r": 0.0032695124082342273
+        }
+      },
+      "modal": {
+        "id": {
+          "count": 120,
+          "median_rel_l2_u": 12.574832141399384,
+          "mean_rel_l2_u": 13.893164563924074,
+          "median_peak_disp_err": 8.867164999890289,
+          "mean_peak_disp_err": 9.445225782690757,
+          "mean_pearson_r": 0.9971608443629391
+        },
+        "ood_a": {
+          "count": 300,
+          "median_rel_l2_u": 19.389397650957108,
+          "mean_rel_l2_u": 20.90463936328888,
+          "median_peak_disp_err": 7.633441402375992,
+          "mean_peak_disp_err": 9.676711066693299,
+          "mean_pearson_r": 0.9832331005149392
+        },
+        "ood_b": {
+          "count": 240,
+          "median_rel_l2_u": 124.07039999961852,
+          "mean_rel_l2_u": 130.4642549653848,
+          "median_peak_disp_err": 13.055728607115057,
+          "mean_peak_disp_err": 18.704359494797774,
+          "mean_pearson_r": 0.1013934081677652
+        },
+        "ood_c": {
+          "count": 60,
+          "median_rel_l2_u": 120.49421072006226,
+          "mean_rel_l2_u": 119.811306198438,
+          "median_peak_disp_err": 17.005755708815993,
+          "mean_peak_disp_err": 18.769316934323506,
+          "mean_pearson_r": 0.06169124438022925
+        },
+        "progressive_5S_T105": {
+          "count": 60,
+          "median_rel_l2_u": 111.26304864883423,
+          "mean_rel_l2_u": 114.64731593926747,
+          "median_peak_disp_err": 10.788541401715356,
+          "mean_peak_disp_err": 11.284334422209474,
+          "mean_pearson_r": 0.25153262738437054
+        },
+        "progressive_5S_T140": {
+          "count": 60,
+          "median_rel_l2_u": 124.98626112937927,
+          "mean_rel_l2_u": 124.54600393772125,
+          "median_peak_disp_err": 31.72308253668737,
+          "mean_peak_disp_err": 30.67139935722787,
+          "mean_pearson_r": 0.0016153111165430835
+        }
+      },
+      "shuffled": {
+        "id": {
+          "count": 120,
+          "median_rel_l2_u": 6.016131117939949,
+          "mean_rel_l2_u": 7.286209802453716,
+          "median_peak_disp_err": 2.647448426023844,
+          "mean_peak_disp_err": 3.6186408653849,
+          "mean_pearson_r": 0.9973281892374879
+        },
+        "ood_a": {
+          "count": 300,
+          "median_rel_l2_u": 17.952677607536316,
+          "mean_rel_l2_u": 19.832491027812164,
+          "median_peak_disp_err": 8.939370843910197,
+          "mean_peak_disp_err": 10.890766085206831,
+          "mean_pearson_r": 0.9836865141175004
+        },
+        "ood_b": {
+          "count": 240,
+          "median_rel_l2_u": 119.53962445259094,
+          "mean_rel_l2_u": 121.4745905995369,
+          "median_peak_disp_err": 24.334432221739398,
+          "mean_peak_disp_err": 26.852686129190815,
+          "mean_pearson_r": 0.09316029734044656
+        },
+        "ood_c": {
+          "count": 60,
+          "median_rel_l2_u": 114.88143801689148,
+          "mean_rel_l2_u": 115.27065654595692,
+          "median_peak_disp_err": 36.15766391588061,
+          "mean_peak_disp_err": 35.335065138320935,
+          "mean_pearson_r": 0.032227874086364086
+        },
+        "progressive_5S_T105": {
+          "count": 60,
+          "median_rel_l2_u": 109.18287634849548,
+          "mean_rel_l2_u": 112.49980330467224,
+          "median_peak_disp_err": 14.925114298212897,
+          "mean_peak_disp_err": 16.604795806012632,
+          "mean_pearson_r": 0.2018329324191789
+        },
+        "progressive_5S_T140": {
+          "count": 60,
+          "median_rel_l2_u": 119.70614790916443,
+          "mean_rel_l2_u": 117.6140558719635,
+          "median_peak_disp_err": 32.61762234972762,
+          "mean_peak_disp_err": 31.382054688784095,
+          "mean_pearson_r": -0.014402624687540899
+        }
+      }
+    },
+    "inference_benchmarks": [
+      {
+        "model": "OpenSeesPy MDOF (5-Story NLTHA)",
+        "batch_size": 1,
+        "latency_ms": 54.67510223388672,
+        "speedup": 1.0,
+        "throughput_sim_s": 18.289860633863007
+      },
+      {
+        "model": "EXP4 FNO2D (Frozen Baseline)",
+        "batch_size": 1,
+        "latency_ms": 6.6,
+        "speedup": 8.284106399073746,
+        "throughput_sim_s": 151.51515151515153
+      },
+      {
+        "model": "EXP5 Spatiotemporal GNO (Single)",
+        "batch_size": 1,
+        "latency_ms": 16.254844665527344,
+        "speedup": 3.363618869261765,
+        "throughput_sim_s": 61.520120344229554
+      },
+      {
+        "model": "EXP6 T1-GNO (Single)",
+        "batch_size": 1,
+        "latency_ms": 21.454753875732425,
+        "speedup": 2.5483910256239293,
+        "throughput_sim_s": 46.60971669924888
+      },
+      {
+        "model": "EXP6 T1-GNO (B=32)",
+        "batch_size": 32,
+        "latency_ms": 30.18779620528221,
+        "speedup": 1.8111657393632383,
+        "throughput_sim_s": 33.125968957781076
+      }
+    ],
+    "baseline_freeze": {
+      "exp5_report_intact": true,
+      "exp5_checkpoint_intact": true,
+      "exp5_checkpoint_sha256": "79e8fa72335f997ccfbe4abe29956b9ff3dd353a0cad55ba34452af447f083ee"
+    }
+  }
+}

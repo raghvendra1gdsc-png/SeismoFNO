@@ -1,0 +1,9 @@
+{
+  "model_name": "baseline_gno",
+  "cond_mode": "none",
+  "cond_dim": 0,
+  "seed": 42,
+  "best_epoch": 3,
+  "best_val_loss": 0.35305007743208033,
+  "n_params": 674115
+}

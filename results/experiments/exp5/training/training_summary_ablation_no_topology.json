@@ -1,0 +1,10 @@
+{
+  "run_name": "ablation_no_topology",
+  "use_topology": false,
+  "best_epoch": 8,
+  "best_val_loss": 0.2503067449127373,
+  "epochs_completed": 14,
+  "total_training_time_s": 444.0622580051422,
+  "avg_epoch_time_s": 31.69526219367981,
+  "n_params": 664131
+}

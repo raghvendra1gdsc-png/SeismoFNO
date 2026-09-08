@@ -1,0 +1,117 @@
+# exp2_state_memory.yaml — Master Configuration for EXP 2: State-Memory Investigation
+# Reconciled and frozen under Gate 0, Gate 1, and Gate 2 specifications.
+
+experiment_name: "exp2_state_memory"
+seed: 42
+
+data:
+  index_csv: "data/simulations/simulation_index.csv"
+  split_file: "data/processed/splits/held_out_earthquake_split.json"
+  target_time_steps: 2048
+  material_filter: "bilinear"
+  target_channels:
+    - "u"
+    - "f_r"
+    - "e_h"
+  use_history_channel: false
+  batch_size: 64
+  num_workers: 0
+
+# Expected cardinalities for verification assertions
+expected_cardinalities:
+  train_samples: 5740
+  val_samples: 1120
+  test_samples: 1540
+  train_earthquakes: 11
+  val_earthquakes: 2
+  test_earthquakes: 3
+  train_rsns: 82
+  val_rsns: 16
+  test_rsns: 22
+
+models:
+  fno:
+    in_channels: 10
+    out_channels: 3
+    modes: 128
+    width: 48
+    n_layers: 4
+    expected_params: 1196931
+    checkpoint: "experiments/phase5_c_data_energy_boundary/checkpoints/best_model.pt"
+
+  causal_tcn:
+    in_channels: 10
+    out_channels: 3
+    num_channels: [136, 136, 136, 136, 136, 136, 136, 136, 136, 136, 136]
+    kernel_size: 3
+    dropout: 0.05
+    expected_params: 1188763
+    checkpoint: "experiments/exp1_causal_tcn/checkpoints/best_model.pt"
+
+  state_augmented_tcn:
+    in_channels: 10
+    out_channels: 3
+    num_channels: [136, 136, 136, 136, 136, 136, 136, 136, 136, 136, 136]
+    kernel_size: 3
+    dropout: 0.05
+    state_dim: 4
+    expected_params: 1182447
+    checkpoint: "results/experiments/exp2_state_memory/checkpoints/best_state_augmented_tcn.pt"
+
+  s4_operator:
+    in_channels: 10
+    out_channels: 3
+    d_model: 128
+    d_state: 64
+    n_blocks: 6
+    d_ff: 578
+    dropout: 0.05
+    memory_truncated: false
+    expected_params: 1192079
+    checkpoint: "results/experiments/exp2_state_memory/checkpoints/best_s4_operator.pt"
+
+  s4_memory_truncated:
+    in_channels: 10
+    out_channels: 3
+    d_model: 128
+    d_state: 64
+    n_blocks: 6
+    d_ff: 578
+    dropout: 0.05
+    memory_truncated: true
+    expected_params: 1192079
+    checkpoint: "results/experiments/exp2_state_memory/checkpoints/best_s4_memory_truncated.pt"
+
+training:
+  epochs: 1
+  learning_rate: 0.003
+  weight_decay: 1.0e-4
+  scheduler: "cosine"
+  eta_min: 1.0e-6
+  early_stopping_patience: 2
+  clip_grad_norm: 1.0
+  loss_lambda_energy: 0.10
+
+evaluation:
+  causality_perturbation:
+    t0_fraction: 0.50
+    scale_factor: 5.0
+    n_samples: 50
+    causality_tolerance_mm: 1.0e-5
+  clustered_bootstrap:
+    n_boot: 2000
+    ci: 0.95
+    cluster_key: "earthquake"
+  linear_probe:
+    alpha: 1.0
+    max_train_samples: 2000
+
+falsification_thresholds:
+  severe_yield_rel_l2_target: 40.0
+  residual_drift_improvement_target: 40.0
+  probe_r2_target: 0.85
+
+output_dirs:
+  results_dir: "results/experiments/exp2_state_memory"
+  checkpoint_dir: "experiments/exp2_state_memory/checkpoints"
+  figures_dir: "results/experiments/exp2_state_memory/figures"

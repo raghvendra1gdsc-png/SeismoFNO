@@ -1,0 +1,27 @@
+{
+  "Standard FNO": {
+    "mean_past_discrepancy_mm": 76.6970384311676,
+    "max_past_discrepancy_mm": 202.0818328857422,
+    "is_strictly_causal": false
+  },
+  "Causal TCN (State-Free)": {
+    "mean_past_discrepancy_mm": 0.0,
+    "max_past_discrepancy_mm": 0.0,
+    "is_strictly_causal": true
+  },
+  "State-Augmented TCN": {
+    "mean_past_discrepancy_mm": 0.0,
+    "max_past_discrepancy_mm": 0.0,
+    "is_strictly_causal": true
+  },
+  "Continuous S4 SSM": {
+    "mean_past_discrepancy_mm": 3.582448698580265e-05,
+    "max_past_discrepancy_mm": 5.494803190231323e-05,
+    "is_strictly_causal": true
+  },
+  "Memory-Truncated S4": {
+    "mean_past_discrepancy_mm": 3.9190053939819336e-05,
+    "max_past_discrepancy_mm": 5.9604644775390625e-05,
+    "is_strictly_causal": true
+  }
+}

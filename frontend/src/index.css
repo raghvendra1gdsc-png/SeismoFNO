@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background-deep: #FFFFFF;
+  --color-background-base: #F4F4F4;
+  --color-background-surface: #FFFFFF;
+  --color-background-elevated: #FFFFFF;
+  --color-panel-base: #FFFFFF;
+  --color-panel-hover: #F4F4F4;
+  --color-panel-active: #EDF5FF;
+  --color-border-subtle: #E0E0E0;
+  --color-border-medium: #C6C6C6;
+  --color-border-strong: #8D8D8D;
+  --color-text-primary: #161616;
+  --color-text-secondary: #525252;
+  --color-text-muted: #8D8D8D;
+  --color-fno: #0F62FE;
+  --color-fno-dim: #EDF5FF;
+  --color-opensees: #B28600;
+  --color-opensees-dim: #FFF8E1;
+  --color-energy: #198038;
+  --color-energy-dim: #DEFBE6;
+  --color-danger: #DA1E28;
+  --color-danger-dim: #FFD7D9;
+  --font-sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "IBM Plex Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  background-color: #FFFFFF;
+  color: #161616;
+  font-family: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  margin: 0;
+  padding: 0;
+}
+
+/* Minimal Carbon engineering scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FFFFFF;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #C6C6C6;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #8D8D8D;
+}
+
+/* Engineering flat sliders with Carbon blue-60 */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: #E0E0E0;
+  height: 4px;
+  border-radius: 0;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #0F62FE;
+  cursor: pointer;
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform 0.1s ease, background-color 0.1s ease;
+}
+
+input[type="range"]:hover::-webkit-slider-thumb {
+  background: #0353E9;
+  transform: scale(1.15);
+}
+
+input[type="range"]:focus::-webkit-slider-thumb {
+  background: #0043CE;
+  outline: 2px solid #0F62FE;
+  outline-offset: 1px;
+}
+
+.font-mono-num {
+  font-family: "IBM Plex Mono", monospace;
+  font-variant-numeric: tabular-nums;
+}

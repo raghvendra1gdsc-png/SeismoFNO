@@ -1,0 +1,33 @@
+# config.yaml — Experiment Template Configuration
+
+experiment_name: "template_experiment"
+seed: 42
+
+data:
+  index_csv: "data/simulations/simulation_index.csv"
+  split_file: "data/processed/splits/held_out_earthquake_split.json"
+  split_strategy: "held_out_earthquake"
+  target_time_steps: 2048
+  target_channels: ["u", "f_r", "e_h"]
+  batch_size: 32
+
+model:
+  in_channels: 10
+  out_channels: 3
+  modes: 128
+  width: 48
+  n_layers: 4
+
+loss:
+  data_weights: [1.0, 1.0, 1.0]
+  lambda_energy: 0.10
+
+training:
+  epochs: 50
+  learning_rate: 0.005
+  scheduler: "cosine"
+
+output:
+  checkpoint_dir: "experiments/template_experiment/checkpoints"
+  results_dir: "experiments/template_experiment/results"
+  log_dir: "experiments/template_experiment/logs"

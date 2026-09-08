@@ -1,0 +1,77 @@
+{
+  "experiment_name": "phase5_c_data_energy_boundary",
+  "timestamp": "2026-08-27 21:50:49",
+  "config": {
+    "experiment_name": "phase5_c_data_energy_boundary",
+    "model": {
+      "in_channels": 10,
+      "out_channels": 3,
+      "modes": 128,
+      "width": 48,
+      "n_layers": 4,
+      "activation": "gelu",
+      "use_norm": false
+    },
+    "data": {
+      "index_csv": "data/simulations/simulation_index.csv",
+      "split_strategy": "held_out_earthquake",
+      "split_file": "data/processed/splits/held_out_earthquake_split.json",
+      "filter_material": "bilinear",
+      "target_time_steps": 2048,
+      "target_channels": [
+        "u",
+        "f_r",
+        "e_h"
+      ],
+      "use_history_channel": false,
+      "batch_size": 32,
+      "seed": 42,
+      "normalize": true
+    },
+    "loss": {
+      "data_weights": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "lambda_energy": 0.1,
+      "lambda_boundary": 0.05
+    },
+    "training": {
+      "epochs": 40,
+      "learning_rate": 0.005,
+      "weight_decay": 1e-05,
+      "scheduler": "cosine",
+      "min_lr": 1e-05,
+      "clip_grad_norm": 1.0
+    },
+    "output": {
+      "checkpoint_dir": "experiments/phase5_c_data_energy_boundary/checkpoints",
+      "results_dir": "experiments/phase5_c_data_energy_boundary/results",
+      "log_dir": "experiments/phase5_c_data_energy_boundary/logs"
+    }
+  },
+  "test_metrics": {
+    "val_loss": 0.8176608322834482,
+    "n_total": 1540,
+    "n_elastic": 232,
+    "n_post_yield": 1308,
+    "overall_rel_l2_u": 0.49108394980430603,
+    "overall_rel_l2_f_r": 0.25110116600990295,
+    "overall_rel_l2_e_h": 0.8106866478919983,
+    "overall_rel_l2_global": 0.2019074410200119,
+    "elastic_rel_l2_u": 0.10805334150791168,
+    "elastic_rel_l2_f_r": 0.06733326613903046,
+    "elastic_rel_l2_e_h": 4.136144638061523,
+    "elastic_rel_l2_global": 0.0682535171508789,
+    "post_yield_rel_l2_u": 0.559022068977356,
+    "post_yield_rel_l2_f_r": 0.28369608521461487,
+    "post_yield_rel_l2_e_h": 0.22085006535053253,
+    "post_yield_rel_l2_global": 0.22561365365982056
+  },
+  "total_train_time_s": 1325.8247199058533,
+  "n_parameters": 1196931,
+  "train_samples": 5740,
+  "val_samples": 1120,
+  "test_samples": 1540
+}

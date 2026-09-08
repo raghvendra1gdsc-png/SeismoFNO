@@ -1,0 +1,40 @@
+# Phase 8: MDOF Recurrent LSTM Sequence Model Baseline
+experiment_name: phase8_mdof_lstm_baseline
+
+model:
+  model_type: lstm
+  in_channels: 10
+  out_channels: 3
+  max_stories: 5
+  hidden_dim: 128
+  num_layers: 3
+  dropout: 0.1
+
+data:
+  index_csv: data/simulations/mdof/simulation_index.csv
+  split_strategy: held_out_earthquake
+  split_file: data/processed/splits/mdof_held_out_earthquake_split.json
+  filter_material: null
+  target_time_steps: 2048
+  target_channels: ["u", "f_r", "e_h"]
+  batch_size: 32
+  seed: 42
+  normalize: true
+
+loss:
+  data_weights: [1.0, 1.0, 1.0]
+  lambda_energy: 0.1
+  lambda_boundary: 0.05
+
+training:
+  epochs: 30
+  learning_rate: 0.003
+  weight_decay: 1.0e-5
+  scheduler: cosine
+  min_lr: 1.0e-5
+  clip_grad_norm: 1.0
+
+output:
+  checkpoint_dir: experiments/phase8_mdof_lstm_baseline/checkpoints
+  results_dir: experiments/phase8_mdof_lstm_baseline/results
+  log_dir: experiments/phase8_mdof_lstm_baseline/logs

@@ -1,0 +1,52 @@
+{
+  "pooled_test": {
+    "n_simulations": 360,
+    "median_rel_l2_u_pct": 72.71095812320709,
+    "mean_rel_l2_u_pct": 57.243201022760736,
+    "q25_rel_l2_u_pct": 19.287128373980522,
+    "q75_rel_l2_u_pct": 99.57771450281143,
+    "median_peak_err_pct": 51.736505197743156,
+    "median_idr_err_pct": 86.47083342075348,
+    "median_shear_err_pct": 70.26370465755463,
+    "median_energy_err_pct": 60.02353042579806
+  },
+  "by_regime": {
+    "linear_elastic": {
+      "count": 120,
+      "median_rel_l2_u_pct": 56.98599815368652,
+      "median_peak_err_pct": 51.736505197743156,
+      "median_idr_err_pct": 66.45141988992691
+    },
+    "bilinear_nonlinear": {
+      "count": 240,
+      "median_rel_l2_u_pct": 72.78157770633698,
+      "median_peak_err_pct": 51.9676364498238,
+      "median_idr_err_pct": 86.47083342075348,
+      "median_energy_err_pct": 60.91789111834332
+    }
+  },
+  "by_story_count": {
+    "3_story": {
+      "count": 180,
+      "median_rel_l2_u_pct": 99.595907330513,
+      "median_peak_err_pct": 94.76170517392742
+    },
+    "5_story": {
+      "count": 180,
+      "median_rel_l2_u_pct": 19.287101179361343,
+      "median_peak_err_pct": 5.901543891949251
+    }
+  },
+  "by_earthquake": {
+    "RSN0011": {
+      "count": 180,
+      "median_rel_l2_u_pct": 72.71095812320709,
+      "median_peak_err_pct": 51.736505197743156
+    },
+    "RSN0012": {
+      "count": 180,
+      "median_rel_l2_u_pct": 58.45962166786194,
+      "median_peak_err_pct": 47.85060086215567
+    }
+  }
+}

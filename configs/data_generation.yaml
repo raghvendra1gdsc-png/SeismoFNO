@@ -1,0 +1,35 @@
+# data_generation.yaml — Ground Motion & NLTHA Simulation Generation Configuration
+
+ground_motions:
+  raw_dir: "data/raw/ground_motions"
+  processed_dir: "data/processed/ground_motions"
+  target_dt: 0.01          # 100 Hz sampling rate
+  target_time_steps: 2048  # 20.48s duration
+  filter_low_hz: 0.1
+  filter_high_hz: 25.0
+  pga_scales_g:
+    - 0.05
+    - 0.10
+    - 0.20
+    - 0.30
+    - 0.40
+    - 0.50
+    - 0.60
+    - 0.80
+    - 1.00
+    - 1.20
+
+structures:
+  sdof:
+    periods_s: [0.10, 0.20, 0.30, 0.50, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00]
+    damping_ratios: [0.02, 0.05]
+    yield_displacements_m: [0.005, 0.010, 0.020, 0.030]
+    hardening_ratios: [0.02, 0.05, 0.10]
+  mdof:
+    story_counts: [3, 5]
+    interstory_height_m: 3.0
+    floor_mass_kg: 1000.0
+
+output:
+  simulations_dir: "data/simulations/sdof_responses"
+  index_csv: "data/simulations/simulation_index.csv"

@@ -1,0 +1,22 @@
+{
+  "n_samples": 157,
+  "slope_mean": -0.006252848571937555,
+  "slope_median": -0.004340969026088715,
+  "slope_ci": [
+    -0.011497984449688773,
+    -0.001007712694186336
+  ],
+  "pct_negative_slopes": 62.42038216560509,
+  "r2_mean": 0.9982903205499121,
+  "r2_median": 0.9999970369044786,
+  "waveform_fluctuation_ratio": 5.438807964324951,
+  "waveform_std_fluc_mm": 0.3759334981441498,
+  "sham_phys_drift_mean": 0.3870666027069092,
+  "sham_ortho_drift_mean": 0.33316344022750854,
+  "sham_backstress_drift_mean": 0.32240909337997437,
+  "sham_plastic_drift_mean": 0.1104225292801857,
+  "elastic_samples_count": 23,
+  "inelastic_samples_count": 134,
+  "elastic_slope_mean": -0.014065356037538983,
+  "inelastic_slope_mean": -0.004911895797991041
+}

@@ -1,0 +1,4 @@
+Model,Device,Latency_ms,Throughput_sim_s,Speedup,Median_Rel_L2_u_pct
+OpenSeesPy MDOF NLTHA,CPU,32.53,30.7,1.0x,0.00%
+FNO2d Single Inference,mps,6.60,151.4,4.9x,72.71%
+FNO2d Batched Inference,mps,4.58,218.1,7.1x,72.71%

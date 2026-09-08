@@ -1,0 +1,10 @@
+{
+  "run_name": "main_gno",
+  "use_topology": true,
+  "best_epoch": 16,
+  "best_val_loss": 0.24852559597868668,
+  "epochs_completed": 26,
+  "total_training_time_s": 1189.7345750331879,
+  "avg_epoch_time_s": 45.732989476277275,
+  "n_params": 674115
+}

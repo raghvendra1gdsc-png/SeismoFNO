@@ -1,0 +1,90 @@
+{
+  "experiment": "EXP6_Physics_Modal_Conditioned_GNO",
+  "total_simulations": 2160,
+  "partitions": {
+    "train": 1080,
+    "val": 300,
+    "ood_a": 300,
+    "ood_b": 240,
+    "id_test": 120,
+    "excluded_unseen_val": 60,
+    "ood_c": 60
+  },
+  "training_structures": [
+    "3S_T035",
+    "3S_T060",
+    "3S_T090",
+    "5S_T055",
+    "5S_T085"
+  ],
+  "validation_structures": [
+    "3S_T035",
+    "3S_T060",
+    "3S_T090",
+    "5S_T055",
+    "5S_T085"
+  ],
+  "unseen_structures": [
+    "5S_T120"
+  ],
+  "training_earthquakes": [
+    "RSN0001",
+    "RSN0002",
+    "RSN0003",
+    "RSN0004",
+    "RSN0005",
+    "RSN0006",
+    "RSN0007",
+    "RSN0008"
+  ],
+  "validation_earthquakes": [
+    "RSN0009",
+    "RSN0010"
+  ],
+  "held_out_earthquakes": [
+    "RSN0011",
+    "RSN0012"
+  ],
+  "training_T1_range_s": [
+    0.35,
+    0.9
+  ],
+  "training_5S_T1_range_s": [
+    0.55,
+    0.85
+  ],
+  "ood_b_T1_s": 1.2,
+  "modal_conditioning_features": [
+    {
+      "name": "T1",
+      "units": "s",
+      "definition": "Fundamental modal period"
+    },
+    {
+      "name": "T2",
+      "units": "s",
+      "definition": "Second modal period"
+    },
+    {
+      "name": "T3",
+      "units": "s",
+      "definition": "Third modal period"
+    },
+    {
+      "name": "omega1",
+      "units": "rad/s",
+      "definition": "Fundamental circular frequency"
+    },
+    {
+      "name": "omega2",
+      "units": "rad/s",
+      "definition": "Second circular frequency"
+    },
+    {
+      "name": "omega3",
+      "units": "rad/s",
+      "definition": "Third circular frequency"
+    }
+  ],
+  "scaler_provenance": "Fitted strictly on train partition (1080 samples)"
+}

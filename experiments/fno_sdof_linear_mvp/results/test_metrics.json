@@ -1,0 +1,57 @@
+{
+  "experiment_name": "fno_sdof_linear_mvp",
+  "timestamp": "2026-08-26 16:20:42",
+  "config": {
+    "experiment_name": "fno_sdof_linear_mvp",
+    "model": {
+      "in_channels": 10,
+      "out_channels": 3,
+      "modes": 128,
+      "width": 48,
+      "n_layers": 4,
+      "activation": "gelu",
+      "use_norm": false
+    },
+    "data": {
+      "index_csv": "data/simulations/simulation_index.csv",
+      "target_time_steps": 2048,
+      "target_channels": [
+        "u",
+        "f_r",
+        "e_h"
+      ],
+      "filter_material": "elastic",
+      "train_ratio": 0.7,
+      "val_ratio": 0.15,
+      "test_ratio": 0.15,
+      "batch_size": 32,
+      "seed": 42,
+      "normalize": true
+    },
+    "training": {
+      "epochs": 40,
+      "learning_rate": 0.005,
+      "weight_decay": 1e-05,
+      "scheduler": "cosine",
+      "min_lr": 1e-05,
+      "clip_grad_norm": 1.0
+    },
+    "output": {
+      "checkpoint_dir": "experiments/fno_sdof_linear_mvp/checkpoints",
+      "results_dir": "experiments/fno_sdof_linear_mvp/results",
+      "log_dir": "experiments/fno_sdof_linear_mvp/logs"
+    }
+  },
+  "test_metrics": {
+    "val_loss": 0.06497944904298618,
+    "rel_l2_u": 0.02666756510734558,
+    "rel_l2_f_r": 0.026076998561620712,
+    "rel_l2_e_h": 0.061213184148073196,
+    "rel_l2_global": 0.02632218599319458
+  },
+  "total_train_time_s": 1398.1750700473785,
+  "n_parameters": 1196931,
+  "train_samples": 4200,
+  "val_samples": 900,
+  "test_samples": 900
+}

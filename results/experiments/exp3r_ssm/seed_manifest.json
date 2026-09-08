@@ -1,0 +1,32 @@
+{
+  "experiment": "EXP3-R",
+  "precommitted_seeds": [
+    {
+      "seed": 42,
+      "role": "primary_reference_seed",
+      "checkpoint_dir": "results/experiments/exp3r_ssm/seed_42/"
+    },
+    {
+      "seed": 123,
+      "role": "replicate_seed_1",
+      "checkpoint_dir": "results/experiments/exp3r_ssm/seed_123/"
+    },
+    {
+      "seed": 456,
+      "role": "replicate_seed_2",
+      "checkpoint_dir": "results/experiments/exp3r_ssm/seed_456/"
+    },
+    {
+      "seed": 789,
+      "role": "replicate_seed_3",
+      "checkpoint_dir": "results/experiments/exp3r_ssm/seed_789/"
+    },
+    {
+      "seed": 1024,
+      "role": "replicate_seed_4",
+      "checkpoint_dir": "results/experiments/exp3r_ssm/seed_1024/"
+    }
+  ],
+  "precommitted_at": "2026-09-02T13:25:00Z",
+  "status": "LOCKED_PRE_TRAINING"
+}

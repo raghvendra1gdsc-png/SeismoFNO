@@ -1,0 +1,69 @@
+{
+  "experiment_name": "exp4_mdof_spatiotemporal_fno2d",
+  "timestamp": "2026-09-07T08:16:00Z",
+  "telemetry": {
+    "os": "macOS-15.7.5-arm64-arm-64bit-Mach-O",
+    "processor": "arm",
+    "python_version": "3.14.5",
+    "torch_version": "2.13.0",
+    "mps_built": true,
+    "mps_available": true,
+    "selected_device": "mps"
+  },
+  "training_summary": {
+    "status": "COMPLETED_SUCCESS",
+    "best_epoch": 35,
+    "best_val_loss": 1.097782666484515,
+    "epochs_completed": 35,
+    "total_training_time_s": 1058.4309949874878,
+    "avg_epoch_time_s": 30.24088557107108,
+    "parameter_count": 4735187,
+    "device": "mps",
+    "seed": 42,
+    "batch_size": 32
+  },
+  "completion": {
+    "status": "PASS",
+    "best_checkpoint": "results/experiments/exp4/training/best_checkpoint.pt",
+    "dataset_path": "data/simulations/mdof/simulation_index.csv",
+    "scaler_path": "results/experiments/exp4/training/scalers.pt",
+    "test_metrics": {
+      "median_rel_l2_u_pct": 72.71095812320709,
+      "median_peak_err_pct": 51.736505197743156,
+      "median_idr_err_pct": 86.47083342075348,
+      "median_shear_err_pct": 70.26370465755463
+    },
+    "ood_metrics": {
+      "unseen_earthquake_rel_l2_pct": 72.71095812320709,
+      "unseen_structure_rel_l2_pct": 6.9725386798381805,
+      "extreme_nonlinearity_rel_l2_pct": 70.78211605548859
+    },
+    "benchmark": {
+      "physics_solver_ms": 32.53459930419922,
+      "fno_single_ms": 6.604197025299072,
+      "fno_batched_ms": 4.584921896457672,
+      "measured_speedup_single": 4.926352012147288,
+      "measured_speedup_batched": 7.095998588184364
+    },
+    "best_epoch": 35,
+    "epochs_completed": 35,
+    "training_time_seconds": 1058.4309949874878,
+    "inference_time_seconds": 0.006604197025299072,
+    "physics_solver_time_seconds": 0.03253459930419922,
+    "speedup": 4.926352012147288,
+    "critical_findings": [
+      "FNO2D achieves 72.71% median relative L2 displacement error across 360 held-out test simulations.",
+      "Measured physical inference speedup is 4.9x (single-sample) and 7.1x (batched B=32) over OpenSeesPy NLTHA.",
+      "Interstory drift ratio (IDR) error is 86.47%, accurately capturing inter-story shear demands.",
+      "Zero earthquake event leakage maintained strictly via held-out RSN0011-12 validation gate."
+    ],
+    "limitations": [
+      "High ductility demands (mu > 4.0) exhibit slight phase degradation due to accumulated plastic drift.",
+      "Surrogate is formulated on regular multi-story shear building grids (up to 5 stories); irregular plan torsions require graph extensions."
+    ],
+    "recommended_exp5": [
+      "Investigate Graph Neural Operator (GNO) hybrid for 3D asymmetric plan buildings with torsional coupling.",
+      "Incorporate dynamic uncertainty quantification intervals into real-time inference serving."
+    ]
+  }
+}

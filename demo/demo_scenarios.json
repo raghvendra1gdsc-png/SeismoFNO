@@ -1,0 +1,81 @@
+{
+  "demo_title": "SeismoFNO Digital-Twin Hackathon Demonstration Scenarios",
+  "provenance": "Verified Empirical Checkpoint configs/phase5_c_data_energy_boundary.yaml",
+  "scenarios": [
+    {
+      "id": "BASELINE_RC_FRAME",
+      "name": "Baseline: 3-Story Ductile RC Frame (Imperial Valley RSN0001, PGA=0.40g)",
+      "earthquake_id": "RSN0001_Imperial_Valley-06.AT2",
+      "earthquake_name": "Imperial Valley-06 (1979) Station_Impe_001",
+      "pga_g": 0.40,
+      "T0": 0.50,
+      "damping_ratio": 0.05,
+      "yield_displacement_m": 0.010,
+      "post_yield_ratio": 0.05,
+      "material_type": "bilinear",
+      "mass_kg": 1.0,
+      "building_height_m": 9.6,
+      "description": "Code-conforming reinforced concrete frame under strong ground shaking."
+    },
+    {
+      "id": "STIFFNESS_PLUS_20",
+      "name": "Intervention A: Lateral Stiffness +20% (T0 reduced from 0.50s to 0.456s)",
+      "earthquake_id": "RSN0001_Imperial_Valley-06.AT2",
+      "earthquake_name": "Imperial Valley-06 (1979) Station_Impe_001",
+      "pga_g": 0.40,
+      "T0": 0.456,
+      "damping_ratio": 0.05,
+      "yield_displacement_m": 0.010,
+      "post_yield_ratio": 0.05,
+      "material_type": "bilinear",
+      "mass_kg": 1.0,
+      "building_height_m": 9.6,
+      "description": "Structural retrofit adding concrete shear walls or steel cross-bracing."
+    },
+    {
+      "id": "YIELD_PLUS_20",
+      "name": "Intervention B: Yield Strength +20% (Yield displacement uy increased to 12 mm)",
+      "earthquake_id": "RSN0001_Imperial_Valley-06.AT2",
+      "earthquake_name": "Imperial Valley-06 (1979) Station_Impe_001",
+      "pga_g": 0.40,
+      "T0": 0.50,
+      "damping_ratio": 0.05,
+      "yield_displacement_m": 0.012,
+      "post_yield_ratio": 0.05,
+      "material_type": "bilinear",
+      "mass_kg": 1.0,
+      "building_height_m": 9.6,
+      "description": "Reinforcement strengthening increasing moment capacity at beam-column joints."
+    },
+    {
+      "id": "DAMPING_PLUS_2PC",
+      "name": "Intervention C: Added Supplemental Damping (zeta increased from 5% to 7%)",
+      "earthquake_id": "RSN0001_Imperial_Valley-06.AT2",
+      "earthquake_name": "Imperial Valley-06 (1979) Station_Impe_001",
+      "pga_g": 0.40,
+      "T0": 0.50,
+      "damping_ratio": 0.07,
+      "yield_displacement_m": 0.010,
+      "post_yield_ratio": 0.05,
+      "material_type": "bilinear",
+      "mass_kg": 1.0,
+      "building_height_m": 9.6,
+      "description": "Installation of supplemental fluid viscous dampers to dissipate seismic kinetic energy."
+    },
+    {
+      "id": "ALTERNATIVE_EARTHQUAKE_BHUJ",
+      "name": "Event Sensitivity: 2001 Bhuj Earthquake (Mw 7.7 Intraplate, PGA=0.40g)",
+      "earthquake_id": "IND-2001-BHUJ",
+      "earthquake_name": "Bhuj (2001) Mw 7.7 Intraplate Reverse Faulting",
+      "pga_g": 0.40,
+      "T0": 0.50,
+      "damping_ratio": 0.05,
+      "yield_displacement_m": 0.010,
+      "post_yield_ratio": 0.05,
+      "material_type": "bilinear",
+      "mass_kg": 1.0,
+      "building_height_m": 9.6,
+      "description": "Severe intraplate Kachchh rift ground motion with high-energy long-duration wave packets."
+    }
+  ]
+}

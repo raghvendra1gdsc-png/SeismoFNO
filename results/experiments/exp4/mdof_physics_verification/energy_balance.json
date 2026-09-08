@@ -1,0 +1,20 @@
+{
+  "floor_1": {
+    "peak_drift_mm": 92.70566218350521,
+    "ductility_demand": 23.176415545876303,
+    "final_hysteretic_energy_J": 8303.637235518747,
+    "energy_monotonic": true
+  },
+  "floor_2": {
+    "peak_drift_mm": 36.15525807623145,
+    "ductility_demand": 9.038814519057862,
+    "final_hysteretic_energy_J": 1932.1188458565396,
+    "energy_monotonic": true
+  },
+  "floor_3": {
+    "peak_drift_mm": 8.929950199131866,
+    "ductility_demand": 2.2324875497829666,
+    "final_hysteretic_energy_J": 56.475868818633806,
+    "energy_monotonic": true
+  }
+}

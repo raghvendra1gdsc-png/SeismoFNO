@@ -1,0 +1,27 @@
+{
+  "train_samples": 5740,
+  "val_samples": 1120,
+  "test_samples": 1540,
+  "train_earthquakes": [
+    "Chi-Chi (Taiwan-01)",
+    "Darfield (New Zealand)",
+    "Duzce (Turkey)",
+    "Hector Mine",
+    "Imperial Valley-06",
+    "Kobe (Hyogo-ken Nanbu)",
+    "Landers",
+    "Parkfield-02",
+    "San Fernando",
+    "Tottori (Japan)",
+    "Whittier Narrows-01"
+  ],
+  "val_earthquakes": [
+    "Kocaeli (Turkey)",
+    "Loma Prieta"
+  ],
+  "test_earthquakes": [
+    "Christchurch",
+    "Morgan Hill",
+    "Northridge-01"
+  ]
+}

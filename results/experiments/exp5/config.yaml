@@ -1,0 +1,28 @@
+# EXP 5: Spatiotemporal Graph Neural Operator Configuration
+experiment_name: exp5_mdof_spatiotemporal_gno
+random_seed: 42
+
+hardware:
+  device: mps
+  pin_memory: false
+  num_workers: 0
+
+model:
+  model_type: spatiotemporal_gno
+  in_channels: 10
+  out_channels: 3
+  width: 48
+  modes: 64
+  n_layers: 4
+  use_topology: true
+  parameters: 674115
+
+training:
+  batch_size: 8
+  learning_rate: 0.003
+  weight_decay: 1.0e-5
+  scheduler: CosineAnnealingLR
+  max_epochs: 35
+  patience: 10
+  best_epoch: 16
+  best_val_loss: 0.24852559597868668

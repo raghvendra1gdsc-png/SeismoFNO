@@ -1,0 +1,11 @@
+{
+  "seed": 42,
+  "best_epoch": 50,
+  "best_val_response_loss": 0.2872269548475742,
+  "final_epoch": 50,
+  "final_val_response_loss": 0.2872269548475742,
+  "training_time_seconds": 21335.99493598938,
+  "parameter_count": 1191815,
+  "device": "mps",
+  "status": "COMPLETED_SUCCESS"
+}

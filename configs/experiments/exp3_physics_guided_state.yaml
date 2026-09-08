@@ -1,0 +1,51 @@
+experiment_name: "exp3_physics_state"
+description: "EXP 3: Physics-Guided Latent State Supervision & Counterfactual Causal Interventions"
+timestamp: "2026-09-02"
+
+model:
+  name: "PhysicsSupervisedCausalTCN"
+  in_channels: 10
+  out_channels: 3
+  encoder_dim: 135
+  decoder_dim: 136
+  state_hidden_dim: 16
+  state_dim: 2
+  kernel_size: 3
+  dropout: 0.05
+  encoder_dilations: [1, 2, 4, 8, 16, 32]
+  decoder_dilations: [64, 128, 256, 512, 1024]
+  target_parameters: 1192448
+  parameter_tolerance_pct: 1.0
+
+loss:
+  lambda_state: 0.20
+  lambda_energy: 0.10
+  eps_u: 1e-4
+  eps_f: 1.0
+  eps_e: 1e-2
+  eps_state: 1e-6
+
+data:
+  split_file: "data/processed/splits/held_out_earthquake_split.json"
+  simulation_index: "data/simulations/simulation_index.csv"
+  target_time_steps: 2048
+  target_channels: ["u", "f_r", "e_h"]
+  include_structural_params: true
+  use_history_channel: false
+
+counterfactual:
+  doses_mm: [-10.0, -5.0, 0.0, 5.0, 10.0]
+  acceptance_thresholds:
+    zero_intervention_tol_mm: 1e-6
+    past_invariance_tol_mm: 1e-6
+    dose_response_r2_min: 0.95
+    dose_response_slope_min: 0.85
+    dose_response_slope_max: 1.15
+
+training:
+  batch_size: 64
+  learning_rate: 0.003
+  weight_decay: 1e-4
+  epochs: 50
+  seed: 42
+  early_stopping_patience: 10

@@ -1,0 +1,20 @@
+{
+  "device": "mps",
+  "n_benchmark_runs": 30,
+  "physics_solver": {
+    "model": "OpenSeesPy MDOF (5-Story Bilinear NLTHA)",
+    "mean_latency_ms": 32.53459930419922,
+    "throughput_sim_per_s": 30.736508867067272,
+    "total_time_s": 0.9760379791259766
+  },
+  "fno2d_single": {
+    "mean_latency_ms": 6.604197025299072,
+    "throughput_sim_per_s": 151.4188623036598,
+    "speedup_vs_solver": 4.926352012147288
+  },
+  "fno2d_batched_32": {
+    "mean_latency_ms": 4.584921896457672,
+    "throughput_sim_per_s": 218.10622352642557,
+    "speedup_vs_solver": 7.095998588184364
+  }
+}

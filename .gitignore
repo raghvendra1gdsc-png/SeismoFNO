@@ -1,0 +1,77 @@
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.token
+
+# Python & Virtual Environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.venv/
+venv/
+env/
+ENV/
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# Frontend / Node
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# IDE / OS
+.DS_Store
+**/.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+*.log
+
+# Large Generated Simulation Outputs & Caches (Regenerable via scripts; manifests & indexes preserved)
+data/processed/*_cache/
+data/simulations/sdof_responses/
+data/simulations/mdof/*.npz
+data/simulations/mdof_pilot/
+data/simulations/mdof_exp6_ood/
+data/simulations/scaled_motions/
+results/experiments/exp4/smoke_checkpoint.pt
+scratch/
+docs/_temp_*
+
+# Agent Customizations & Tooling
+.agents/
+
+# Unrelated Hackathon Artifacts & Demo Scripts
+docs/hackathon/
+docs/HACKATHON_*.md
+docs/DEMO_SCRIPT.md
+

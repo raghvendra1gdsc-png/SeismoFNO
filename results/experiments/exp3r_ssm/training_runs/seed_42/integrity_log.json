@@ -1,0 +1,7 @@
+{
+  "zero_test_access_confirmed": true,
+  "checkpoint_selection_rule": "min_val_response_loss",
+  "h0_exact_reset_confirmed": true,
+  "finite_losses_confirmed": true,
+  "parameters_constant": true
+}

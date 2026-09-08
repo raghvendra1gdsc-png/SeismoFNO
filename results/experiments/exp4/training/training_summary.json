@@ -1,0 +1,12 @@
+{
+  "status": "COMPLETED_SUCCESS",
+  "best_epoch": 35,
+  "best_val_loss": 1.097782666484515,
+  "epochs_completed": 35,
+  "total_training_time_s": 1058.4309949874878,
+  "avg_epoch_time_s": 30.24088557107108,
+  "parameter_count": 4735187,
+  "device": "mps",
+  "seed": 42,
+  "batch_size": 32
+}

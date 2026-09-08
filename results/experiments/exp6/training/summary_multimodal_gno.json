@@ -1,0 +1,11 @@
+{
+  "model_name": "multimodal_gno",
+  "cond_mode": "multimodal",
+  "cond_dim": 6,
+  "seed": 42,
+  "best_epoch": 10,
+  "best_val_loss": 0.2619886390472713,
+  "epochs_completed": 14,
+  "total_training_time_s": 1709.184427022934,
+  "n_params": 727619
+}

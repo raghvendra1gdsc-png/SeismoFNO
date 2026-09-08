@@ -1,0 +1,41 @@
+{
+  "tests": {
+    "A_sdof_reduction": {
+      "description": "1-story MDOF vs SDOF analytical equivalence",
+      "rel_l2_u": 1.00644936548985e-15,
+      "tolerance": 0.0001,
+      "status": "PASS"
+    },
+    "C_modal_eigenvalues": {
+      "description": "Closed-form modal frequencies vs OpenSees eigenvalues (3-story & 5-story)",
+      "tolerance": 0.001,
+      "status": "PASS"
+    },
+    "D_mode_orthogonality": {
+      "description": "Mass and stiffness orthogonality phi^T M phi = I and phi^T K phi = Omega^2",
+      "tolerance": 1e-06,
+      "status": "PASS"
+    },
+    "B_linear_benchmark": {
+      "description": "Multi-story displacement vs independent hand-coded Newmark solver",
+      "tolerance": 0.01,
+      "status": "PASS"
+    },
+    "E_interstory_drift": {
+      "description": "Interstory drift ratio IDR_i(t) precision",
+      "tolerance": 0.01,
+      "status": "PASS"
+    },
+    "F_story_shear": {
+      "description": "Story shear force equilibrium consistency",
+      "tolerance": 0.01,
+      "status": "PASS"
+    },
+    "H_energy_balance": {
+      "description": "Nonlinear hysteretic energy monotonicity and post-yield ductility demands",
+      "tolerance": "Monotonicity >= -1e-6 J, Ductility > 1.5",
+      "status": "PASS"
+    }
+  },
+  "all_passed": true
+}

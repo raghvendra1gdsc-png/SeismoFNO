@@ -1,0 +1,22 @@
+{
+  "EXP 2 Baseline (State-TCN)": {
+    "parameters": 1182451,
+    "target": 1192448,
+    "delta_pct": -0.8383594085444398
+  },
+  "EXP 3 PG-TCN (Physics-Supervised)": {
+    "parameters": 1192849,
+    "target": 1192448,
+    "delta_pct": 0.03362830077286389
+  },
+  "EXP 3 PG-TCN (Unsupervised Ablation)": {
+    "parameters": 1192849,
+    "target": 1192448,
+    "delta_pct": 0.03362830077286389
+  },
+  "EXP 3 64D Unconstrained State": {
+    "parameters": 1192255,
+    "target": 1192448,
+    "delta_pct": -0.01618519214255045
+  }
+}

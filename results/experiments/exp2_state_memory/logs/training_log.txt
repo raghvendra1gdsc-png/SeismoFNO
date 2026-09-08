@@ -1,0 +1,7 @@
+[State-Augmented TCN] Epoch 01/50 | Train Loss: 1.02440 | Val Loss: 0.53622 | Best Val: 0.53622
+[State-Augmented TCN] Epoch 02/50 | Train Loss: 0.61565 | Val Loss: 0.45160 | Best Val: 0.45160
+[State-Augmented TCN] Epoch 03/50 | Train Loss: 0.51596 | Val Loss: 0.36599 | Best Val: 0.36599
+[State-Augmented TCN] Epoch 04/50 | Train Loss: 0.47592 | Val Loss: 0.35801 | Best Val: 0.35801
+[State-Augmented TCN] Epoch 05/50 | Train Loss: 0.44603 | Val Loss: 0.34590 | Best Val: 0.34590
+[State-Augmented TCN] Epoch 06/50 | Train Loss: 0.41864 | Val Loss: 0.34126 | Best Val: 0.34126
+[Continuous S4 SSM] Epoch 01/1 | Train Loss: 0.95888 | Val Loss: 0.77125 | Best Val: 0.77125

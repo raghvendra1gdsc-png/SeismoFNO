@@ -1,0 +1,23 @@
+{
+  "ood_a_unseen_earthquake": {
+    "description": "Zero earthquake event leakage (RSN0011, RSN0012)",
+    "count": 360,
+    "median_rel_l2_u_pct": 72.71095812320709,
+    "mean_rel_l2_u_pct": 57.243201022760736,
+    "median_peak_err_pct": 51.736505197743156
+  },
+  "ood_b_unseen_structure": {
+    "description": "Long-period flexible 5-story frame (5S_T120, T1=1.2s)",
+    "count": 360,
+    "median_rel_l2_u_pct": 6.9725386798381805,
+    "mean_rel_l2_u_pct": 11.225128159340885,
+    "median_peak_err_pct": 3.1712670018631393
+  },
+  "ood_c_extreme_nonlinearity": {
+    "description": "High-intensity yielding records (Bilinear with PGA >= 0.8g)",
+    "count": 432,
+    "median_rel_l2_u_pct": 70.78211605548859,
+    "mean_rel_l2_u_pct": 53.96504016869046,
+    "median_peak_err_pct": 50.723379930927834
+  }
+}

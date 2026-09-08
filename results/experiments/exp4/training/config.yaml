@@ -1,0 +1,39 @@
+# EXP4: 2D Fourier Neural Operator (FNO2d) MDOF Spatiotemporal Training Configuration
+experiment_name: exp4_mdof_fno2d_nonlinear
+random_seed: 42
+
+hardware:
+  device: mps
+  pin_memory: false
+  num_workers: 0
+
+model:
+  model_type: fno2d
+  in_channels: 10              # a_g, T1, T2, s/S, m_s, S, is_bilinear, u_y, PGA, tau
+  out_channels: 3              # u(s,t), F_R(s,t), E_h(s,t)
+  modes1: 4                    # Spatial (story) Fourier modes
+  modes2: 64                   # Temporal Fourier modes
+  width: 48                    # Latent channel dimension
+  n_layers: 4                  # Number of 2D spectral convolution layers
+  activation: gelu
+  parameter_count: 4735187
+
+data:
+  index_csv: data/simulations/mdof/simulation_index.csv
+  protocol_json: results/experiments/exp4/dataset_protocol.json
+  split_strategy: held_out_earthquake
+  held_out_earthquakes: ["RSN0011", "RSN0012"]
+  target_time_steps: 2048
+  target_channels: ["u", "f_r", "e_h"]
+  batch_size: 32
+  normalize: true
+
+training:
+  max_epochs: 35
+  patience: 10
+  learning_rate: 0.005
+  weight_decay: 1.0e-5
+  scheduler: CosineAnnealingLR
+  min_lr: 1.0e-5
+  clip_grad_norm: 1.0
+  loss: RelativeL2Loss

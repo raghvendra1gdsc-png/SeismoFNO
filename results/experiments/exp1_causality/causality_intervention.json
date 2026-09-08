@@ -1,0 +1,70 @@
+{
+  "Standard FNO": {
+    "t0_25": {
+      "max_diff_avg": 0.3199812772125006,
+      "mean_diff_avg": 0.07568068000953644,
+      "rel_diff_avg_pct": 49.55259147572022
+    },
+    "t0_50": {
+      "max_diff_avg": 0.3531171605736017,
+      "mean_diff_avg": 0.09708557195030153,
+      "rel_diff_avg_pct": 48.90044583053195
+    },
+    "t0_75": {
+      "max_diff_avg": 0.338820289671421,
+      "mean_diff_avg": 0.08130876223556698,
+      "rel_diff_avg_pct": 49.11363253302772
+    }
+  },
+  "Causal TCN": {
+    "t0_25": {
+      "max_diff_avg": 0.0,
+      "mean_diff_avg": 0.0,
+      "rel_diff_avg_pct": 0.0
+    },
+    "t0_50": {
+      "max_diff_avg": 0.0,
+      "mean_diff_avg": 0.0,
+      "rel_diff_avg_pct": 0.0
+    },
+    "t0_75": {
+      "max_diff_avg": 0.0,
+      "mean_diff_avg": 0.0,
+      "rel_diff_avg_pct": 0.0
+    }
+  },
+  "LSTM Baseline": {
+    "t0_25": {
+      "max_diff_avg": 0.0,
+      "mean_diff_avg": 0.0,
+      "rel_diff_avg_pct": 0.0
+    },
+    "t0_50": {
+      "max_diff_avg": 0.0,
+      "mean_diff_avg": 0.0,
+      "rel_diff_avg_pct": 0.0
+    },
+    "t0_75": {
+      "max_diff_avg": 0.0,
+      "mean_diff_avg": 0.0,
+      "rel_diff_avg_pct": 0.0
+    }
+  },
+  "MLP Baseline": {
+    "t0_25": {
+      "max_diff_avg": 0.0,
+      "mean_diff_avg": 0.0,
+      "rel_diff_avg_pct": 0.0
+    },
+    "t0_50": {
+      "max_diff_avg": 0.0,
+      "mean_diff_avg": 0.0,
+      "rel_diff_avg_pct": 0.0
+    },
+    "t0_75": {
+      "max_diff_avg": 0.0,
+      "mean_diff_avg": 0.0,
+      "rel_diff_avg_pct": 0.0
+    }
+  }
+}

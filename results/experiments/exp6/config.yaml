@@ -1,0 +1,39 @@
+{
+  "experiment_name": "exp6_physics_modal_conditioned_gno",
+  "random_seed": 42,
+  "hardware": {
+    "os": "macOS-15.7.5-arm64-arm-64bit-Mach-O",
+    "processor": "arm",
+    "python_version": "3.14.5",
+    "torch_version": "2.13.0",
+    "mps_built": true,
+    "mps_available": true,
+    "selected_device": "mps"
+  },
+  "models": {
+    "baseline": {
+      "cond_mode": "none",
+      "parameters": 674115
+    },
+    "t1_gno": {
+      "cond_mode": "t1",
+      "parameters": 725059
+    },
+    "multimodal_gno": {
+      "cond_mode": "multimodal",
+      "parameters": 727619
+    },
+    "shuffled_gno": {
+      "cond_mode": "shuffled_t1",
+      "parameters": 725059
+    }
+  },
+  "training": {
+    "batch_size": 32,
+    "max_epochs": 25,
+    "patience": 6,
+    "learning_rate": 0.003,
+    "optimizer": "AdamW",
+    "scheduler": "CosineAnnealingLR"
+  }
+}

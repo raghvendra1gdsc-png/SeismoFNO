@@ -1,0 +1,30 @@
+{
+  "checkpoint_epoch": 3,
+  "val_response_loss": 1.2037388741970063,
+  "val_state_loss": 814.9760653248854,
+  "readout_sensitivity": {
+    "coord_0_u": 0.3219882547855377,
+    "coord_1_v": 0.09265546500682831,
+    "coord_2_up": 0.1944786012172699,
+    "coord_q_mean": 0.6362119913101196,
+    "coord_q_max": 1.278139352798462,
+    "up_to_q_ratio": 0.3056820695252366
+  },
+  "hidden_state_propagation": {
+    "initial_dh": 0.030902986648541766,
+    "dh_at_ty_plus_10": 0.006179816089570522,
+    "dh_at_ty_plus_100": 0.021617352962493896,
+    "dh_at_tend": 0.031130332499742508,
+    "retention_ratio": 10.073575973510742
+  },
+  "dynamic_jacobian": {
+    "mean_d_u_final_d_up": 1.2936816619912862e-05,
+    "mean_d_u_final_d_q": 1.0231448868580628e-05,
+    "jacobian_up_to_q_ratio": 1.2631822690245766
+  },
+  "r2_pathology_diagnosis": {
+    "reason": "Normalized state loss = 815 at Epoch 3 (premature training halt), combined with near-zero variance denominator on near-elastic records.",
+    "is_metric_pathological": true
+  },
+  "identified_mechanism": "D: Physical state coordinate was never learned correctly (insufficient training epochs; state loss = 815)."
+}

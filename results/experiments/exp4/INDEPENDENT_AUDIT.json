@@ -1,0 +1,46 @@
+{
+  "experiment": "SeismoFNO_EXP4",
+  "overall_status": "COMPLETE WITH CAVEATS",
+  "physics_verified": true,
+  "dataset_verified": true,
+  "split_integrity_verified": true,
+  "ood_verified": false,
+  "training_verified": true,
+  "checkpoint_verified": true,
+  "mps_verified": true,
+  "evaluation_verified": true,
+  "benchmark_verified": true,
+  "test_suite_verified": true,
+  "exp3r_protected": true,
+  "reproducibility": "REPRODUCIBLE",
+  "critical_issues": [
+    "OOD-B structural generalization evaluation is contaminated: 240 of the 360 simulations of 5S_T120 were present in the training partition because the partition was split strictly by earthquake (RSN0001-08) rather than by structural archetype. The claimed 6.97% median error evaluates training data. The true error on unseen test earthquakes is 18.69%."
+  ],
+  "minor_issues": [
+    "Training config yaml records learning_rate: 0.005, whereas actual training executed with initial lr: 0.003 as verified in history.csv and pipeline script defaults.",
+    "Zero-padding 3-story buildings onto a 5-story grid introduces high-frequency spectral Gibbs phenomena, resulting in 99.60% median relative L2 error on 3-story frames compared to 19.29% on 5-story frames."
+  ],
+  "verified_metrics": {
+    "held_out_pooled_median_rel_l2_u_pct": 72.71095812320709,
+    "held_out_5_story_median_rel_l2_u_pct": 19.287101179361343,
+    "held_out_5_story_median_peak_err_pct": 5.901543891949251,
+    "held_out_3_story_median_rel_l2_u_pct": 99.595907330513,
+    "ood_a_unseen_earthquake_median_rel_l2_pct": 72.71095812320709,
+    "ood_b_claimed_median_rel_l2_pct": 6.9725386798381805,
+    "ood_b_true_held_out_test_median_rel_l2_pct": 18.69,
+    "physics_solver_ms": 32.53459930419922,
+    "fno_single_ms": 6.604197025299072,
+    "fno_batched_ms": 4.584921896457672,
+    "measured_speedup_single": 4.926352012147288,
+    "measured_speedup_batched": 7.095998588184364
+  },
+  "unverified_claims": [
+    "Claim that OOD-B represents an unseen structural archetype during training (5S_T120 was trained on 240 samples across RSN0001-08).",
+    "Claim that the current FNO2d surrogate is ready for life-safety engineering deployment without hybrid physics solvers or boundary fixes."
+  ],
+  "scientific_limitations": [
+    "FNO2d global Fourier kernels struggle with zero-padded boundaries when handling variable floor counts on a fixed grid (3-story vs 5-story).",
+    "Severe post-yield bilinear hysteretic cycles exhibit accumulated plastic phase drift under high PGA (>= 0.8g), increasing peak displacement errors."
+  ],
+  "recommendation": "Accept EXP4 with documented caveats regarding OOD-B structure contamination and 3-story zero-padding limits. EXP5 is ready to proceed to address variable structural topologies via Graph Neural Operators (GNO/GNN) and fiber-section representations."
+}

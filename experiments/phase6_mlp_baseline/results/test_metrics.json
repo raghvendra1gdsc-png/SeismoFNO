@@ -1,0 +1,76 @@
+{
+  "experiment_name": "phase6_mlp_baseline",
+  "timestamp": "2026-08-29 11:03:09",
+  "config": {
+    "experiment_name": "phase6_mlp_baseline",
+    "model": {
+      "model_type": "mlp",
+      "in_channels": 10,
+      "out_channels": 3,
+      "hidden_dim": 256,
+      "num_layers": 4,
+      "dropout": 0.0
+    },
+    "data": {
+      "index_csv": "data/simulations/simulation_index.csv",
+      "split_strategy": "held_out_earthquake",
+      "split_file": "data/processed/splits/held_out_earthquake_split.json",
+      "filter_material": "bilinear",
+      "target_time_steps": 2048,
+      "target_channels": [
+        "u",
+        "f_r",
+        "e_h"
+      ],
+      "use_history_channel": false,
+      "batch_size": 32,
+      "seed": 42,
+      "normalize": true
+    },
+    "loss": {
+      "data_weights": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "lambda_energy": 0.1,
+      "lambda_boundary": 0.05
+    },
+    "training": {
+      "epochs": 3,
+      "learning_rate": 0.005,
+      "weight_decay": 1e-05,
+      "scheduler": "cosine",
+      "min_lr": 1e-05,
+      "clip_grad_norm": 1.0
+    },
+    "output": {
+      "checkpoint_dir": "experiments/phase6_mlp_baseline/checkpoints",
+      "results_dir": "experiments/phase6_mlp_baseline/results",
+      "log_dir": "experiments/phase6_mlp_baseline/logs"
+    }
+  },
+  "test_metrics": {
+    "val_loss": 2.3595064829806893,
+    "n_total": 1540,
+    "n_elastic": 232,
+    "n_post_yield": 1308,
+    "overall_rel_l2_u": 1.0600627660751343,
+    "overall_rel_l2_f_r": 1.000006079673767,
+    "overall_rel_l2_e_h": 2.994868516921997,
+    "overall_rel_l2_global": 0.889913022518158,
+    "elastic_rel_l2_u": 1.3900718688964844,
+    "elastic_rel_l2_f_r": 1.0000025033950806,
+    "elastic_rel_l2_e_h": 13.547595024108887,
+    "elastic_rel_l2_global": 1.0043617486953735,
+    "post_yield_rel_l2_u": 1.0015290975570679,
+    "post_yield_rel_l2_f_r": 1.0000066757202148,
+    "post_yield_rel_l2_e_h": 1.123131275177002,
+    "post_yield_rel_l2_global": 0.8696132302284241
+  },
+  "total_train_time_s": 332.0921609401703,
+  "n_parameters": 564995,
+  "train_samples": 5740,
+  "val_samples": 1120,
+  "test_samples": 1540
+}

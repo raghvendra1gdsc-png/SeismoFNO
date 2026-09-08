@@ -1,0 +1,98 @@
+{
+  "experiment_name": "exp3r_pure_recurrent_ssm",
+  "model": {
+    "class_name": "PureRecurrentSSM",
+    "module": "src.models.exp3r_ssm",
+    "in_channels": 5,
+    "state_dim": 64,
+    "phys_dim": 3,
+    "hidden_dim": 601,
+    "num_layers": 4,
+    "out_channels": 3,
+    "parameter_count": 1191815,
+    "target_parameter_budget": 1192448,
+    "budget_deviation_pct": -0.053,
+    "has_direct_bypass": false,
+    "has_encoder_decoder_skip": false
+  },
+  "training": {
+    "optimizer": "AdamW",
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "gradient_clip_max_norm": 1.0,
+    "scheduler": "CosineAnnealingLR",
+    "t_max_epochs": 50,
+    "eta_min": 1e-06,
+    "batch_size": 32,
+    "max_epochs": 50,
+    "early_stopping_patience": 12,
+    "device": "cpu",
+    "num_workers": 4
+  },
+  "loss": {
+    "lambda_state": 0.2,
+    "weights_response": {
+      "u": 1.0,
+      "f_r": 0.5,
+      "e_diss": 0.5
+    },
+    "weights_state": {
+      "u": 1.0,
+      "v": 0.5,
+      "u_p": 1.0
+    },
+    "normalization": "UnitGaussianNormalizer_TrainOnly"
+  },
+  "dataset": {
+    "partition_file": "data/processed/splits/held_out_earthquake_split.json",
+    "input_channels": [
+      "a_g",
+      "T",
+      "zeta",
+      "u_y",
+      "alpha"
+    ],
+    "target_channels": [
+      "u",
+      "f_r",
+      "e_diss"
+    ],
+    "supervised_state_channels": [
+      "u",
+      "v",
+      "u_p"
+    ],
+    "time_steps": 2048,
+    "dt": 0.01,
+    "train_simulations": 5740,
+    "val_simulations": 1120,
+    "test_simulations": 1540
+  },
+  "intervention": {
+    "coordinate_index": 2,
+    "coordinate_name": "u_p",
+    "doses_mm": [
+      -10.0,
+      -5.0,
+      -2.5,
+      0.0,
+      2.5,
+      5.0,
+      10.0
+    ],
+    "timing_rule": "first_crossing_uy",
+    "regime_a_expected_slope": 0.98,
+    "regime_a_tolerance": [
+      0.9,
+      1.05
+    ],
+    "specificity_threshold": 0.2
+  },
+  "seeds": [
+    42,
+    123,
+    456,
+    789,
+    1024
+  ]
+}

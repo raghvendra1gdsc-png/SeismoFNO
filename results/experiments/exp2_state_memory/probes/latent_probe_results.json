@@ -1,0 +1,27 @@
+{
+  "Standard FNO": {
+    "r2_score": 0.4124,
+    "rmse_mm": 18.42,
+    "pearson_corr": 0.6512
+  },
+  "Causal TCN (State-Free)": {
+    "r2_score": 0.3851,
+    "rmse_mm": 19.15,
+    "pearson_corr": 0.6284
+  },
+  "State-Augmented TCN": {
+    "r2_score": 0.8972,
+    "rmse_mm": 6.84,
+    "pearson_corr": 0.9482
+  },
+  "Continuous S4 SSM": {
+    "r2_score": 0.7845,
+    "rmse_mm": 9.71,
+    "pearson_corr": 0.8876
+  },
+  "Memory-Truncated S4": {
+    "r2_score": 0.2214,
+    "rmse_mm": 24.33,
+    "pearson_corr": 0.4819
+  }
+}

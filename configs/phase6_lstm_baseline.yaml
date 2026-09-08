@@ -1,0 +1,41 @@
+# Phase 6: Recurrent LSTM Sequence Model Baseline on Bilinear SDOF Held-Out-Earthquake Split
+experiment_name: phase6_lstm_baseline
+
+model:
+  model_type: lstm
+  in_channels: 10              # a_g, T, omega_n, k0, zeta, is_bilinear, u_y, alpha, PGA, time_grid
+  out_channels: 3              # u(t), F_R(t), E_h(t)
+  hidden_dim: 128
+  num_layers: 3
+  dropout: 0.1
+  bidirectional: false
+
+data:
+  index_csv: data/simulations/simulation_index.csv
+  split_strategy: held_out_earthquake
+  split_file: data/processed/splits/held_out_earthquake_split.json
+  filter_material: bilinear    # Bilinear-hysteretic dataset
+  target_time_steps: 2048
+  target_channels: ["u", "f_r", "e_h"]
+  use_history_channel: false
+  batch_size: 32
+  seed: 42
+  normalize: true
+
+loss:
+  data_weights: [1.0, 1.0, 1.0]
+  lambda_energy: 0.1           # Energy consistency penalty: |int(F_R du) - E_h|
+  lambda_boundary: 0.05        # Initial state boundary penalty: ||u(0)||^2
+
+training:
+  epochs: 3
+  learning_rate: 0.003
+  weight_decay: 1.0e-5
+  scheduler: cosine
+  min_lr: 1.0e-5
+  clip_grad_norm: 1.0
+
+output:
+  checkpoint_dir: experiments/phase6_lstm_baseline/checkpoints
+  results_dir: experiments/phase6_lstm_baseline/results
+  log_dir: experiments/phase6_lstm_baseline/logs

@@ -1,0 +1,36 @@
+# Configuration for FNO SDOF Linear-Elastic MVP (Phase 4)
+experiment_name: fno_sdof_linear_mvp
+
+model:
+  in_channels: 10              # a_g(t), T, omega_n, k0, zeta, is_bilinear, u_y, alpha, PGA, time_grid
+  out_channels: 3              # u(t), F_R(t), E_h(t)
+  modes: 128                   # 128 Fourier modes (resolves frequencies up to 6.25 Hz for 20.48s records)
+  width: 48                    # Latent channel width
+  n_layers: 4                  # Number of FNO spectral conv blocks
+  activation: gelu
+  use_norm: false
+
+data:
+  index_csv: data/simulations/simulation_index.csv
+  target_time_steps: 2048
+  target_channels: ["u", "f_r", "e_h"]
+  filter_material: "elastic"    # Train ONLY on linear-elastic SDOF dataset
+  train_ratio: 0.70
+  val_ratio: 0.15
+  test_ratio: 0.15
+  batch_size: 32
+  seed: 42
+  normalize: true
+
+training:
+  epochs: 40
+  learning_rate: 0.005
+  weight_decay: 1.0e-5
+  scheduler: cosine
+  min_lr: 1.0e-5
+  clip_grad_norm: 1.0
+
+output:
+  checkpoint_dir: experiments/fno_sdof_linear_mvp/checkpoints
+  results_dir: experiments/fno_sdof_linear_mvp/results
+  log_dir: experiments/fno_sdof_linear_mvp/logs

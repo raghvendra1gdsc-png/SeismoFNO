@@ -1,0 +1,12 @@
+node_modules
+dist
+.venv
+__pycache__
+*.pyc
+.git
+.gitignore
+.DS_Store
+.pytest_cache
+*.pt.tmp
+data/simulations/
+results/experiments/
