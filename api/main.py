@@ -73,7 +73,7 @@ building_service = BuildingService()
 # 1. Health & System Information Endpoints
 # -----------------------------------------------------------------------------
 
-@app.get("/health", status_code=status.HTTP_200_OK)
+@app.api_route("/health", methods=["GET", "HEAD"], status_code=status.HTTP_200_OK)
 def health_check() -> Dict[str, Any]:
     """Liveness and readiness probe."""
     return {
@@ -493,28 +493,26 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
 FRONTEND_DIST = REPO_ROOT / "frontend" / "dist"
-if FRONTEND_DIST.is_dir():
-    assets_dir = FRONTEND_DIST / "assets"
-    if assets_dir.is_dir():
-        app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="frontend_assets")
+assets_dir = FRONTEND_DIST / "assets"
 
-    @app.api_route("/", methods=["GET", "HEAD"], include_in_schema=False)
-    @app.api_route("/{full_path:path}", methods=["GET", "HEAD"], include_in_schema=False)
-    async def serve_spa_frontend(full_path: str = ""):
-        # Do not intercept API, health, docs, or schema routes
-        if full_path.startswith("api/") or full_path == "health" or full_path.startswith("docs") or full_path.startswith("redoc") or full_path == "openapi.json":
-            raise HTTPException(status_code=404, detail="API endpoint not found")
+if assets_dir.is_dir():
+    app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="frontend_assets")
 
-        if full_path:
-            potential_file = FRONTEND_DIST / full_path
-            if potential_file.is_file():
-                return FileResponse(str(potential_file))
+@app.api_route("/", methods=["GET", "HEAD"], include_in_schema=False)
+@app.api_route("/{full_path:path}", methods=["GET", "HEAD"], include_in_schema=False)
+async def serve_spa_frontend(full_path: str = ""):
+    # Do not intercept API, health, docs, or schema routes
+    if full_path.startswith("api/") or full_path == "health" or full_path.startswith("docs") or full_path.startswith("redoc") or full_path == "openapi.json":
+        raise HTTPException(status_code=404, detail="API endpoint not found")
 
-        index_file = FRONTEND_DIST / "index.html"
-        if index_file.is_file():
-            return FileResponse(str(index_file))
+    if full_path:
+        potential_file = FRONTEND_DIST / full_path
+        if potential_file.is_file():
+            return FileResponse(str(potential_file))
 
-        raise HTTPException(status_code=404, detail="Frontend bundle not found")
+    index_file = FRONTEND_DIST / "index.html"
+    if index_file.is_file():
+        return FileResponse(str(index_file))
 
-        raise HTTPException(status_code=404, detail="Frontend index.html not found")
+    return JSONResponse(status_code=404, content={"detail": "Frontend bundle not found. Please build the frontend."})
 

@@ -27,9 +27,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Install PyTorch CPU and Python dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu && \
-    pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --root-user-action=ignore --upgrade pip && \
+    pip install --no-cache-dir --root-user-action=ignore torch --index-url https://download.pytorch.org/whl/cpu && \
+    pip install --no-cache-dir --root-user-action=ignore -r requirements.txt
 
 # Copy source code and research assets
 COPY . .
