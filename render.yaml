@@ -1,0 +1,24 @@
+# ==============================================================================
+# Render.com Blueprint Infrastructure Specification — SeismoFNO
+# https://render.com/docs/blueprint-spec
+# ==============================================================================
+
+services:
+  # Unified Full-Stack Web Service (FastAPI + React 18 Research Dashboard)
+  - type: web
+    name: seismofno
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: oregon
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: HOST
+        value: 0.0.0.0
+      - key: DEVICE
+        value: cpu
+      - key: PYTHONUNBUFFERED
+        value: "1"

@@ -83,54 +83,61 @@ RUN git lfs pull
 
 ---
 
-## 5. Docker Deployment (Backend)
+## 5. Render.com Automated Deployment (Blueprint & Docker)
 
-A sample production-grade `Dockerfile` for the FastAPI backend:
+The repository provides a turnkey **Render.com Blueprint** (`render.yaml`) and a root multi-stage `Dockerfile` that packages both the FastAPI backend and the React 18 frontend into a single unified web service.
 
-```dockerfile
-# Multi-stage minimal Python runtime
-FROM python:3.11-slim AS builder
+### Option A: One-Click Blueprint Deployment (Recommended)
+1. Log in to your [Render.com](https://render.com) dashboard.
+2. Click **New +** → **Blueprint**.
+3. Connect your GitHub repository: `https://github.com/raghvendra1gdsc-png/SeismoFNO`.
+4. Render will automatically detect `render.yaml`, configure the web service, and provision:
+   - **Service Name:** `seismofno`
+   - **Runtime:** Docker (Multi-stage build)
+   - **Health Check Path:** `/health`
+   - **Exposed Port:** `$PORT` (assigned by Render)
+5. Click **Apply**. Once built, the complete application is live at `https://<your-service>.onrender.com/demo`.
 
-WORKDIR /app
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    git \
-    git-lfs \
-    libgomp1 \
-    && rm -rf /var/lib/apt/lists/*
-
-COPY requirements.txt .
-RUN pip install --no-cache-dir --user -r requirements.txt
-
-FROM python:3.11-slim
-
-WORKDIR /app
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libgomp1 \
-    && rm -rf /var/lib/apt/lists/*
-
-COPY --from=builder /root/.local /root/.local
-ENV PATH=/root/.local/bin:$PATH
-
-# Copy application and research assets
-COPY . .
-
-ENV PORT=8000
-ENV HOST=0.0.0.0
-ENV DEVICE=cpu
-ENV PYTHONUNBUFFERED=1
-
-EXPOSE 8000
-
-CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
-```
-
-> [!NOTE]
-> OpenSeesPy maintains global state in its underlying C-runtime. Run Uvicorn with `--workers 1` or rely on the thread-safe `OPENSEES_LOCK` built into `api/main.py`.
+### Option B: Manual Web Service Setup on Render
+1. Click **New +** → **Web Service**.
+2. Select **Build and deploy from a Git repository**.
+3. Settings:
+   - **Language:** Docker
+   - **Dockerfile Path:** `./Dockerfile`
+   - **Region:** Oregon (US West) or Frankfurt (EU)
+   - **Instance Type:** Free or Starter
+4. Environment Variables:
+   - `PORT`: `8000` (or let Render assign automatically)
+   - `HOST`: `0.0.0.0`
+   - `DEVICE`: `cpu`
+   - `PYTHONUNBUFFERED`: `1`
+5. Health Check Path: `/health`
+6. Click **Create Web Service**.
 
 ---
 
-## 6. Frontend Deployment (Vercel / Netlify)
+## 6. Docker Deployment (Local or Cloud Containers)
+
+The root `Dockerfile` builds a production-grade container containing both the backend and frontend:
+
+```bash
+# Build the unified container
+docker build -t seismofno:latest .
+
+# Run container locally on port 8000
+docker run -p 8000:8000 seismofno:latest
+
+# Access in browser:
+# http://localhost:8000/demo
+# http://localhost:8000/health
+```
+
+> [!NOTE]
+> OpenSeesPy maintains global state in its underlying C-runtime. The container launches Uvicorn with `--workers 1` and uses the thread-safe `OPENSEES_LOCK` built into `api/main.py`.
+
+---
+
+## 7. Frontend Deployment on Vercel / Netlify (Decoupled Alternative)
 
 ### Vercel
 1. Link your GitHub repository in the Vercel dashboard.

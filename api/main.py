@@ -485,3 +485,38 @@ def run_demo_simulation(req: DemoSimulationRequest) -> Dict[str, Any]:
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+
+# -----------------------------------------------------------------------------
+# 5. Frontend SPA & Static Asset Serving (Production & Cloud Deployment)
+# -----------------------------------------------------------------------------
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
+FRONTEND_DIST = REPO_ROOT / "frontend" / "dist"
+if FRONTEND_DIST.is_dir():
+    assets_dir = FRONTEND_DIST / "assets"
+    if assets_dir.is_dir():
+        app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="frontend_assets")
+
+    @app.get("/{full_path:path}", include_in_schema=False)
+    async def serve_spa_frontend(full_path: str):
+        # Do not intercept API, health, docs, or schema routes
+        if (
+            full_path.startswith("api/")
+            or full_path == "health"
+            or full_path.startswith("docs")
+            or full_path.startswith("redoc")
+            or full_path == "openapi.json"
+        ):
+            raise HTTPException(status_code=404, detail="API endpoint not found")
+
+        potential_file = FRONTEND_DIST / full_path
+        if full_path and potential_file.is_file():
+            return FileResponse(str(potential_file))
+
+        index_file = FRONTEND_DIST / "index.html"
+        if index_file.is_file():
+            return FileResponse(str(index_file))
+
+        raise HTTPException(status_code=404, detail="Frontend index.html not found")
+

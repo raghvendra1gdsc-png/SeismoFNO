@@ -5,6 +5,7 @@
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.1%2B%20(MPS%20%7C%20CUDA)-EE4C2C.svg?logo=pytorch&logoColor=white)](#reproducibility--forensic-verification)
 [![OpenSeesPy](https://img.shields.io/badge/Ground%20Truth-OpenSeesPy%20NLTHA-FF8C00.svg)](#problem-formulation--computational-motivation)
 [![Forensic Audit](https://img.shields.io/badge/Forensic%20Audit-Zero%20Data%20Leakage%20Certified-7928CA.svg)](results/experiments/exp6/INDEPENDENT_FORENSIC_AUDIT.md)
+[![Deploy to Render](https://img.shields.io/badge/Deploy%20to-Render-46E3B7.svg?logo=render&logoColor=white)](https://render.com/deploy?repo=https://github.com/raghvendra1gdsc-png/SeismoFNO)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ---
@@ -18,6 +19,7 @@ For faculty members, research evaluators, and admissions committees reviewing th
 | 📄 **[IIT Delhi CSE Research Brief (PDF)](docs/IIT_DELHI_CSE_RESEARCH_BRIEF.pdf)** | **Two-Page Publication Brief:** Mathematical formulation, OOD generalization matrix, Gibbs ringing forensic diagnosis, and hardware latency benchmarks. | **2-minute executive read** |
 | 📑 **[Professor Research Walkthrough (PDF)](docs/SEISMOFNO_PROFESSOR_RESEARCH_WALKTHROUGH.pdf)** | **Comprehensive Defense Dossier:** Full analytical derivations, mode-shape eigenspaces, spatiotemporal operator block schematics, and complete audit trails. | **5-minute comprehensive review** |
 | 💻 **[Interactive Research Demonstration (`/demo`)](#interactive-research-demonstration-layer)** | **Live Computational Dashboard:** Select structural archetypes, compute modal eigenvalues dynamically, and execute real-time neural operator forward passes against OpenSeesPy ground truth. | **Interactive live evaluation** |
+| 🚀 **[1-Click Cloud Deployment (Render.com)](https://render.com/deploy?repo=https://github.com/raghvendra1gdsc-png/SeismoFNO)** | **Turnkey Web Service:** Deploys unified FastAPI backend + React frontend via `render.yaml` with zero environment configuration. | **Automated cloud launch** |
 | 🔍 **[Independent Forensic Audit Report](results/experiments/exp6/INDEPENDENT_FORENSIC_AUDIT.md)** | **Data Hygiene & Protocol Certification:** Verifies zero-leakage structural/earthquake partition disjointness, checkpoint SHA-256 integrity, and automated metric reconciliation. | **3-minute verification** |
 | 🎙️ **[Oral Defense & Research Presentation Scripts](docs/PROJECT_EXPLANATION.md)** | **Multi-Audience Technical Scripts:** Formatted 30-second elevator summary, CS/AI theoretical brief, and civil/structural engineering mechanics overview. | **Reference documentation** |
 
@@ -224,7 +226,14 @@ A dedicated research demonstration layer is provided to evaluate all models, eig
 4. **Direct OpenSeesPy Trajectory Overlays:** Overlays predicted continuous trajectories on top of OpenSeesPy numerical ground truth with real-time error computation.
 5. **Strict Provenance Badging:** Interfaces explicitly display `LIVE_COMPUTED_MPS` versus `ARCHIVAL_FROZEN_VERIFIED` to prevent ambiguity.
 
-### Execution Instructions:
+### Execution & Deployment Instructions:
+
+#### Option A: 1-Click Cloud Deployment (Render.com)
+Deploy the full-stack containerized web service directly to Render with automated builds:
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/raghvendra1gdsc-png/SeismoFNO)
+
+#### Option B: Local Dual-Process Development
 ```bash
 # Terminal 1: Launch FastAPI backend server
 .venv/bin/uvicorn api.main:app --host 0.0.0.0 --port 8000
@@ -233,6 +242,17 @@ A dedicated research demonstration layer is provided to evaluate all models, eig
 cd frontend && npm run dev
 
 # Access in browser: http://localhost:5173/demo
+```
+
+#### Option C: Production Docker Container (Single Process)
+```bash
+# Build unified multi-stage container
+docker build -t seismofno:latest .
+
+# Run container on port 8000
+docker run -p 8000:8000 seismofno:latest
+
+# Access in browser: http://localhost:8000/demo
 ```
 
 ---
