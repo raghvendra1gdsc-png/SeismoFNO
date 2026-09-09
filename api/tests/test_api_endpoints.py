@@ -20,6 +20,17 @@ def test_endpoint_health():
     assert "device" in data
 
 
+def test_root_spa_route_serves_frontend():
+    """Verify the application serves the frontend entrypoint at the root path."""
+    response = client.get("/")
+    assert response.status_code == 200
+    assert "text/html" in response.headers.get("content-type", "")
+    assert "SeismoFNO" in response.text or "root" in response.text.lower() or "vite" in response.text.lower()
+
+    head_response = client.head("/")
+    assert head_response.status_code == 200
+
+
 def test_endpoint_system_info():
     """Verify system info endpoint introspects model parameters and provenance."""
     response = client.get("/api/v1/system/info")
