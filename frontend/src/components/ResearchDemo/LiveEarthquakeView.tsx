@@ -10,14 +10,7 @@ import {
   type DemoSimulationResponse,
 } from "../../api/researchDemoApi";
 import { LiveSeismic3DViewport } from "./LiveSeismic3DViewport";
-import {
-  Activity,
-  Radio,
-  RefreshCw,
-  ExternalLink,
-  Sliders,
-  Play,
-} from "lucide-react";
+import { RefreshCw, ExternalLink, Play } from "lucide-react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -40,15 +33,14 @@ ChartJS.register(
   Legend
 );
 
-// Scenario Reference Coordinates (e.g. Structural Engineering Testbed in Pasadena / CA)
 const DEFAULT_SCENARIO = {
-  name: "3-Story RC Benchmark Frame (Pasadena Testbed)",
+  name: "Pasadena Structural Testbed",
   lat: 34.1377,
   lon: -118.1253,
 };
 
 export const LiveEarthquakeView: React.FC = () => {
-  // Live USGS Feed State
+  // Live Feed State
   const [feedData, setFeedData] = useState<LiveEarthquakeResponse | null>(null);
   const [isLoadingFeed, setIsLoadingFeed] = useState<boolean>(true);
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
@@ -110,7 +102,6 @@ export const LiveEarthquakeView: React.FC = () => {
         setStructures(structs);
         setHistoricalRecords(records);
 
-        // Pre-select 3-Story or 5-Story structure
         const threeStory = structs.find((s) => s.n_stories === 3) || structs[0];
         if (threeStory) {
           setSelectedStructureId(threeStory.archetype_id);
@@ -176,19 +167,19 @@ export const LiveEarthquakeView: React.FC = () => {
       labels: simResult.time.map((t: number) => t.toFixed(2)),
       datasets: [
         {
-          label: "OpenSeesPy C-Runtime Ground Truth (NLTHA)",
+          label: "OpenSeesPy C-Runtime Ground Truth",
           data: simResult.u_true.map((v: number) => v * 1000.0),
-          borderColor: "#8D9AAA",
-          borderDash: [4, 4],
-          borderWidth: 1.5,
+          borderColor: "#82928B",
+          borderDash: [3, 3],
+          borderWidth: 1.2,
           pointRadius: 0,
           tension: 0.05,
         },
         {
           label: `EXP6 Multi-Modal GNO (${simResult.data_provenance.prediction})`,
           data: simResult.u_pred.map((v: number) => v * 1000.0),
-          borderColor: "#28D7FF",
-          borderWidth: 1.8,
+          borderColor: "#73E6B5",
+          borderWidth: 1.6,
           pointRadius: 0,
           tension: 0.05,
         },
@@ -196,91 +187,201 @@ export const LiveEarthquakeView: React.FC = () => {
     };
   }, [simResult]);
 
-  // Timeline Step Status Computation
+  // Pipeline Step Computation
   const activeTimelineStep = useMemo(() => {
-    if (simResult) return 6; // Screening complete
-    if (isLoadingSim) return 5; // Surrogate evaluation
-    if (selectedEvent) return 4; // Structural model ready
-    return 3; // Metadata ingested
+    if (simResult) return 6;
+    if (isLoadingSim) return 5;
+    if (selectedEvent) return 4;
+    return 3;
   }, [simResult, isLoadingSim, selectedEvent]);
 
   return (
-    <div className="w-full min-h-screen bg-[#080C12] text-[#E8EDF3] p-3 md:p-5 space-y-4 font-sans select-none">
+    <div className="w-full min-h-screen bg-research-desk text-[#E8E8DE] p-4 md:p-8 space-y-8 font-sans selection:bg-[#17483A] selection:text-[#73E6B5]">
       {/* ================================================================= */}
-      {/* 1. TOP SYSTEM INSTRUMENTATION BAR                                 */}
+      {/* 1. EDITORIAL HEADER & METADATA BAR                                */}
       {/* ================================================================= */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 bg-[#0B1018] border border-white/[0.07] px-4 py-3 rounded-[3px]">
+      <header className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 border-b border-white/[0.06] pb-4">
         <div>
-          <div className="flex items-center gap-2 mb-1 flex-wrap font-mono text-[10px]">
-            <span className="text-[#28D7FF] font-bold tracking-widest uppercase flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#28D7FF] shadow-[0_0_6px_#28D7FF]" />
-              SEISMOFNO INGESTION CONSOLE
+          <div className="flex items-center gap-3 text-[11px] text-[#82928B] font-mono mb-1">
+            <span className="flex items-center gap-1.5 text-[#73E6B5]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#73E6B5]" />
+              SEISMOFNO RESEARCH DESK
             </span>
-            <span className="text-[#667487]">|</span>
-            <span className="text-[#8D9AAA]">CATALOG: USGS REAL-TIME GEOJSON FEED (PUBLIC DOMAIN)</span>
-            <span className="text-[#667487]">|</span>
-            <span className="text-[#8D9AAA]">TARGET: {DEFAULT_SCENARIO.name}</span>
+            <span>·</span>
+            <span>USGS GEOJSON STREAM</span>
+            <span>·</span>
+            <span>REF: {DEFAULT_SCENARIO.name}</span>
           </div>
-          <h1 className="text-base md:text-lg font-mono font-bold tracking-tight text-[#E8EDF3]">
+          <div className="text-xs text-[#82928B]">
             Observed Seismic Event Ingestion & Neural Operator Structural Screening
-          </h1>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0 font-mono text-[11px]">
-          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#111821] border border-white/[0.07] rounded-[3px]">
+        <div className="flex items-center gap-4 text-xs font-mono shrink-0">
+          <div className="flex items-center gap-2">
             <span
-              className={`w-2 h-2 rounded-full ${
-                feedData?.is_fallback ? "bg-[#E8A63B] animate-pulse" : "bg-[#31D17C] shadow-[0_0_6px_#31D17C]"
+              className={`w-1.5 h-1.5 rounded-full ${
+                feedData?.is_fallback ? "bg-[#D6B56D]" : "bg-[#73E6B5]"
               }`}
             />
-            <span className={feedData?.is_fallback ? "text-[#E8A63B] font-bold" : "text-[#31D17C] font-bold"}>
-              {feedData?.is_fallback ? "OFFLINE CACHED CATALOG" : "USGS FEED ONLINE"}
+            <span className={feedData?.is_fallback ? "text-[#D6B56D]" : "text-[#73E6B5]"}>
+              {feedData?.is_fallback ? "Offline Cache" : "USGS Live"}
             </span>
           </div>
-
-          <div className="hidden sm:flex items-center gap-1 px-2.5 py-1 bg-[#111821] border border-white/[0.07] rounded-[3px] text-[#8D9AAA]">
-            <span>LAST SYNC:</span>
-            <span className="text-[#E8EDF3]">{feedData?.last_updated || "SYNCING..."}</span>
-          </div>
-
+          <span className="text-[#82928B] text-[11px]">
+            {feedData?.last_updated ? feedData.last_updated.slice(11, 19) : "--:--:--"} UTC
+          </span>
           <button
             onClick={loadFeed}
             disabled={isLoadingFeed}
-            className="flex items-center gap-1 px-2.5 py-1 bg-[#151D27] hover:bg-[#19222D] border border-white/[0.07] rounded-[3px] text-[#28D7FF] font-mono cursor-pointer transition disabled:opacity-50"
-            title="Refresh USGS Catalog"
+            className="p-1 text-[#82928B] hover:text-[#73E6B5] transition cursor-pointer disabled:opacity-40"
+            title="Sync USGS Feed"
           >
-            <RefreshCw size={11} className={isLoadingFeed ? "animate-spin text-[#28D7FF]" : ""} />
-            <span>SYNC</span>
+            <RefreshCw size={12} className={isLoadingFeed ? "animate-spin text-[#73E6B5]" : ""} />
           </button>
         </div>
-      </div>
+      </header>
 
       {/* ================================================================= */}
-      {/* 2. RESEARCH PROTOCOL — SCIENTIFIC BOUNDARIES STRIP               */}
+      {/* 2. HERO: ASYMMETRIC MASONRY (EVENT TYPOGRAPHY + 3D VIEWPORT)      */}
       {/* ================================================================= */}
-      <div className="bg-[#0B1018] border-l-2 border-[#28D7FF] border border-white/[0.07] px-4 py-2.5 rounded-[3px] font-mono text-[10px] space-y-1">
-        <div className="flex items-center justify-between text-[#28D7FF] font-bold tracking-wider uppercase">
-          <span>RESEARCH PROTOCOL — STRICT SCIENTIFIC BOUNDARIES</span>
-          <span className="text-[#667487] font-normal hidden sm:inline">
-            OBSERVATION → PHYSICS → SURROGATE → SCREENING
-          </span>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-[#8D9AAA] leading-relaxed pt-0.5">
-          <div>
-            <strong className="text-[#E8EDF3]">PERMITTED:</strong> Observed earthquake ingestion · Event discovery · Rapid surrogate structural analysis · Comparative response estimation
-          </div>
-          <div>
-            <strong className="text-[#E35D5D]">NOT CLAIMED:</strong> Earthquake prediction · Earthquake forecasting · Live building accelerometer monitoring · Automated structural safety certification
-          </div>
-        </div>
-      </div>
+      <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* LEFT / EVENT HERO TYPOGRAPHY BLOCK (5 cols) */}
+        <div className="lg:col-span-5 space-y-6">
+          {selectedEvent ? (
+            <div className="space-y-4">
+              {/* Event Location & Status Tag */}
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-2 font-mono text-[11px] text-[#82928B] uppercase tracking-wider">
+                  <span>Observed Event</span>
+                  <span>·</span>
+                  <span className="text-[#73E6B5]">USGS Catalog</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light text-[#E8E8DE] tracking-tight leading-tight">
+                  {selectedEvent.location}
+                </h2>
+              </div>
 
-      {/* ================================================================= */}
-      {/* 3. MAIN WORKSTATION VIEWPORT & INTELLIGENCE SPLIT                 */}
-      {/* ================================================================= */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-        {/* CENTER / DOMINANT: 3D SEISMIC WORKSPACE (8 cols) */}
-        <div className="lg:col-span-8 flex flex-col min-h-[500px] lg:min-h-[540px]">
+              {/* Large Elegant Magnitude Readout */}
+              <div className="flex items-baseline gap-3 pt-2">
+                <span className="text-6xl sm:text-7xl font-light tracking-tighter text-[#E8E8DE] font-sans">
+                  {selectedEvent.magnitude.toFixed(1)}
+                </span>
+                <div className="font-mono text-sm space-y-0.5">
+                  <span className="text-lg font-normal text-[#73E6B5] block">Mw</span>
+                  <span className="text-[11px] text-[#82928B] block">Moment Magnitude</span>
+                </div>
+              </div>
+
+              {/* Data Composition (Typography & Whitespace, No Card Clutter) */}
+              <div className="pt-4 border-t border-white/[0.06] space-y-2.5 text-xs">
+                <div className="flex justify-between items-baseline">
+                  <span className="text-[#82928B] uppercase font-mono text-[10px] tracking-wider">Focal Depth</span>
+                  <span className="font-mono text-[#E8E8DE]">{selectedEvent.depth_km.toFixed(1)} km</span>
+                </div>
+
+                <div className="flex justify-between items-baseline">
+                  <span className="text-[#82928B] uppercase font-mono text-[10px] tracking-wider">Distance to Testbed</span>
+                  <span className="font-mono text-[#73E6B5]">
+                    {selectedEvent.distance_km != null ? `${selectedEvent.distance_km.toLocaleString()} km` : "N/A"}
+                  </span>
+                </div>
+
+                <div className="flex justify-between items-baseline">
+                  <span className="text-[#82928B] uppercase font-mono text-[10px] tracking-wider">Epicenter Coordinates</span>
+                  <span className="font-mono text-[#E8E8DE]">
+                    {selectedEvent.latitude.toFixed(3)}°, {selectedEvent.longitude.toFixed(3)}°
+                  </span>
+                </div>
+
+                <div className="flex justify-between items-baseline">
+                  <span className="text-[#82928B] uppercase font-mono text-[10px] tracking-wider">Origin Time</span>
+                  <span className="font-mono text-[#82928B]">
+                    {selectedEvent.origin_time.replace("T", " ").replace("Z", "")} UTC
+                  </span>
+                </div>
+
+                <div className="flex justify-between items-baseline">
+                  <span className="text-[#82928B] uppercase font-mono text-[10px] tracking-wider">Event Identifier</span>
+                  <a
+                    href={selectedEvent.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-mono text-[#73E6B5] hover:underline inline-flex items-center gap-1"
+                  >
+                    {selectedEvent.event_id} <ExternalLink size={10} />
+                  </a>
+                </div>
+
+                <div className="flex justify-between items-baseline pt-1">
+                  <span className="text-[#82928B] uppercase font-mono text-[10px] tracking-wider">Ground Motion Channel</span>
+                  <span className="text-[#D6B56D] font-mono text-[11px]">
+                    Not Available (Catalog Metadata Only)
+                  </span>
+                </div>
+              </div>
+
+              {/* Surrogate Screening Controls */}
+              <div className="pt-4 border-t border-white/[0.06] space-y-3">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-mono text-[#82928B] uppercase tracking-wider block">
+                    Structural Archetype & Eigenvalues
+                  </label>
+                  <select
+                    value={selectedStructureId}
+                    onChange={(e) => setSelectedStructureId(e.target.value)}
+                    className="w-full bg-[#0E1B17] border border-white/[0.08] rounded px-3 py-1.5 text-xs font-mono text-[#E8E8DE] outline-none cursor-pointer focus:border-[#73E6B5]"
+                  >
+                    {structures.map((s) => (
+                      <option key={s.archetype_id} value={s.archetype_id} className="bg-[#0B1714]">
+                        {s.archetype_id} — {s.n_stories} Stories (T₁ = {s.T1_s.toFixed(2)}s, T₂ = {s.T2_s.toFixed(2)}s)
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-mono text-[#82928B] uppercase tracking-wider block">
+                    Verified Ground Motion Channel (Research Baseline)
+                  </label>
+                  <select
+                    value={selectedHistoricalRecordId}
+                    onChange={(e) => setSelectedHistoricalRecordId(e.target.value)}
+                    className="w-full bg-[#0E1B17] border border-white/[0.08] rounded px-3 py-1.5 text-xs font-mono text-[#E8E8DE] outline-none cursor-pointer focus:border-[#73E6B5]"
+                  >
+                    {historicalRecords.map((rec) => (
+                      <option key={rec.record_id} value={rec.record_id} className="bg-[#0B1714]">
+                        {rec.record_id} — {rec.event_name} (PGA: {rec.pga_g}g)
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <button
+                  onClick={executeSimulation}
+                  disabled={isLoadingSim}
+                  className="w-full py-2.5 bg-[#17483A] hover:bg-[#1C5746] text-[#73E6B5] border border-[#73E6B5]/30 font-mono text-xs font-semibold rounded transition cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  <Play size={12} className={isLoadingSim ? "animate-spin" : ""} />
+                  <span>{isLoadingSim ? "Executing Surrogate Forward Pass..." : "Execute Surrogate Response Simulation"}</span>
+                </button>
+
+                {simError && (
+                  <div className="text-xs text-[#E35D5D] bg-[#E35D5D]/10 p-2 rounded border border-[#E35D5D]/20 font-mono">
+                    {simError}
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="p-8 text-[#82928B] font-mono text-xs">
+              Awaiting USGS catalog event selection...
+            </div>
+          )}
+        </div>
+
+        {/* RIGHT / 3D STRUCTURAL MODEL CENTERPIECE (7 cols, ~50% of viewport) */}
+        <div className="lg:col-span-7 h-[480px] lg:h-[540px] rounded-lg overflow-hidden border border-white/[0.06] shadow-2xl bg-[#0B1714]">
           <LiveSeismic3DViewport
             selectedEvent={selectedEvent}
             visualScale={visualScale}
@@ -289,399 +390,207 @@ export const LiveEarthquakeView: React.FC = () => {
             simResult={simResult}
           />
         </div>
+      </section>
 
-        {/* RIGHT: EVENT INTELLIGENCE & STRUCTURAL SCREENING PANEL (4 cols) */}
-        <div className="lg:col-span-4 space-y-3 flex flex-col justify-between">
-          {/* Card A: Observed Event Context */}
-          <div className="bg-[#0B1018] border border-white/[0.07] rounded-[3px] p-3.5 space-y-3 font-mono text-[11px]">
-            <div className="flex items-center justify-between border-b border-white/[0.07] pb-2">
-              <span className="text-xs font-bold text-[#E8EDF3] tracking-wide uppercase flex items-center gap-1.5">
-                <Radio size={13} className="text-[#28D7FF]" />
-                OBSERVED EVENT
-              </span>
-              <span className="text-[9px] px-1.5 py-0.5 rounded-[2px] bg-[#31D17C]/15 text-[#31D17C] border border-[#31D17C]/30 font-bold uppercase">
-                USGS OBSERVED
-              </span>
-            </div>
-
-            {selectedEvent ? (
-              <div className="space-y-2">
-                {/* Event Location & Source */}
-                <div className="bg-[#111821] p-2.5 rounded-[3px] border border-white/[0.07] space-y-1">
-                  <span className="text-[9px] text-[#667487] uppercase block font-bold">EVENT LOCATION</span>
-                  <div className="text-xs font-bold text-[#E8EDF3] leading-snug">
-                    {selectedEvent.location}
-                  </div>
-                  <div className="flex items-center gap-2 pt-1 text-[10px]">
-                    <span className="text-[#8D9AAA]">ID: <strong className="text-[#28D7FF]">{selectedEvent.event_id}</strong></span>
-                    <span className="text-[#667487]">|</span>
-                    <a
-                      href={selectedEvent.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[#28D7FF] hover:underline inline-flex items-center gap-0.5"
-                    >
-                      USGS PAGE <ExternalLink size={9} />
-                    </a>
-                  </div>
-                </div>
-
-                {/* Primary Metric Grid */}
-                <div className="grid grid-cols-2 gap-1.5 text-[10px]">
-                  <div className="p-2 bg-[#111821] rounded-[3px] border border-white/[0.07]">
-                    <span className="text-[#667487] block uppercase">MAGNITUDE</span>
-                    <span className="text-sm font-bold text-[#E35D5D] font-mono">
-                      M{selectedEvent.magnitude.toFixed(1)} Mw
-                    </span>
-                  </div>
-
-                  <div className="p-2 bg-[#111821] rounded-[3px] border border-white/[0.07]">
-                    <span className="text-[#667487] block uppercase">FOCAL DEPTH</span>
-                    <span className="text-sm font-bold text-[#E8EDF3] font-mono">
-                      {selectedEvent.depth_km.toFixed(1)} km
-                    </span>
-                  </div>
-
-                  <div className="p-2 bg-[#111821] rounded-[3px] border border-white/[0.07]">
-                    <span className="text-[#667487] block uppercase">EPICENTER COORDS</span>
-                    <span className="text-[#8D9AAA] font-mono">
-                      {selectedEvent.latitude.toFixed(3)}°, {selectedEvent.longitude.toFixed(3)}°
-                    </span>
-                  </div>
-
-                  <div className="p-2 bg-[#111821] rounded-[3px] border border-white/[0.07]">
-                    <span className="text-[#667487] block uppercase">DISTANCE TO SCENARIO</span>
-                    <span className="text-sm font-bold text-[#28D7FF] font-mono">
-                      {selectedEvent.distance_km != null ? `${selectedEvent.distance_km.toLocaleString()} km` : "N/A"}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Status Parameters */}
-                <div className="p-2 bg-[#111821] rounded-[3px] border border-white/[0.07] space-y-1 text-[10px]">
-                  <div className="flex justify-between">
-                    <span className="text-[#667487]">ORIGIN TIME (UTC):</span>
-                    <span className="text-[#E8EDF3] font-mono">{selectedEvent.origin_time.replace("T", " ").replace("Z", "")}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#667487]">DATA STATUS:</span>
-                    <span className="text-[#31D17C] font-semibold">CATALOG METADATA</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[#667487]">GROUND MOTION:</span>
-                    <span className="text-[#E8A63B] font-semibold">NOT AVAILABLE (NO ACCEL CHANNEL)</span>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="p-6 text-center text-[#667487]">No event selected from catalog.</div>
-            )}
+      {/* ================================================================= */}
+      {/* 3. SCIENTIFIC PROCESS PIPELINE (Linear, Horizontal, Restrained)   */}
+      {/* ================================================================= */}
+      <section className="border-t border-b border-white/[0.06] py-3 font-mono text-[11px]">
+        <div className="flex flex-wrap items-center justify-between gap-y-2 gap-x-4">
+          <div className="text-[10px] text-[#82928B] uppercase tracking-wider">
+            Research Process Pipeline
           </div>
 
-          {/* Card B: Structural Screening & Forward Pass */}
-          <div className="bg-[#0B1018] border border-white/[0.07] rounded-[3px] p-3.5 space-y-3 font-mono text-[11px]">
-            <div className="flex items-center justify-between border-b border-white/[0.07] pb-2">
-              <span className="text-xs font-bold text-[#E8EDF3] tracking-wide uppercase flex items-center gap-1.5">
-                <Sliders size={13} className="text-[#28D7FF]" />
-                SURROGATE SCREENING
-              </span>
-              <span className="text-[9px] px-1.5 py-0.5 rounded-[2px] bg-[#28D7FF]/15 text-[#28D7FF] border border-[#28D7FF]/30 font-bold uppercase">
-                EXP6 MULTI-MODAL GNO
-              </span>
-            </div>
+          <div className="flex flex-wrap items-center gap-3 md:gap-6 text-xs">
+            {[
+              { num: "01", label: "Catalog" },
+              { num: "02", label: "Observed Event" },
+              { num: "03", label: "Metadata Ingested" },
+              { num: "04", label: "Structural Frame" },
+              { num: "05", label: "Surrogate Evaluation" },
+              { num: "06", label: "Screening Complete" },
+            ].map((step, idx) => {
+              const stepNum = idx + 1;
+              const isCurrent = activeTimelineStep === stepNum;
+              const isDone = activeTimelineStep >= stepNum;
 
-            {/* Structure Selection */}
-            <div className="space-y-1">
-              <label className="text-[10px] text-[#667487] uppercase font-bold block">
-                STRUCTURAL ARCHETYPE
-              </label>
-              <select
-                value={selectedStructureId}
-                onChange={(e) => setSelectedStructureId(e.target.value)}
-                className="w-full bg-[#111821] border border-white/[0.07] rounded-[3px] px-2.5 py-1.5 text-xs font-mono text-[#E8EDF3] outline-none cursor-pointer focus:border-[#28D7FF]"
-              >
-                {structures.map((s) => (
-                  <option key={s.archetype_id} value={s.archetype_id} className="bg-[#0B1018]">
-                    {s.archetype_id} — {s.n_stories} Stories ({s.category}, T₁={s.T1_s.toFixed(2)}s)
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Invariant Eigenvalue Matrix */}
-            <div className="p-2 bg-[#111821] rounded-[3px] border border-white/[0.07] space-y-1">
-              <span className="text-[9px] text-[#667487] uppercase block font-bold">
-                MODAL EIGENVALUE INVARIANTS (FiLM INJECTION)
-              </span>
-              <div className="grid grid-cols-3 gap-1.5 text-center text-[10px]">
-                <div className="bg-[#0B1018] p-1.5 rounded-[2px] border border-white/[0.05]">
-                  <span className="text-[#667487] block">T₁ (FUND)</span>
-                  <strong className="text-[#28D7FF] font-mono">{currentStructure?.T1_s.toFixed(3)} s</strong>
+              return (
+                <div key={step.num} className="flex items-center gap-1.5">
+                  <span
+                    className={`text-[10px] ${
+                      isCurrent
+                        ? "text-[#73E6B5] font-bold"
+                        : isDone
+                        ? "text-[#E8E8DE]"
+                        : "text-[#82928B]/60"
+                    }`}
+                  >
+                    {step.num}
+                  </span>
+                  <span
+                    className={`${
+                      isCurrent
+                        ? "text-[#73E6B5] font-semibold"
+                        : isDone
+                        ? "text-[#E8E8DE]"
+                        : "text-[#82928B]/60"
+                    }`}
+                  >
+                    {step.label}
+                  </span>
+                  {idx < 5 && <span className="text-white/[0.1] ml-2">→</span>}
                 </div>
-                <div className="bg-[#0B1018] p-1.5 rounded-[2px] border border-white/[0.05]">
-                  <span className="text-[#667487] block">T₂</span>
-                  <strong className="text-[#E8EDF3] font-mono">{currentStructure?.T2_s.toFixed(3)} s</strong>
-                </div>
-                <div className="bg-[#0B1018] p-1.5 rounded-[2px] border border-white/[0.05]">
-                  <span className="text-[#667487] block">T₃</span>
-                  <strong className="text-[#E8EDF3] font-mono">{currentStructure?.T3_s.toFixed(3)} s</strong>
-                </div>
-              </div>
-            </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
 
-            {/* Research Acceleration Baseline Dropdown */}
-            <div className="space-y-1">
-              <label className="text-[10px] text-[#667487] uppercase font-bold block">
-                VERIFIED ACCELERATION CHANNEL (RESEARCH RECORD)
-              </label>
-              <select
-                value={selectedHistoricalRecordId}
-                onChange={(e) => setSelectedHistoricalRecordId(e.target.value)}
-                className="w-full bg-[#111821] border border-white/[0.07] rounded-[3px] px-2.5 py-1.5 text-xs font-mono text-[#E8EDF3] outline-none cursor-pointer focus:border-[#28D7FF]"
-              >
-                {historicalRecords.map((rec) => (
-                  <option key={rec.record_id} value={rec.record_id} className="bg-[#0B1018]">
-                    {rec.record_id} — {rec.event_name} (PGA: {rec.pga_g}g)
-                  </option>
-                ))}
-              </select>
+      {/* ================================================================= */}
+      {/* 4. ASYMMETRIC LOWER SECTION: ARCHIVE CATALOGUE & WAVEFORM STRIP   */}
+      {/* ================================================================= */}
+      <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* LEFT / EVENT ARCHIVE CATALOGUE (7 cols) */}
+        <div className="lg:col-span-7 space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <h3 className="text-sm font-semibold tracking-tight text-[#E8E8DE]">
+              Recent Observed Events ({filteredEvents.length})
+            </h3>
+            <div className="text-[11px] font-mono text-[#82928B]">
+              USGS Public GeoJSON Feed
             </div>
+          </div>
 
-            {/* Execute Forward Pass Button */}
-            <button
-              onClick={executeSimulation}
-              disabled={isLoadingSim}
-              className="w-full py-2 bg-[#28D7FF]/20 hover:bg-[#28D7FF]/30 text-[#28D7FF] border border-[#28D7FF]/50 font-mono font-bold rounded-[3px] text-xs flex items-center justify-center gap-1.5 cursor-pointer transition disabled:opacity-50"
+          {/* Minimalist Filters Strip */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-mono pt-1">
+            <select
+              value={minMag}
+              onChange={(e) => setMinMag(parseFloat(e.target.value))}
+              className="bg-[#0E1B17] border border-white/[0.06] rounded px-2.5 py-1 text-[#E8E8DE] outline-none"
             >
-              <Play size={12} className={isLoadingSim ? "animate-spin" : ""} />
-              <span>{isLoadingSim ? "COMPUTING SURROGATE FORWARD PASS..." : "EXECUTE SURROGATE RESPONSE SIMULATION"}</span>
-            </button>
+              <option value="0.0">All (M0.0+)</option>
+              <option value="2.5">M2.5+ (Minor)</option>
+              <option value="4.5">M4.5+ (Moderate)</option>
+              <option value="6.0">M6.0+ (Strong)</option>
+              <option value="7.0">M7.0+ (Major)</option>
+            </select>
 
-            {simError && (
-              <div className="text-[10px] text-[#E35D5D] bg-[#E35D5D]/10 p-2 rounded-[2px] border border-[#E35D5D]/30">
-                {simError}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+            <select
+              value={timeWindowHours}
+              onChange={(e) => setTimeWindowHours(parseFloat(e.target.value))}
+              className="bg-[#0E1B17] border border-white/[0.06] rounded px-2.5 py-1 text-[#E8E8DE] outline-none"
+            >
+              <option value="1">Past 1 Hour</option>
+              <option value="6">Past 6 Hours</option>
+              <option value="24">Past 24 Hours</option>
+              <option value="168">Past 7 Days</option>
+            </select>
 
-      {/* ================================================================= */}
-      {/* 4. HORIZONTAL EVENT LIFECYCLE TIMELINE                            */}
-      {/* ================================================================= */}
-      <div className="bg-[#0B1018] border border-white/[0.07] px-4 py-3 rounded-[3px] font-mono text-[10px]">
-        <div className="flex items-center justify-between text-[#667487] uppercase tracking-wider mb-2 font-bold">
-          <span>EVENT SCREENING PIPELINE STATE</span>
-          <span className="text-[#28D7FF]">PHASE 0{activeTimelineStep} / 06</span>
-        </div>
+            <select
+              value={radiusFilterKm}
+              onChange={(e) =>
+                setRadiusFilterKm(e.target.value === "ALL" ? "ALL" : parseFloat(e.target.value))
+              }
+              className="bg-[#0E1B17] border border-white/[0.06] rounded px-2.5 py-1 text-[#E8E8DE] outline-none"
+            >
+              <option value="ALL">Global (No Limit)</option>
+              <option value="500">Within 500 km</option>
+              <option value="1000">Within 1,000 km</option>
+              <option value="3000">Within 3,000 km</option>
+            </select>
 
-        <div className="grid grid-cols-2 sm:grid-cols-6 gap-2">
-          {[
-            { step: 1, label: "CATALOG", detail: "USGS GEOJSON" },
-            { step: 2, label: "EVENT DETECTED", detail: selectedEvent ? selectedEvent.event_id : "IDLE" },
-            { step: 3, label: "METADATA INGESTED", detail: selectedEvent ? `M${selectedEvent.magnitude.toFixed(1)} Mw` : "PENDING" },
-            { step: 4, label: "MODEL READY", detail: currentStructure ? currentStructure.archetype_id : "READY" },
-            { step: 5, label: "SURROGATE EVAL", detail: isLoadingSim ? "INFERRING" : simResult ? "COMPLETE" : "STANDBY" },
-            { step: 6, label: "SCREENING COMPLETE", detail: simResult ? `${simResult.metrics.latency_ms} ms` : "AWAITING RUN" },
-          ].map((item) => {
-            const isDone = activeTimelineStep >= item.step;
-            const isCurrent = activeTimelineStep === item.step;
-            return (
-              <div
-                key={item.step}
-                className={`p-2 rounded-[2px] border transition-all ${
-                  isCurrent
-                    ? "bg-[#28D7FF]/15 border-[#28D7FF]/60 text-[#28D7FF]"
-                    : isDone
-                    ? "bg-[#111821] border-white/[0.1] text-[#E8EDF3]"
-                    : "bg-[#0B1018] border-white/[0.04] text-[#667487]"
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-[9px] font-bold">0{item.step}</span>
-                  {isCurrent && <span className="w-1.5 h-1.5 rounded-full bg-[#28D7FF] shadow-[0_0_6px_#28D7FF]" />}
-                </div>
-                <div className="font-bold tracking-tight text-[10px] mt-0.5">{item.label}</div>
-                <div className="text-[9px] opacity-75 truncate">{item.detail}</div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* ================================================================= */}
-      {/* 5. LOWER SECTION: EVENT CONSOLE & WAVEFORM TELEMETRY              */}
-      {/* ================================================================= */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-        {/* LEFT (7 cols): COMPACT EVENT CONSOLE TABLE & FILTERS */}
-        <div className="lg:col-span-7 bg-[#0B1018] border border-white/[0.07] rounded-[3px] p-3.5 space-y-3 font-mono text-[11px]">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/[0.07] pb-2.5">
-            <div className="flex items-center gap-2">
-              <Radio size={14} className="text-[#28D7FF]" />
-              <h2 className="text-xs font-bold text-[#E8EDF3] uppercase tracking-wider">
-                USGS EVENT CATALOG ({filteredEvents.length} RECORDS)
-              </h2>
-            </div>
-            <div className="text-[10px] text-[#8D9AAA]">
-              AUTOSYNC: <span className="text-[#31D17C] font-semibold">ACTIVE (EVERY 60s)</span>
-            </div>
+            <input
+              type="text"
+              placeholder="Search region or ID..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="bg-[#0E1B17] border border-white/[0.06] rounded px-2.5 py-1 text-[#E8E8DE] outline-none placeholder:text-[#82928B]/60"
+            />
           </div>
 
-          {/* Compact Filter Strip */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-[10px]">
-            <div>
-              <label className="text-[#667487] uppercase block font-bold mb-1">MIN MAG</label>
-              <select
-                value={minMag}
-                onChange={(e) => setMinMag(parseFloat(e.target.value))}
-                className="w-full bg-[#111821] border border-white/[0.07] rounded-[2px] px-2 py-1 text-[#E8EDF3] outline-none"
-              >
-                <option value="0.0">All (M0.0+)</option>
-                <option value="2.5">M2.5+ (Minor)</option>
-                <option value="4.5">M4.5+ (Moderate)</option>
-                <option value="6.0">M6.0+ (Strong)</option>
-                <option value="7.0">M7.0+ (Major)</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="text-[#667487] uppercase block font-bold mb-1">TIME WINDOW</label>
-              <select
-                value={timeWindowHours}
-                onChange={(e) => setTimeWindowHours(parseFloat(e.target.value))}
-                className="w-full bg-[#111821] border border-white/[0.07] rounded-[2px] px-2 py-1 text-[#E8EDF3] outline-none"
-              >
-                <option value="1">Past 1 Hour</option>
-                <option value="6">Past 6 Hours</option>
-                <option value="24">Past 24 Hours</option>
-                <option value="168">Past 7 Days</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="text-[#667487] uppercase block font-bold mb-1">RADIUS FILTER</label>
-              <select
-                value={radiusFilterKm}
-                onChange={(e) =>
-                  setRadiusFilterKm(e.target.value === "ALL" ? "ALL" : parseFloat(e.target.value))
-                }
-                className="w-full bg-[#111821] border border-white/[0.07] rounded-[2px] px-2 py-1 text-[#E8EDF3] outline-none"
-              >
-                <option value="ALL">Global (No Limit)</option>
-                <option value="500">Within 500 km</option>
-                <option value="1000">Within 1,000 km</option>
-                <option value="3000">Within 3,000 km</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="text-[#667487] uppercase block font-bold mb-1">FILTER REGION / ID</label>
-              <input
-                type="text"
-                placeholder="e.g. California, Japan"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[#111821] border border-white/[0.07] rounded-[2px] px-2 py-1 text-[#E8EDF3] outline-none placeholder:text-[#667487]"
-              >
-              </input>
-            </div>
-          </div>
-
-          {/* Compact Console Table */}
-          <div className="border border-white/[0.07] rounded-[2px] overflow-hidden">
-            <div className="max-h-64 overflow-y-auto font-mono text-[10px]">
-              <table className="w-full text-left border-collapse">
-                <thead className="bg-[#111821] border-b border-white/[0.07] text-[9px] font-bold text-[#667487] uppercase tracking-wider sticky top-0 z-10">
+          {/* Research Archive Table */}
+          <div className="overflow-x-auto pt-2">
+            <table className="w-full text-left border-collapse font-sans text-xs">
+              <thead>
+                <tr className="border-b border-white/[0.08] text-[10px] font-mono text-[#82928B] uppercase tracking-wider">
+                  <th className="pb-2 font-medium">UTC Time</th>
+                  <th className="pb-2 font-medium">Magnitude</th>
+                  <th className="pb-2 font-medium">Region</th>
+                  <th className="pb-2 font-medium">Depth</th>
+                  <th className="pb-2 font-medium">Event ID</th>
+                  <th className="pb-2 font-medium">Source</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/[0.04]">
+                {filteredEvents.length === 0 ? (
                   <tr>
-                    <th className="p-2">TIME (UTC)</th>
-                    <th className="p-2">MAG</th>
-                    <th className="p-2">REGION</th>
-                    <th className="p-2">DEPTH</th>
-                    <th className="p-2">EVENT ID</th>
-                    <th className="p-2">SOURCE</th>
-                    <th className="p-2">STATUS</th>
+                    <td colSpan={6} className="py-6 text-center text-xs text-[#82928B] font-mono">
+                      No earthquake records match the filter criteria.
+                    </td>
                   </tr>
-                </thead>
-                <tbody className="divide-y divide-white/[0.04] bg-[#0B1018]">
-                  {filteredEvents.length === 0 ? (
-                    <tr>
-                      <td colSpan={7} className="p-4 text-center text-[#667487]">
-                        No earthquake records match the filter criteria.
-                      </td>
-                    </tr>
-                  ) : (
-                    filteredEvents.map((ev) => {
-                      const isSelected = selectedEvent?.event_id === ev.event_id;
-                      const magColor =
-                        ev.magnitude >= 7.0
-                          ? "text-[#E35D5D] font-bold"
-                          : ev.magnitude >= 5.0
-                          ? "text-[#E8A63B] font-semibold"
-                          : "text-[#E8EDF3]";
-
-                      return (
-                        <tr
-                          key={ev.event_id}
-                          onClick={() => setSelectedEventId(ev.event_id)}
-                          className={`cursor-pointer transition-colors ${
-                            isSelected
-                              ? "bg-[#151D27] font-semibold border-l-2 border-l-[#28D7FF]"
-                              : "hover:bg-[#111821] border-l-2 border-l-transparent"
-                          }`}
-                        >
-                          <td className="p-2 whitespace-nowrap text-[#8D9AAA]">
-                            {ev.origin_time.replace("T", " ").replace("Z", "").slice(5, 16)}
-                          </td>
-                          <td className={`p-2 whitespace-nowrap ${magColor}`}>
+                ) : (
+                  filteredEvents.map((ev) => {
+                    const isSelected = selectedEvent?.event_id === ev.event_id;
+                    return (
+                      <tr
+                        key={ev.event_id}
+                        onClick={() => setSelectedEventId(ev.event_id)}
+                        className={`cursor-pointer transition-colors ${
+                          isSelected
+                            ? "bg-[#17483A]/30 text-[#E8E8DE]"
+                            : "hover:bg-[#0E1B17] text-[#82928B] hover:text-[#E8E8DE]"
+                        }`}
+                      >
+                        <td className="py-2.5 font-mono text-[11px] whitespace-nowrap">
+                          {ev.origin_time.replace("T", " ").replace("Z", "").slice(5, 16)}
+                        </td>
+                        <td className="py-2.5 font-mono text-xs whitespace-nowrap">
+                          <span
+                            className={
+                              ev.magnitude >= 7.0
+                                ? "text-[#E35D5D] font-bold"
+                                : ev.magnitude >= 5.0
+                                ? "text-[#D6B56D] font-semibold"
+                                : "text-[#73E6B5]"
+                            }
+                          >
                             M{ev.magnitude.toFixed(1)}
-                          </td>
-                          <td className="p-2 truncate max-w-[160px] text-[#E8EDF3]" title={ev.location}>
-                            {ev.location}
-                          </td>
-                          <td className="p-2 whitespace-nowrap text-[#8D9AAA]">
-                            {ev.depth_km.toFixed(1)} km
-                          </td>
-                          <td className="p-2 whitespace-nowrap text-[#28D7FF] font-mono">
-                            {ev.event_id}
-                          </td>
-                          <td className="p-2 whitespace-nowrap text-[#8D9AAA]">
-                            {ev.source}
-                          </td>
-                          <td className="p-2 whitespace-nowrap">
-                            <span className="px-1 py-0.2 rounded-[2px] text-[8px] bg-[#111821] text-[#31D17C] border border-[#31D17C]/20 uppercase font-bold">
-                              {ev.status}
-                            </span>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  )}
-                </tbody>
-              </table>
-            </div>
+                          </span>
+                        </td>
+                        <td className="py-2.5 truncate max-w-[200px] text-[#E8E8DE]" title={ev.location}>
+                          {ev.location}
+                        </td>
+                        <td className="py-2.5 font-mono text-[11px] whitespace-nowrap">
+                          {ev.depth_km.toFixed(1)} km
+                        </td>
+                        <td className="py-2.5 font-mono text-[11px] text-[#73E6B5] whitespace-nowrap">
+                          {ev.event_id}
+                        </td>
+                        <td className="py-2.5 text-[11px] uppercase tracking-wider text-[#82928B]">
+                          {ev.source}
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
 
-        {/* RIGHT (5 cols): OSCILLOSCOPE WAVEFORM & RESPONSE TELEMETRY STRIP */}
-        <div className="lg:col-span-5 bg-[#0B1018] border border-white/[0.07] rounded-[3px] p-3.5 space-y-3 font-mono text-[11px] flex flex-col justify-between">
-          <div className="flex items-center justify-between border-b border-white/[0.07] pb-2">
-            <span className="text-xs font-bold text-[#E8EDF3] tracking-wide uppercase flex items-center gap-1.5">
-              <Activity size={13} className="text-[#28D7FF]" />
-              WAVEFORM & RESPONSE CHANNEL
+        {/* RIGHT / WAVEFORM & STRUCTURAL TELEMETRY (5 cols) */}
+        <div className="lg:col-span-5 space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold tracking-tight text-[#E8E8DE]">
+              Structural Response Waveform u(t)
+            </h3>
+            <span className="text-[11px] font-mono text-[#82928B]">
+              {simResult ? "Simulation Complete" : "Standby"}
             </span>
-            {simResult ? (
-              <span className="text-[9px] px-1.5 py-0.5 rounded-[2px] bg-[#31D17C]/15 text-[#31D17C] border border-[#31D17C]/30 font-bold">
-                SIMULATION COMPLETE
-              </span>
-            ) : (
-              <span className="text-[9px] px-1.5 py-0.5 rounded-[2px] bg-[#E8A63B]/15 text-[#E8A63B] border border-[#E8A63B]/30 font-bold">
-                CATALOG METADATA ONLY
-              </span>
-            )}
           </div>
 
-          {/* Oscilloscope View Area */}
-          <div className="w-full h-56 bg-[#080C12] rounded-[3px] border border-white/[0.07] p-2 relative flex flex-col justify-center">
+          {/* Clean Oscilloscope Canvas */}
+          <div className="w-full h-56 bg-[#07110F] rounded border border-white/[0.06] p-3 flex flex-col justify-center">
             {trajectoryChartData ? (
               <Line
                 data={trajectoryChartData}
@@ -691,65 +600,73 @@ export const LiveEarthquakeView: React.FC = () => {
                   animation: { duration: 250 },
                   scales: {
                     x: {
-                      title: { display: true, text: "Time (s)", font: { family: "monospace", size: 9 }, color: "#8D9AAA" },
-                      ticks: { color: "#667487", font: { family: "monospace", size: 9 } },
-                      grid: { color: "rgba(255, 255, 255, 0.05)" },
+                      title: { display: true, text: "Time (s)", font: { family: "monospace", size: 9 }, color: "#82928B" },
+                      ticks: { color: "#82928B", font: { family: "monospace", size: 9 } },
+                      grid: { color: "rgba(115, 230, 181, 0.05)" },
                     },
                     y: {
-                      title: { display: true, text: "Drift u(t) (mm)", font: { family: "monospace", size: 9 }, color: "#8D9AAA" },
-                      ticks: { color: "#667487", font: { family: "monospace", size: 9 } },
-                      grid: { color: "rgba(255, 255, 255, 0.05)" },
+                      title: { display: true, text: "Roof Drift u(t) (mm)", font: { family: "monospace", size: 9 }, color: "#82928B" },
+                      ticks: { color: "#82928B", font: { family: "monospace", size: 9 } },
+                      grid: { color: "rgba(115, 230, 181, 0.05)" },
                     },
                   },
                   plugins: {
                     legend: {
                       position: "top" as const,
-                      labels: { font: { family: "monospace", size: 9 }, color: "#E8EDF3", boxWidth: 10 },
+                      labels: { font: { family: "monospace", size: 9 }, color: "#E8E8DE", boxWidth: 10 },
                     },
                   },
                 }}
               />
             ) : (
-              <div className="text-center p-4 space-y-2">
-                <div className="text-xs font-bold text-[#8D9AAA] uppercase tracking-wider">
-                  WAVEFORM CHANNEL: NO OBSERVED ACCELEROGRAM INGESTED
+              <div className="text-center p-6 space-y-2 font-mono">
+                <div className="text-xs text-[#E8E8DE] uppercase tracking-wider">
+                  Ground Motion Channel
                 </div>
-                <p className="text-[10px] text-[#667487] max-w-sm mx-auto leading-relaxed">
-                  USGS earthquake feeds provide hypocenter and moment magnitude metadata without streaming station accelerograms. Run surrogate screening to compute structural response against the verified ground-motion baseline.
+                <div className="text-[11px] text-[#D6B56D]">
+                  No Observed Accelerogram Ingested
+                </div>
+                <p className="text-[11px] text-[#82928B] font-sans max-w-sm mx-auto leading-relaxed pt-1">
+                  USGS catalog feeds provide earthquake occurrence parameters without streaming station accelerograms. Trigger surrogate screening above to compute structural response.
                 </p>
-                <div className="pt-2">
-                  <span className="text-[9px] px-2 py-0.5 rounded-[2px] bg-[#111821] text-[#28D7FF] border border-white/[0.07]">
-                    PIPELINE STATE: AWAITING FORWARD PASS TRIGGER
-                  </span>
-                </div>
               </div>
             )}
           </div>
 
-          {/* Telemetric Performance Badges */}
-          {simResult ? (
-            <div className="grid grid-cols-3 gap-1.5 text-center text-[10px]">
-              <div className="p-2 bg-[#111821] rounded-[2px] border border-white/[0.07]">
-                <span className="text-[#667487] block text-[9px] uppercase">PEAK ERROR</span>
-                <strong className="text-[#28D7FF] font-mono text-xs">{simResult.metrics.peak_disp_err_pct}%</strong>
+          {/* Performance Metrics Readout */}
+          {simResult && (
+            <div className="grid grid-cols-3 gap-2 pt-1 font-mono text-xs text-center">
+              <div className="p-2.5 bg-[#0E1B17] rounded border border-white/[0.06]">
+                <span className="text-[#82928B] block text-[10px] uppercase">Peak Error</span>
+                <span className="text-[#73E6B5] font-semibold">{simResult.metrics.peak_disp_err_pct}%</span>
               </div>
-              <div className="p-2 bg-[#111821] rounded-[2px] border border-white/[0.07]">
-                <span className="text-[#667487] block text-[9px] uppercase">REL L₂ ERROR</span>
-                <strong className="text-[#31D17C] font-mono text-xs">{simResult.metrics.rel_l2_pct}%</strong>
+              <div className="p-2.5 bg-[#0E1B17] rounded border border-white/[0.06]">
+                <span className="text-[#82928B] block text-[10px] uppercase">Rel L₂ Error</span>
+                <span className="text-[#73E6B5] font-semibold">{simResult.metrics.rel_l2_pct}%</span>
               </div>
-              <div className="p-2 bg-[#111821] rounded-[2px] border border-white/[0.07]">
-                <span className="text-[#667487] block text-[9px] uppercase">MPS LATENCY</span>
-                <strong className="text-[#E8EDF3] font-mono text-xs">{simResult.metrics.latency_ms} ms</strong>
+              <div className="p-2.5 bg-[#0E1B17] rounded border border-white/[0.06]">
+                <span className="text-[#82928B] block text-[10px] uppercase">MPS Latency</span>
+                <span className="text-[#E8E8DE] font-semibold">{simResult.metrics.latency_ms} ms</span>
               </div>
-            </div>
-          ) : (
-            <div className="p-2 bg-[#111821] rounded-[2px] border border-white/[0.07] text-[10px] text-[#8D9AAA] flex justify-between items-center">
-              <span>SOLVER PIPELINE:</span>
-              <span className="text-[#31D17C] font-bold">EXP6 MULTI-MODAL GNO (MPS ACCELERATED)</span>
             </div>
           )}
         </div>
-      </div>
+      </section>
+
+      {/* ================================================================= */}
+      {/* 5. SCIENTIFIC PROTOCOL & BOUNDARY FOOTNOTE                         */}
+      {/* ================================================================= */}
+      <footer className="pt-4 border-t border-white/[0.06] text-[11px] text-[#82928B] leading-relaxed flex flex-col md:flex-row md:items-baseline justify-between gap-3">
+        <div>
+          <strong className="text-[#E8E8DE] uppercase font-mono text-[10px] tracking-wider block mb-0.5">
+            Research Boundary & Protocol
+          </strong>
+          SeismoFNO performs rapid surrogate structural response estimation for multi-story systems. It does not predict earthquakes, forecast ground motions, or issue structural safety certifications.
+        </div>
+        <div className="font-mono text-[10px] text-[#82928B] shrink-0">
+          SURROGATE: EXP6 MULTI-MODAL GNO · VALIDATED AGAINST OPENSEESPY
+        </div>
+      </footer>
     </div>
   );
 };

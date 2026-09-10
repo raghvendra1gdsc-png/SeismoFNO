@@ -8,7 +8,6 @@ import { ModelValidationView } from "./components/ModelValidation/ModelValidatio
 import { ExplainabilityView } from "./components/Explainability/ExplainabilityView";
 import { ResearchDemoView } from "./components/ResearchDemo/ResearchDemoView";
 import { LiveEarthquakeView } from "./components/ResearchDemo/LiveEarthquakeView";
-import { Building2, GraduationCap, Radio, ShieldCheck, Cpu } from "lucide-react";
 
 import {
   fetchSystemInfo,
@@ -190,73 +189,64 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-[#070A11] text-slate-100 overflow-hidden font-sans select-none">
-      {/* Top Application Header - Professional Workstation Instrumentation */}
-      <header className="h-11 bg-[#080C12] border-b border-white/[0.07] px-4 flex items-center justify-between z-30 shrink-0 select-none">
-        {/* Left: Branding & Physics System Title */}
+    <div className="h-screen w-screen flex flex-col bg-[#07110F] text-[#E8E8DE] overflow-hidden font-sans select-none">
+      {/* Top Application Header - Minimal Studio Chrome */}
+      <header className="h-10 bg-[#07110F] border-b border-white/[0.06] px-4 flex items-center justify-between z-30 shrink-0 select-none">
+        {/* Left: Minimal Branding */}
         <div className="flex items-center space-x-3">
           <div className="flex items-center space-x-2">
-            <span className="w-2 h-2 rounded-full bg-[#28D7FF] shadow-[0_0_6px_#28D7FF]" />
-            <span className="font-mono text-xs font-bold tracking-widest text-[#E8EDF3]">
-              SEISMO<span className="text-[#28D7FF]">FNO</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#73E6B5]" />
+            <span className="text-xs font-semibold tracking-wider text-[#E8E8DE] uppercase">
+              SEISMOFNO
             </span>
           </div>
-          <span className="text-white/[0.1] hidden sm:inline">|</span>
-          <div className="text-[10px] font-mono text-[#8D9AAA] tracking-wide uppercase hidden sm:inline">
-            PHYSICS-GROUNDED NEURAL OPERATOR
+          <span className="text-white/[0.1] hidden sm:inline">/</span>
+          <div className="text-[11px] text-[#82928B] hidden sm:inline">
+            Neural Operator Research Desk
           </div>
         </div>
 
-        {/* Center: Workstation Quick Switch Tabs with subtle cyan bottom border */}
-        <div className="hidden md:flex items-center h-full space-x-1">
+        {/* Center: Tabs with minimal active indicator */}
+        <div className="hidden md:flex items-center h-full space-x-1 font-sans text-xs">
           <button
             onClick={() => handleSelectTab("structural_twin")}
-            className={`h-full px-3 text-[11px] font-mono flex items-center space-x-1.5 transition cursor-pointer border-b-2 ${
+            className={`h-full px-3 flex items-center space-x-1.5 transition cursor-pointer border-b-2 ${
               activeTab === "structural_twin"
-                ? "border-[#28D7FF] text-[#28D7FF] font-bold bg-white/[0.03]"
-                : "border-transparent text-[#8D9AAA] hover:text-[#E8EDF3]"
+                ? "border-[#73E6B5] text-[#E8E8DE] font-medium"
+                : "border-transparent text-[#82928B] hover:text-[#E8E8DE]"
             }`}
           >
-            <Building2 size={12} />
-            <span>3D DIGITAL TWIN</span>
+            <span>Digital Twin</span>
           </button>
           <button
             onClick={() => handleSelectTab("research_demo")}
-            className={`h-full px-3 text-[11px] font-mono flex items-center space-x-1.5 transition cursor-pointer border-b-2 ${
+            className={`h-full px-3 flex items-center space-x-1.5 transition cursor-pointer border-b-2 ${
               activeTab === "research_demo"
-                ? "border-[#28D7FF] text-[#28D7FF] font-bold bg-white/[0.03]"
-                : "border-transparent text-[#8D9AAA] hover:text-[#E8EDF3]"
+                ? "border-[#73E6B5] text-[#E8E8DE] font-medium"
+                : "border-transparent text-[#82928B] hover:text-[#E8E8DE]"
             }`}
           >
-            <GraduationCap size={12} />
-            <span>RESEARCH DEFENSE</span>
+            <span>Research Defense</span>
           </button>
           <button
             onClick={() => handleSelectTab("live_earthquake")}
-            className={`h-full px-3 text-[11px] font-mono flex items-center space-x-1.5 transition cursor-pointer border-b-2 ${
+            className={`h-full px-3 flex items-center space-x-1.5 transition cursor-pointer border-b-2 ${
               activeTab === "live_earthquake"
-                ? "border-[#28D7FF] text-[#28D7FF] font-bold bg-white/[0.03]"
-                : "border-transparent text-[#8D9AAA] hover:text-[#E8EDF3]"
+                ? "border-[#73E6B5] text-[#E8E8DE] font-medium"
+                : "border-transparent text-[#82928B] hover:text-[#E8E8DE]"
             }`}
           >
-            <Radio size={12} />
-            <span>LIVE USGS</span>
+            <span>Live USGS</span>
           </button>
         </div>
 
-        {/* Right: Rectangular Technical Badges */}
-        <div className="flex items-center space-x-2 text-[10px] font-mono">
-          <span className="px-2 py-0.5 rounded-[2px] bg-[#111821] border border-white/[0.07] text-[#8D9AAA] flex items-center gap-1.5">
-            <Cpu size={11} className="text-[#28D7FF]" />
-            <span className="text-[#E8EDF3] font-bold">{systemInfo?.device ? systemInfo.device.toUpperCase() : "APPLE MPS"}</span>
-          </span>
-          <span className="px-2 py-0.5 rounded-[2px] bg-[#31D17C]/10 border border-[#31D17C]/30 text-[#31D17C] font-bold flex items-center gap-1">
-            <ShieldCheck size={11} />
-            <span>305 TESTS PASSING</span>
-          </span>
-          <span className="hidden sm:inline px-2 py-0.5 rounded-[2px] bg-[#111821] border border-white/[0.07] text-[#31D17C] font-semibold">
-            SYSTEM ONLINE
-          </span>
+        {/* Right: Instrument Readouts */}
+        <div className="flex items-center space-x-3 text-[10px] font-mono text-[#82928B]">
+          <span>{systemInfo?.device ? systemInfo.device.toUpperCase() : "MPS"}</span>
+          <span>·</span>
+          <span className="text-[#73E6B5]">305 TESTS</span>
+          <span>·</span>
+          <span className="text-[#82928B]">ONLINE</span>
         </div>
       </header>
 
@@ -270,7 +260,7 @@ export const App: React.FC = () => {
         />
 
         {/* Content Workspace Area */}
-        <main className="flex-1 overflow-y-auto bg-[#070A11]">
+        <main className="flex-1 overflow-y-auto bg-research-desk">
           {activeTab === "structural_twin" && (
             <StructuralTwinView
               prediction={prediction}
@@ -333,42 +323,39 @@ export const App: React.FC = () => {
         </main>
       </div>
 
-      {/* Bottom Status Bar - Scientific Workstation Telemetry */}
-      <footer className="h-6 bg-[#080C12] border-t border-white/[0.07] px-4 flex items-center justify-between text-[10px] font-mono text-[#8D9AAA] select-none z-20">
+      {/* Bottom Status Bar - Professional Status Strip */}
+      <footer className="h-6 bg-[#07110F] border-t border-white/[0.06] px-4 flex items-center justify-between text-[10px] font-mono text-[#82928B] select-none z-20">
         <div className="flex items-center space-x-3">
           <div className="flex items-center space-x-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#31D17C] shadow-[0_0_5px_#31D17C]" />
-            <span className="text-[#667487]">SURROGATE:</span>
-            <span className="text-[#E8EDF3] font-bold">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#73E6B5]" />
+            <span>SURROGATE:</span>
+            <span className="text-[#E8E8DE] font-semibold">
               {prediction ? `${prediction.inference_time_ms.toFixed(2)} ms` : "< 2.0 ms"}
             </span>
           </div>
 
-          <span className="text-white/[0.1]">|</span>
+          <span className="text-white/[0.1]">·</span>
 
           <div className="flex items-center space-x-1.5">
-            <span className="text-[#667487]">GROUND TRUTH:</span>
-            <span className="text-[#28D7FF] font-semibold">OpenSeesPy C-Runtime NLTHA</span>
+            <span>GROUND TRUTH:</span>
+            <span className="text-[#E8E8DE]">OpenSeesPy C-Runtime</span>
           </div>
 
-          <span className="text-white/[0.1] hidden sm:inline">|</span>
+          <span className="text-white/[0.1] hidden sm:inline">·</span>
 
           <div className="hidden sm:flex items-center space-x-1.5">
-            <span className="text-[#667487]">THROUGHPUT:</span>
-            <span className="text-[#31D17C] font-semibold">1,060 sim/s (Batch-32)</span>
+            <span>THROUGHPUT:</span>
+            <span className="text-[#73E6B5]">1,060 sim/s</span>
           </div>
         </div>
 
         <div className="flex items-center space-x-3">
           <div className="flex items-center space-x-1.5">
-            <span className="text-[#667487]">ACTIVE RECORD:</span>
-            <span className="text-[#E8EDF3] font-semibold">{selectedEarthquakeName}</span>
+            <span>MODEL:</span>
+            <span className="text-[#E8E8DE]">EXP6 GNO</span>
           </div>
-          <span className="text-white/[0.1]">|</span>
-          <span className="text-[#31D17C] font-bold flex items-center gap-1">
-            <ShieldCheck size={11} />
-            <span>EXP6 / FROZEN / AUDITED</span>
-          </span>
+          <span className="text-white/[0.1]">·</span>
+          <span className="text-[#73E6B5]">SHA-256 AUDITED</span>
         </div>
       </footer>
     </div>
