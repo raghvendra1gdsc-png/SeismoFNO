@@ -10,13 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/three": "^0.185.4",
     "chart.js": "^4.5.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.37.0",
     "react": "^19.2.8",
     "react-chartjs-2": "^5.3.1",
     "react-dom": "^19.2.8",
-    "tailwind-merge": "^3.6.0"
+    "tailwind-merge": "^3.6.0",
+    "three": "^0.186.0"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
