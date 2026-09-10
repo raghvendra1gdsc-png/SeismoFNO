@@ -88,34 +88,34 @@ export const CommandCenterView: React.FC<CommandCenterViewProps> = ({
   const isYielded = ductility > 1.0;
 
   return (
-    <div className="space-y-6 p-6 font-sans">
+    <div className="space-y-6 p-6 font-sans text-[#E8E8DE]">
       {/* Executive Header Banner */}
-      <div className="flex items-center justify-between border-b border-[#E0E0E0] pb-4 bg-white p-5 rounded border">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border border-white/[0.08] bg-[#0E1B17] p-5 rounded-lg shadow-lg">
         <div>
-          <div className="flex items-center space-x-3">
-            <h1 className="text-xl font-bold font-mono tracking-tight text-[#161616]">
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="text-xl font-bold font-mono tracking-tight text-[#E8E8DE]">
               SEISMIC DIGITAL-TWIN COMMAND CENTER
             </h1>
-            <span className="flex items-center space-x-1.5 px-2.5 py-0.5 rounded text-[11px] font-mono font-medium bg-[#DEFBE6] text-[#198038] border border-[#6FDC8C]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#198038]" />
+            <span className="flex items-center space-x-1.5 px-2.5 py-0.5 rounded text-[11px] font-mono font-medium bg-[#73E6B5]/10 text-[#73E6B5] border border-[#73E6B5]/30">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#73E6B5] animate-pulse" />
               <span>SURROGATE OPERATIONAL</span>
             </span>
           </div>
-          <p className="text-xs text-[#525252] mt-1 font-sans">
+          <p className="text-xs text-[#82928B] mt-1 font-sans">
             High-throughput Fourier Neural Operator surrogate for nonlinear seismic structural response.
           </p>
         </div>
 
-        <div className="flex items-center space-x-3 text-xs font-mono">
-          <div className="bg-[#F4F4F4] px-3 py-1.5 rounded border border-[#E0E0E0] flex items-center space-x-2">
-            <Radio size={14} className="text-[#0F62FE]" />
-            <span className="text-[#525252]">Catalog:</span>
-            <span className="text-[#161616] font-semibold">PEER NGA-West2 / India IS 1893</span>
+        <div className="flex flex-wrap items-center gap-3 text-xs font-mono">
+          <div className="bg-[#07110F] px-3 py-1.5 rounded border border-white/[0.08] flex items-center space-x-2">
+            <Radio size={14} className="text-[#73E6B5]" />
+            <span className="text-[#82928B]">Catalog:</span>
+            <span className="text-[#E8E8DE] font-semibold">PEER NGA-West2 / India IS 1893</span>
           </div>
-          <div className="bg-[#F4F4F4] px-3 py-1.5 rounded border border-[#E0E0E0] flex items-center space-x-2">
-            <Zap size={14} className="text-[#0F62FE]" />
-            <span className="text-[#525252]">Inference Latency:</span>
-            <span className="text-[#0F62FE] font-bold font-mono">
+          <div className="bg-[#07110F] px-3 py-1.5 rounded border border-white/[0.08] flex items-center space-x-2">
+            <Zap size={14} className="text-[#73E6B5]" />
+            <span className="text-[#82928B]">Inference Latency:</span>
+            <span className="text-[#73E6B5] font-bold font-mono">
               {prediction ? `${prediction.inference_time_ms.toFixed(2)} ms` : "< 2.0 ms"}
             </span>
           </div>
@@ -125,19 +125,19 @@ export const CommandCenterView: React.FC<CommandCenterViewProps> = ({
       {/* Primary KPI Status Grid */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Metric 1: Peak Displacement */}
-        <div className="bg-white border border-[#E0E0E0] hover:border-[#8D8D8D] rounded p-4 relative transition-colors">
-          <div className="flex items-center justify-between text-[#525252] text-xs font-sans mb-1 font-medium">
+        <div className="bg-[#0E1B17] border border-white/[0.08] hover:border-[#73E6B5]/40 rounded-lg p-4 relative transition-colors">
+          <div className="flex items-center justify-between text-[#82928B] text-xs font-sans mb-1 font-medium">
             <span>PEAK DISPLACEMENT</span>
-            <Gauge size={14} className="text-[#0F62FE]" />
+            <Gauge size={14} className="text-[#73E6B5]" />
           </div>
-          <div className="text-2xl font-mono font-bold text-[#161616]">
+          <div className="text-2xl font-mono font-bold text-[#E8E8DE]">
             {metrics?.peak_displacement_mm !== undefined
               ? `${metrics.peak_displacement_mm.toFixed(1)} mm`
               : "—"}
           </div>
-          <div className="mt-2 flex items-center justify-between text-[11px] font-mono text-[#525252]">
+          <div className="mt-2 flex items-center justify-between text-[11px] font-mono text-[#82928B]">
             <span>SI Metric:</span>
-            <span className="text-[#161616]">
+            <span className="text-[#E8E8DE]">
               {metrics?.peak_displacement_m !== undefined
                 ? `${metrics.peak_displacement_m.toFixed(4)} m`
                 : "—"}
@@ -146,25 +146,25 @@ export const CommandCenterView: React.FC<CommandCenterViewProps> = ({
         </div>
 
         {/* Metric 2: Drift Demand & Damage State */}
-        <div className="bg-white border border-[#E0E0E0] hover:border-[#8D8D8D] rounded p-4 relative transition-colors">
-          <div className="flex items-center justify-between text-[#525252] text-xs font-sans mb-1 font-medium">
+        <div className="bg-[#0E1B17] border border-white/[0.08] hover:border-[#73E6B5]/40 rounded-lg p-4 relative transition-colors">
+          <div className="flex items-center justify-between text-[#82928B] text-xs font-sans mb-1 font-medium">
             <span>INTER-STORY DRIFT</span>
-            <Activity size={14} className="text-[#B28600]" />
+            <Activity size={14} className="text-[#D6B56D]" />
           </div>
-          <div className="text-2xl font-mono font-bold text-[#161616]">
+          <div className="text-2xl font-mono font-bold text-[#E8E8DE]">
             {metrics?.drift_ratio_percent !== undefined
               ? `${metrics.drift_ratio_percent.toFixed(2)} %`
               : "—"}
           </div>
           <div className="mt-2 flex items-center justify-between text-[11px] font-mono">
-            <span className="text-[#525252]">Performance State:</span>
+            <span className="text-[#82928B]">Performance State:</span>
             <span
               className={`font-semibold ${
                 (metrics?.drift_ratio_percent ?? 0) < 1.0
-                  ? "text-[#198038]"
+                  ? "text-[#73E6B5]"
                   : (metrics?.drift_ratio_percent ?? 0) < 2.0
-                  ? "text-[#B28600]"
-                  : "text-[#DA1E28]"
+                  ? "text-[#D6B56D]"
+                  : "text-[#E35D5D]"
               }`}
             >
               {(metrics?.drift_ratio_percent ?? 0) < 1.0
@@ -177,56 +177,56 @@ export const CommandCenterView: React.FC<CommandCenterViewProps> = ({
         </div>
 
         {/* Metric 3: Ductility & Plasticity */}
-        <div className="bg-white border border-[#E0E0E0] hover:border-[#8D8D8D] rounded p-4 relative transition-colors">
-          <div className="flex items-center justify-between text-[#525252] text-xs font-sans mb-1 font-medium">
+        <div className="bg-[#0E1B17] border border-white/[0.08] hover:border-[#73E6B5]/40 rounded-lg p-4 relative transition-colors">
+          <div className="flex items-center justify-between text-[#82928B] text-xs font-sans mb-1 font-medium">
             <span>DUCTILITY DEMAND (μ)</span>
-            <Layers size={14} className="text-[#0F62FE]" />
+            <Layers size={14} className="text-[#73E6B5]" />
           </div>
-          <div className="text-2xl font-mono font-bold text-[#161616]">
+          <div className="text-2xl font-mono font-bold text-[#E8E8DE]">
             {metrics?.ductility_demand_mu !== undefined
               ? `${metrics.ductility_demand_mu.toFixed(2)}`
               : "—"}
           </div>
           <div className="mt-2 flex items-center justify-between text-[11px] font-mono">
-            <span className="text-[#525252]">Yield Status:</span>
-            <span className={`font-semibold ${isYielded ? "text-[#B28600]" : "text-[#198038]"}`}>
+            <span className="text-[#82928B]">Yield Status:</span>
+            <span className={`font-semibold ${isYielded ? "text-[#D6B56D]" : "text-[#73E6B5]"}`}>
               {isYielded ? `Yielded at t = ${metrics?.yield_time_sec?.toFixed(2)}s` : "Linear Elastic"}
             </span>
           </div>
         </div>
 
         {/* Metric 4: Dissipated Hysteretic Energy */}
-        <div className="bg-white border border-[#E0E0E0] hover:border-[#8D8D8D] rounded p-4 relative transition-colors">
-          <div className="flex items-center justify-between text-[#525252] text-xs font-sans mb-1 font-medium">
+        <div className="bg-[#0E1B17] border border-white/[0.08] hover:border-[#73E6B5]/40 rounded-lg p-4 relative transition-colors">
+          <div className="flex items-center justify-between text-[#82928B] text-xs font-sans mb-1 font-medium">
             <span>HYSTERETIC DISSIPATION</span>
-            <Zap size={14} className="text-[#198038]" />
+            <Zap size={14} className="text-[#73E6B5]" />
           </div>
-          <div className="text-2xl font-mono font-bold text-[#161616]">
+          <div className="text-2xl font-mono font-bold text-[#E8E8DE]">
             {metrics?.total_hysteretic_energy_J !== undefined
               ? `${metrics.total_hysteretic_energy_J.toFixed(1)} J`
               : "—"}
           </div>
-          <div className="mt-2 flex items-center justify-between text-[11px] font-mono text-[#525252]">
+          <div className="mt-2 flex items-center justify-between text-[11px] font-mono text-[#82928B]">
             <span>Base Shear Ratio:</span>
-            <span className="text-[#161616]">
+            <span className="text-[#E8E8DE]">
               {metrics?.base_shear_ratio !== undefined ? `${metrics.base_shear_ratio.toFixed(2)} W` : "—"}
             </span>
           </div>
         </div>
       </div>
 
-      {/* Stage 1-4 Scientific Research Progression Cards (Carbon Treatment) */}
+      {/* Stage 1-4 Scientific Research Progression Cards */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <GitBranch size={16} className="text-[#0F62FE]" />
-            <h2 className="text-sm font-bold font-mono text-[#161616] uppercase">
+            <GitBranch size={16} className="text-[#73E6B5]" />
+            <h2 className="text-sm font-bold font-mono text-[#E8E8DE] uppercase">
               Scientific Research Progression (EXP4 → EXP5 → EXP6)
             </h2>
           </div>
           <button
             onClick={() => onNavigateTab("research_demo")}
-            className="text-xs font-mono text-[#0F62FE] hover:underline cursor-pointer font-semibold"
+            className="text-xs font-mono text-[#73E6B5] hover:text-[#A4B3AC] hover:underline cursor-pointer font-semibold transition"
           >
             Open Full Research Defense →
           </button>
@@ -234,46 +234,45 @@ export const CommandCenterView: React.FC<CommandCenterViewProps> = ({
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {progression.map((step) => {
-            // EXP4 = red-60, EXP5 = amber-60, EXP6 = green-60, Stage 4 = neutral gray
             const topBorderColor =
               step.step === 1
-                ? "border-t-[#DA1E28]" // red-60
+                ? "border-t-[#E35D5D]"
                 : step.step === 2
-                ? "border-t-[#B28600]" // amber-60
+                ? "border-t-[#D6B56D]"
                 : step.step === 3
-                ? "border-t-[#198038]" // green-60
-                : "border-t-[#8D8D8D]"; // neutral gray
+                ? "border-t-[#73E6B5]"
+                : "border-t-[#82928B]";
 
             const badgeStyle =
               step.step === 1
-                ? "bg-[#FFD7D9] text-[#DA1E28] border border-[#FF8389]"
+                ? "bg-[#E35D5D]/15 text-[#E35D5D] border border-[#E35D5D]/30"
                 : step.step === 2
-                ? "bg-[#FFF8E1] text-[#B28600] border-[#F1C21B]"
+                ? "bg-[#D6B56D]/15 text-[#D6B56D] border border-[#D6B56D]/30"
                 : step.step === 3
-                ? "bg-[#DEFBE6] text-[#198038] border-[#6FDC8C]"
-                : "bg-[#F4F4F4] text-[#525252] border-[#E0E0E0]";
+                ? "bg-[#73E6B5]/15 text-[#73E6B5] border border-[#73E6B5]/30"
+                : "bg-white/10 text-[#82928B] border border-white/10";
 
             return (
               <div
                 key={step.step}
-                className={`p-4 rounded border border-[#E0E0E0] border-t-4 ${topBorderColor} bg-white flex flex-col justify-between hover:border-[#8D8D8D] transition-colors`}
+                className={`p-4 rounded-lg border border-white/[0.08] border-t-4 ${topBorderColor} bg-[#0E1B17] flex flex-col justify-between hover:border-[#73E6B5]/30 transition-colors`}
               >
                 <div>
                   <div className="flex items-center justify-between text-xs font-mono mb-2">
-                    <span className="font-bold text-[#161616]">STAGE {step.step}</span>
+                    <span className="font-bold text-[#E8E8DE]">STAGE {step.step}</span>
                     <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${badgeStyle}`}>
                       {step.phase}
                     </span>
                   </div>
-                  <h3 className="text-xs font-bold text-[#161616] mb-1.5 font-sans leading-snug">{step.title}</h3>
-                  <div className="text-xs font-mono font-bold text-[#161616] mb-2">
+                  <h3 className="text-xs font-bold text-[#E8E8DE] mb-1.5 font-sans leading-snug">{step.title}</h3>
+                  <div className="text-xs font-mono font-bold text-[#73E6B5] mb-2">
                     {step.result_highlight}
                   </div>
-                  <p className="text-xs text-[#525252] leading-relaxed font-sans">{step.finding}</p>
+                  <p className="text-xs text-[#82928B] leading-relaxed font-sans">{step.finding}</p>
                 </div>
-                <div className="mt-3 pt-2.5 border-t border-[#E0E0E0] text-[10px] font-mono text-[#525252]">
-                  <span className="text-[#8D8D8D] block uppercase font-bold mb-0.5">REPRESENTATION:</span>
-                  <span className="text-[#161616] font-semibold">{step.representation}</span>
+                <div className="mt-3 pt-2.5 border-t border-white/[0.08] text-[10px] font-mono text-[#82928B]">
+                  <span className="text-[#82928B]/70 block uppercase font-bold mb-0.5">REPRESENTATION:</span>
+                  <span className="text-[#E8E8DE] font-semibold">{step.representation}</span>
                 </div>
               </div>
             );
@@ -284,50 +283,50 @@ export const CommandCenterView: React.FC<CommandCenterViewProps> = ({
       {/* Middle Section: Active Scenario + Model Health Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Active Structure & Excitation Card */}
-        <div className="md:col-span-2 bg-white border border-[#E0E0E0] rounded p-5">
-          <div className="flex items-center justify-between border-b border-[#E0E0E0] pb-3 mb-4">
+        <div className="md:col-span-2 bg-[#0E1B17] border border-white/[0.08] rounded-lg p-5">
+          <div className="flex items-center justify-between border-b border-white/[0.08] pb-3 mb-4">
             <div className="flex items-center space-x-2">
-              <Building2 size={16} className="text-[#0F62FE]" />
-              <h3 className="text-sm font-bold font-mono text-[#161616] uppercase">
+              <Building2 size={16} className="text-[#73E6B5]" />
+              <h3 className="text-sm font-bold font-mono text-[#E8E8DE] uppercase">
                 Active Scenario Configuration
               </h3>
             </div>
             <button
               onClick={() => onNavigateTab("scenario_lab")}
-              className="text-xs font-mono text-[#0F62FE] hover:underline cursor-pointer font-semibold"
+              className="text-xs font-mono text-[#73E6B5] hover:text-[#A4B3AC] hover:underline cursor-pointer font-semibold transition"
             >
               Open Scenario Lab →
             </button>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 text-xs font-mono">
-            <div className="space-y-2 bg-[#F4F4F4] p-3 rounded border border-[#E0E0E0]">
-              <div className="text-[#525252] font-semibold uppercase text-[10px]">Excitation Ground Motion</div>
-              <div className="text-[#161616] font-bold text-sm truncate">{selectedEarthquakeName}</div>
-              <div className="flex justify-between text-[#525252]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono">
+            <div className="space-y-2 bg-[#07110F] p-3 rounded border border-white/[0.08]">
+              <div className="text-[#82928B] font-semibold uppercase text-[10px]">Excitation Ground Motion</div>
+              <div className="text-[#E8E8DE] font-bold text-sm truncate">{selectedEarthquakeName}</div>
+              <div className="flex justify-between text-[#82928B]">
                 <span>Target PGA:</span>
-                <span className="text-[#161616] font-semibold">
+                <span className="text-[#E8E8DE] font-semibold">
                   {prediction?.scenario?.pga_g ?? 0.40} g
                 </span>
               </div>
-              <div className="flex justify-between text-[#525252]">
+              <div className="flex justify-between text-[#82928B]">
                 <span>Dataset Origin:</span>
-                <span className="text-[#198038] font-semibold">Historical Ground Motion</span>
+                <span className="text-[#73E6B5] font-semibold">Historical Ground Motion</span>
               </div>
             </div>
 
-            <div className="space-y-2 bg-[#F4F4F4] p-3 rounded border border-[#E0E0E0]">
-              <div className="text-[#525252] font-semibold uppercase text-[10px]">Structural Twin</div>
-              <div className="text-[#161616] font-bold text-sm truncate">{selectedStructureName}</div>
-              <div className="flex justify-between text-[#525252]">
+            <div className="space-y-2 bg-[#07110F] p-3 rounded border border-white/[0.08]">
+              <div className="text-[#82928B] font-semibold uppercase text-[10px]">Structural Twin</div>
+              <div className="text-[#E8E8DE] font-bold text-sm truncate">{selectedStructureName}</div>
+              <div className="flex justify-between text-[#82928B]">
                 <span>Period / Damping:</span>
-                <span className="text-[#161616] font-semibold">
+                <span className="text-[#E8E8DE] font-semibold">
                   T0 = {prediction?.scenario?.T0 ?? 0.50}s | ζ = {((prediction?.scenario?.damping_ratio ?? 0.05) * 100).toFixed(0)}%
                 </span>
               </div>
-              <div className="flex justify-between text-[#525252]">
+              <div className="flex justify-between text-[#82928B]">
                 <span>Yield Disp / Alpha:</span>
-                <span className="text-[#161616] font-semibold">
+                <span className="text-[#E8E8DE] font-semibold">
                   uy = {((prediction?.scenario?.yield_displacement_m ?? 0.01) * 1000).toFixed(0)} mm | α = {prediction?.scenario?.post_yield_ratio ?? 0.05}
                 </span>
               </div>
@@ -336,18 +335,18 @@ export const CommandCenterView: React.FC<CommandCenterViewProps> = ({
 
           {/* Quick Trajectory Mini-Preview if available */}
           {prediction && prediction.trajectories.u.length > 0 && (
-            <div className="mt-4 pt-3 border-t border-[#E0E0E0]">
-              <div className="flex justify-between items-center text-[11px] font-mono text-[#525252] mb-2">
+            <div className="mt-4 pt-3 border-t border-white/[0.08]">
+              <div className="flex justify-between items-center text-[11px] font-mono text-[#82928B] mb-2">
                 <span>Relative Displacement Time History u(t) Preview</span>
                 <button
                   onClick={() => onNavigateTab("structural_twin")}
-                  className="text-[#0F62FE] hover:underline cursor-pointer font-semibold"
+                  className="text-[#73E6B5] hover:text-[#A4B3AC] hover:underline cursor-pointer font-semibold transition"
                 >
                   Full Dynamic Twin →
                 </button>
               </div>
-              <div className="h-16 w-full bg-[#F4F4F4] rounded border border-[#E0E0E0] flex items-center px-2">
-                <svg className="w-full h-12 stroke-[#0F62FE] fill-none" viewBox="0 0 500 50" preserveAspectRatio="none">
+              <div className="h-16 w-full bg-[#07110F] rounded border border-white/[0.08] flex items-center px-2">
+                <svg className="w-full h-12 stroke-[#73E6B5] fill-none" viewBox="0 0 500 50" preserveAspectRatio="none">
                   <path
                     d={prediction.trajectories.u
                       .map((val, idx, arr) => {
@@ -366,47 +365,47 @@ export const CommandCenterView: React.FC<CommandCenterViewProps> = ({
         </div>
 
         {/* Model Provenance & Integrity Status Card */}
-        <div className="bg-white border border-[#E0E0E0] rounded p-5 flex flex-col justify-between">
+        <div className="bg-[#0E1B17] border border-white/[0.08] rounded-lg p-5 flex flex-col justify-between">
           <div>
-            <div className="flex items-center space-x-2 border-b border-[#E0E0E0] pb-3 mb-4">
-              <Shield size={16} className="text-[#198038]" />
-              <h3 className="text-sm font-bold font-mono text-[#161616] uppercase">
+            <div className="flex items-center space-x-2 border-b border-white/[0.08] pb-3 mb-4">
+              <Shield size={16} className="text-[#73E6B5]" />
+              <h3 className="text-sm font-bold font-mono text-[#E8E8DE] uppercase">
                 Model Provenance
               </h3>
             </div>
 
             <div className="space-y-3 text-xs font-mono">
               <div className="flex justify-between">
-                <span className="text-[#525252]">Architecture:</span>
-                <span className="text-[#161616] font-semibold">1D Fourier Neural Operator</span>
+                <span className="text-[#82928B]">Architecture:</span>
+                <span className="text-[#E8E8DE] font-semibold">1D Fourier Neural Operator</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#525252]">Fourier Modes:</span>
-                <span className="text-[#161616]">{systemInfo?.modes ?? 128} modes</span>
+                <span className="text-[#82928B]">Fourier Modes:</span>
+                <span className="text-[#E8E8DE]">{systemInfo?.modes ?? 128} modes</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#525252]">Hidden Width:</span>
-                <span className="text-[#161616]">{systemInfo?.width ?? 48} channels</span>
+                <span className="text-[#82928B]">Hidden Width:</span>
+                <span className="text-[#E8E8DE]">{systemInfo?.width ?? 48} channels</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#525252]">Parameters:</span>
-                <span className="text-[#161616]">
+                <span className="text-[#82928B]">Parameters:</span>
+                <span className="text-[#E8E8DE]">
                   {systemInfo?.model_parameters ? systemInfo.model_parameters.toLocaleString() : "1,196,931"}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#525252]">Compute Device:</span>
-                <span className="text-[#0F62FE] font-semibold">{systemInfo?.device ?? "cpu"}</span>
+                <span className="text-[#82928B]">Compute Device:</span>
+                <span className="text-[#73E6B5] font-semibold">{systemInfo?.device ? systemInfo.device.toUpperCase() : "MPS"}</span>
               </div>
             </div>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-[#E0E0E0] space-y-2 text-[11px] font-mono">
-            <div className="flex items-center space-x-1.5 text-[#198038] font-semibold">
+          <div className="mt-4 pt-3 border-t border-white/[0.08] space-y-2 text-[11px] font-mono">
+            <div className="flex items-center space-x-1.5 text-[#73E6B5] font-semibold">
               <CheckCircle2 size={13} />
               <span>FROZEN SCIENTIFIC CHECKPOINT</span>
             </div>
-            <p className="text-[#525252] text-[10px] leading-tight font-sans">
+            <p className="text-[#82928B] text-[10px] leading-tight font-sans">
               Model weights verified against OpenSeesPy non-linear time history benchmarks.
             </p>
           </div>
@@ -414,33 +413,33 @@ export const CommandCenterView: React.FC<CommandCenterViewProps> = ({
       </div>
 
       {/* Quick Access Action Bar */}
-      <div className="bg-white border border-[#E0E0E0] rounded p-4 flex flex-wrap items-center justify-between gap-3">
-        <div className="text-xs font-mono text-[#525252] flex items-center space-x-2">
-          <Clock size={14} className="text-[#0F62FE]" />
+      <div className="bg-[#0E1B17] border border-white/[0.08] rounded-lg p-4 flex flex-wrap items-center justify-between gap-3">
+        <div className="text-xs font-mono text-[#82928B] flex items-center space-x-2">
+          <Clock size={14} className="text-[#73E6B5]" />
           <span>Quick Launch Specialized Engineering Workspaces:</span>
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => onNavigateTab("earthquake_intel")}
-            className="px-3 py-1.5 text-xs font-mono bg-[#F4F4F4] hover:bg-[#E0E0E0] border border-[#E0E0E0] rounded text-[#161616] cursor-pointer transition font-medium"
+            className="px-3 py-1.5 text-xs font-mono bg-[#07110F] hover:bg-[#101D19] border border-white/[0.08] hover:border-[#73E6B5]/40 rounded text-[#E8E8DE] cursor-pointer transition font-medium"
           >
             India Hazard Map
           </button>
           <button
             onClick={() => onNavigateTab("structural_twin")}
-            className="px-3 py-1.5 text-xs font-mono bg-[#F4F4F4] hover:bg-[#E0E0E0] border border-[#E0E0E0] rounded text-[#161616] cursor-pointer transition font-medium"
+            className="px-3 py-1.5 text-xs font-mono bg-[#07110F] hover:bg-[#101D19] border border-white/[0.08] hover:border-[#73E6B5]/40 rounded text-[#E8E8DE] cursor-pointer transition font-medium"
           >
             Structural Twin
           </button>
           <button
             onClick={() => onNavigateTab("scenario_lab")}
-            className="px-3 py-1.5 text-xs font-mono bg-[#EDF5FF] hover:bg-[#D0E2FF] border border-[#0F62FE] text-[#0F62FE] font-bold rounded cursor-pointer transition"
+            className="px-3 py-1.5 text-xs font-mono bg-[#73E6B5]/15 hover:bg-[#73E6B5]/25 border border-[#73E6B5]/50 text-[#73E6B5] font-bold rounded cursor-pointer transition"
           >
             Scenario Lab (Compare)
           </button>
           <button
             onClick={() => onNavigateTab("model_validation")}
-            className="px-3 py-1.5 text-xs font-mono bg-[#F4F4F4] hover:bg-[#E0E0E0] border border-[#E0E0E0] rounded text-[#161616] cursor-pointer transition font-medium"
+            className="px-3 py-1.5 text-xs font-mono bg-[#07110F] hover:bg-[#101D19] border border-white/[0.08] hover:border-[#73E6B5]/40 rounded text-[#E8E8DE] cursor-pointer transition font-medium"
           >
             Benchmark Validation
           </button>
@@ -449,3 +448,5 @@ export const CommandCenterView: React.FC<CommandCenterViewProps> = ({
     </div>
   );
 };
+
+export default CommandCenterView;

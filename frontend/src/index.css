@@ -82,23 +82,23 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #070A11;
+  background: #07110F;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1E293B;
+  background: #17483A;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #00F0FF;
+  background: #73E6B5;
 }
 
-/* Range sliders with electric neon accents */
+/* Range sliders with petrol-forest mint accents */
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
-  background: #161F36;
+  background: #0E1B17;
   height: 5px;
   border-radius: 9999px;
   outline: none;
@@ -111,20 +111,20 @@ input[type="range"]::-webkit-slider-thumb {
   width: 15px;
   height: 15px;
   border-radius: 50%;
-  background: #00F0FF;
+  background: #73E6B5;
   cursor: pointer;
-  border: 2px solid #070A11;
-  box-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
+  border: 2px solid #07110F;
+  box-shadow: 0 0 10px rgba(115, 230, 181, 0.4);
   transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
 
 input[type="range"]:hover::-webkit-slider-thumb {
   transform: scale(1.2);
-  box-shadow: 0 0 14px rgba(0, 240, 255, 0.9);
+  box-shadow: 0 0 14px rgba(115, 230, 181, 0.7);
 }
 
 input[type="range"]:focus::-webkit-slider-thumb {
-  outline: 2px solid #00F0FF;
+  outline: 2px solid #73E6B5;
   outline-offset: 2px;
 }
 

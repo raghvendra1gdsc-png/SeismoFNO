@@ -18,7 +18,6 @@ export const Structural3DViewer: React.FC<Structural3DViewerProps> = ({
   storyDeflectionsMm,
   yieldDisplacementMm,
   currentTimeS,
-  peakDisplacementMm,
   isYielded,
   buildingName,
 }) => {
@@ -43,7 +42,6 @@ export const Structural3DViewer: React.FC<Structural3DViewerProps> = ({
   const [cameraPreset, setCameraPreset] = useState<"iso" | "front" | "top">("iso");
 
   // Visual amplification factor so real structural drifts (e.g. 10-60 mm) are clearly visible
-  // on a building of height ~15-20 units without looking unrealistically distorted
   const VISUAL_SCALE = 0.045; // 10mm -> ~0.45 3D units
   const FLOOR_WIDTH = 7.0;
   const FLOOR_DEPTH = 7.0;
@@ -59,8 +57,8 @@ export const Structural3DViewer: React.FC<Structural3DViewerProps> = ({
 
     // 1. Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x080c16);
-    scene.fog = new THREE.FogExp2(0x080c16, 0.015);
+    scene.background = new THREE.Color(0x07110f);
+    scene.fog = new THREE.FogExp2(0x07110f, 0.015);
     sceneRef.current = scene;
 
     // 2. Camera
@@ -90,24 +88,24 @@ export const Structural3DViewer: React.FC<Structural3DViewerProps> = ({
     controlsRef.current = controls;
 
     // 5. Lighting
-    const ambientLight = new THREE.AmbientLight(0x1e293b, 1.8);
+    const ambientLight = new THREE.AmbientLight(0x0e1b17, 2.0);
     scene.add(ambientLight);
 
-    const mainLight = new THREE.DirectionalLight(0xffffff, 2.2);
+    const mainLight = new THREE.DirectionalLight(0xe8e8de, 2.2);
     mainLight.position.set(20, 30, 20);
     scene.add(mainLight);
 
-    // Subtle neon rim lights for SciML aesthetic
-    const cyanRim = new THREE.DirectionalLight(0x00f0ff, 2.0);
-    cyanRim.position.set(-20, 15, -15);
-    scene.add(cyanRim);
+    // Subtle forest mint & amber rim lights
+    const mintRim = new THREE.DirectionalLight(0x73e6b5, 2.0);
+    mintRim.position.set(-20, 15, -15);
+    scene.add(mintRim);
 
-    const purpleAccent = new THREE.PointLight(0x8a2be2, 2.5, 40);
-    purpleAccent.position.set(15, totalHeight + 5, -10);
-    scene.add(purpleAccent);
+    const amberAccent = new THREE.PointLight(0xd6b56d, 2.2, 40);
+    amberAccent.position.set(15, totalHeight + 5, -10);
+    scene.add(amberAccent);
 
     // 6. Seismic Ground Grid & Foundation Pad
-    const grid = new THREE.GridHelper(30, 30, 0x00f0ff, 0x1e293b);
+    const grid = new THREE.GridHelper(30, 30, 0x17483a, 0x0e1b17);
     grid.position.y = -0.05;
     scene.add(grid);
     groundGridRef.current = grid;
@@ -115,9 +113,9 @@ export const Structural3DViewer: React.FC<Structural3DViewerProps> = ({
     // Foundation Plate
     const foundGeo = new THREE.BoxGeometry(FLOOR_WIDTH + 2.0, 0.4, FLOOR_DEPTH + 2.0);
     const foundMat = new THREE.MeshStandardMaterial({
-      color: 0x0f172a,
+      color: 0x0b1714,
       roughness: 0.4,
-      metalness: 0.6,
+      metalness: 0.5,
     });
     const foundMesh = new THREE.Mesh(foundGeo, foundMat);
     foundMesh.position.y = -0.2;
@@ -126,7 +124,7 @@ export const Structural3DViewer: React.FC<Structural3DViewerProps> = ({
     // Foundation edge outline
     const foundEdges = new THREE.LineSegments(
       new THREE.EdgesGeometry(foundGeo),
-      new THREE.LineBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.4 })
+      new THREE.LineBasicMaterial({ color: 0x73e6b5, transparent: true, opacity: 0.4 })
     );
     foundMesh.add(foundEdges);
 
@@ -189,13 +187,13 @@ export const Structural3DViewer: React.FC<Structural3DViewerProps> = ({
     // Shared Materials
     const slabGeo = new THREE.BoxGeometry(FLOOR_WIDTH, 0.22, FLOOR_DEPTH);
     const slabMat = new THREE.MeshStandardMaterial({
-      color: 0x111c33,
+      color: 0x0e1b17,
       metalness: 0.5,
       roughness: 0.25,
       transparent: true,
-      opacity: 0.85,
+      opacity: 0.9,
     });
-    const slabEdgeMat = new THREE.LineBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.75 });
+    const slabEdgeMat = new THREE.LineBasicMaterial({ color: 0x73e6b5, transparent: true, opacity: 0.75 });
     const slabEdgesGeo = new THREE.EdgesGeometry(slabGeo);
 
     const jointGeo = new THREE.SphereGeometry(0.22, 16, 16);
@@ -223,20 +221,20 @@ export const Structural3DViewer: React.FC<Structural3DViewerProps> = ({
 
         // Column Mesh (initial upright cylinder)
         const colMat = new THREE.MeshStandardMaterial({
-          color: 0x00f0ff,
+          color: 0x73e6b5,
           metalness: 0.6,
           roughness: 0.2,
-          emissive: 0x003344,
-          emissiveIntensity: 0.2,
+          emissive: 0x17483a,
+          emissiveIntensity: 0.25,
         });
         const colMesh = new THREE.Mesh(columnGeo, colMat);
 
         // Spherical Joint Nodes
         const jointMat = new THREE.MeshStandardMaterial({
-          color: 0x00f0ff,
+          color: 0x73e6b5,
           metalness: 0.7,
           roughness: 0.2,
-          emissive: 0x003344,
+          emissive: 0x17483a,
           emissiveIntensity: 0.4,
         });
         const baseJoint = new THREE.Mesh(jointGeo, jointMat);
@@ -281,19 +279,18 @@ export const Structural3DViewer: React.FC<Structural3DViewerProps> = ({
     ];
 
     // Colors
-    const elasticColor = new THREE.Color(0x00f0ff);
-    const plasticColor = new THREE.Color(0xff2a6d);
-    const elasticEmissive = new THREE.Color(0x003344);
-    const plasticEmissive = new THREE.Color(0xaa0033);
+    const elasticColor = new THREE.Color(0x73e6b5);
+    const plasticColor = new THREE.Color(0xe35d5d);
+    const elasticEmissive = new THREE.Color(0x17483a);
+    const plasticEmissive = new THREE.Color(0x601818);
 
     // 1. Update Slab Translations
     slabsRef.current.forEach((slab, idx) => {
       const dispMm = storyDeflectionsMm[idx] || 0;
-      const xShift = dispMm * VISUAL_SCALE;
-      slab.position.x = xShift;
+      slab.position.x = dispMm * VISUAL_SCALE;
     });
 
-    // 2. Update Columns connecting Level (story-1) to Level (story)
+    // 2. Update Column Cylinders & Spherical Joints
     columnsRef.current.forEach((col) => {
       const s = col.storyIdx;
       const prevDispMm = s === 0 ? 0 : storyDeflectionsMm[s - 1] || 0;
@@ -368,29 +365,26 @@ export const Structural3DViewer: React.FC<Structural3DViewerProps> = ({
   }, [stories]);
 
   const topFloorDisp = storyDeflectionsMm.length > 0 ? storyDeflectionsMm[storyDeflectionsMm.length - 1] : 0;
-  const maxStoryDrift = Math.max(
-    ...storyDeflectionsMm.map((d, i) => (i === 0 ? Math.abs(d) : Math.abs(d - storyDeflectionsMm[i - 1])))
-  );
 
   return (
-    <div className="relative w-full h-[460px] rounded-xl overflow-hidden border border-white/10 bg-[#080C16] shadow-2xl">
+    <div className="relative w-full h-[460px] rounded-lg overflow-hidden border border-white/[0.08] bg-[#07110F] shadow-2xl">
       {/* 3D WebGL Canvas Mount */}
       <div ref={mountRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
 
       {/* Floating Header HUD */}
       <div className="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none">
-        <div className="flex items-center space-x-3 bg-[#0E1526]/85 backdrop-blur-md px-3.5 py-2 rounded-lg border border-white/10 pointer-events-auto shadow-lg">
-          <div className="w-2.5 h-2.5 rounded-full bg-[#00F0FF] animate-pulse" />
+        <div className="flex items-center space-x-3 bg-[#0E1B17]/90 backdrop-blur-md px-3.5 py-2 rounded-lg border border-white/[0.08] pointer-events-auto shadow-lg">
+          <div className="w-2.5 h-2.5 rounded-full bg-[#73E6B5] animate-pulse" />
           <div>
-            <div className="text-xs font-mono font-bold text-white tracking-wider flex items-center gap-1.5">
+            <div className="text-xs font-mono font-bold text-[#E8E8DE] tracking-wider flex items-center gap-1.5">
               <span>{buildingName.toUpperCase()}</span>
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/10 text-cyan-400">
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#73E6B5]/10 text-[#73E6B5] border border-[#73E6B5]/30">
                 {stories} STORIES
               </span>
             </div>
-            <div className="text-[10px] font-mono text-slate-400">
-              TIME: <span className="text-white font-bold">{currentTimeS.toFixed(2)}s</span> | ROOF DRIFT:{" "}
-              <span className={Math.abs(topFloorDisp) > yieldDisplacementMm ? "text-[#FF2A6D] font-bold" : "text-cyan-400 font-bold"}>
+            <div className="text-[10px] font-mono text-[#82928B]">
+              TIME: <span className="text-[#E8E8DE] font-bold">{currentTimeS.toFixed(2)}s</span> | ROOF DRIFT:{" "}
+              <span className={Math.abs(topFloorDisp) > yieldDisplacementMm ? "text-[#E35D5D] font-bold" : "text-[#73E6B5] font-bold"}>
                 {topFloorDisp.toFixed(1)} mm
               </span>
             </div>
@@ -402,8 +396,8 @@ export const Structural3DViewer: React.FC<Structural3DViewerProps> = ({
           <div
             className={`px-3 py-1.5 rounded-lg border text-xs font-mono font-bold flex items-center space-x-1.5 backdrop-blur-md transition-all duration-300 ${
               isYielded
-                ? "bg-[#FF2A6D]/20 border-[#FF2A6D] text-[#FF2A6D] shadow-[0_0_15px_rgba(255,42,109,0.35)]"
-                : "bg-[#00F0FF]/15 border-[#00F0FF]/60 text-[#00F0FF] shadow-[0_0_12px_rgba(0,240,255,0.25)]"
+                ? "bg-[#E35D5D]/20 border-[#E35D5D] text-[#E35D5D] shadow-[0_0_15px_rgba(227,93,93,0.35)]"
+                : "bg-[#73E6B5]/15 border-[#73E6B5]/40 text-[#73E6B5] shadow-[0_0_12px_rgba(115,230,181,0.25)]"
             }`}
           >
             {isYielded ? <ShieldAlert size={14} /> : <Activity size={14} />}
@@ -413,14 +407,14 @@ export const Structural3DViewer: React.FC<Structural3DViewerProps> = ({
       </div>
 
       {/* Floating Bottom View Controls HUD */}
-      <div className="absolute bottom-4 left-4 flex items-center space-x-2 pointer-events-auto bg-[#0E1526]/85 backdrop-blur-md p-1.5 rounded-lg border border-white/10 shadow-lg">
-        <span className="text-[10px] font-mono text-slate-400 px-2 flex items-center gap-1">
-          <Eye size={12} className="text-cyan-400" /> VIEW:
+      <div className="absolute bottom-4 left-4 flex items-center space-x-2 pointer-events-auto bg-[#0E1B17]/90 backdrop-blur-md p-1.5 rounded-lg border border-white/[0.08] shadow-lg">
+        <span className="text-[10px] font-mono text-[#82928B] px-2 flex items-center gap-1">
+          <Eye size={12} className="text-[#73E6B5]" /> VIEW:
         </span>
         <button
           onClick={() => setViewPreset("iso")}
           className={`px-2.5 py-1 text-xs font-mono rounded cursor-pointer transition ${
-            cameraPreset === "iso" ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40" : "text-slate-400 hover:text-white"
+            cameraPreset === "iso" ? "bg-[#73E6B5]/20 text-[#73E6B5] border border-[#73E6B5]/40" : "text-[#82928B] hover:text-[#E8E8DE]"
           }`}
         >
           3D Orbit
@@ -428,7 +422,7 @@ export const Structural3DViewer: React.FC<Structural3DViewerProps> = ({
         <button
           onClick={() => setViewPreset("front")}
           className={`px-2.5 py-1 text-xs font-mono rounded cursor-pointer transition ${
-            cameraPreset === "front" ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40" : "text-slate-400 hover:text-white"
+            cameraPreset === "front" ? "bg-[#73E6B5]/20 text-[#73E6B5] border border-[#73E6B5]/40" : "text-[#82928B] hover:text-[#E8E8DE]"
           }`}
         >
           Elevation
@@ -436,7 +430,7 @@ export const Structural3DViewer: React.FC<Structural3DViewerProps> = ({
         <button
           onClick={() => setViewPreset("top")}
           className={`px-2.5 py-1 text-xs font-mono rounded cursor-pointer transition ${
-            cameraPreset === "top" ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40" : "text-slate-400 hover:text-white"
+            cameraPreset === "top" ? "bg-[#73E6B5]/20 text-[#73E6B5] border border-[#73E6B5]/40" : "text-[#82928B] hover:text-[#E8E8DE]"
           }`}
         >
           Plan
@@ -444,35 +438,13 @@ export const Structural3DViewer: React.FC<Structural3DViewerProps> = ({
         <button
           onClick={() => setViewPreset("iso")}
           title="Reset Orbit Camera"
-          className="p-1 text-slate-400 hover:text-cyan-300 cursor-pointer transition ml-1"
+          className="p-1 text-[#82928B] hover:text-[#73E6B5] cursor-pointer transition ml-1"
         >
           <RotateCcw size={13} />
         </button>
       </div>
-
-      {/* Floating Story Drift Legend HUD */}
-      <div className="absolute bottom-4 right-4 bg-[#0E1526]/85 backdrop-blur-md px-3.5 py-2 rounded-lg border border-white/10 text-[11px] font-mono pointer-events-auto space-y-1 shadow-lg">
-        <div className="flex items-center justify-between gap-3">
-          <span className="text-slate-400">Peak Response:</span>
-          <span className="text-white font-bold">{peakDisplacementMm.toFixed(1)} mm</span>
-        </div>
-        <div className="flex items-center justify-between gap-3">
-          <span className="text-slate-400">Max Story Drift:</span>
-          <span className={maxStoryDrift > yieldDisplacementMm ? "text-[#FF2A6D] font-bold" : "text-cyan-400 font-bold"}>
-            {maxStoryDrift.toFixed(1)} mm
-          </span>
-        </div>
-        <div className="flex items-center gap-3 pt-1 border-t border-white/10 text-[10px]">
-          <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-[#00F0FF] shadow-[0_0_6px_#00F0FF]" />
-            <span className="text-slate-300">Elastic</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-[#FF2A6D] shadow-[0_0_6px_#FF2A6D]" />
-            <span className="text-slate-300">Yielded Hinge</span>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
+
+export default Structural3DViewer;

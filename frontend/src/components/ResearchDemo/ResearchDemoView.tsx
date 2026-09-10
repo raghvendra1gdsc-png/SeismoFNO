@@ -178,7 +178,7 @@ export const ResearchDemoView: React.FC = () => {
     };
   }, [simResult]);
 
-  // Trajectory comparison chart data: Ground truth (#FF9900 dashed) vs Prediction (cyan solid)
+  // Trajectory comparison chart data: Ground truth (#D6B56D dashed) vs Prediction (cyan solid)
   const trajectoryChartData = useMemo(() => {
     if (!simResult) return null;
     const isShuffled = simResult.model.model_id.includes("shuffled");
@@ -188,7 +188,7 @@ export const ResearchDemoView: React.FC = () => {
         {
           label: "OpenSeesPy Ground Truth (NLTHA)",
           data: simResult.u_true.map((v: number) => v * 1000.0), // mm
-          borderColor: "#FF9900", // Engineering amber dashed
+          borderColor: "#D6B56D", // Engineering amber dashed
           borderDash: [5, 4],
           borderWidth: 2.0,
           pointRadius: 0,
@@ -197,7 +197,7 @@ export const ResearchDemoView: React.FC = () => {
         {
           label: `${simResult.model.display_name} (${simResult.data_provenance.prediction})`,
           data: simResult.u_pred.map((v: number) => v * 1000.0), // mm
-          borderColor: isShuffled ? "#A855F7" : "#00F0FF", // neon purple if shuffled, else electric cyan
+          borderColor: isShuffled ? "#A855F7" : "#73E6B5", // neon purple if shuffled, else electric cyan
           borderWidth: 2.2,
           pointRadius: 0,
           tension: 0.1,
@@ -237,17 +237,17 @@ export const ResearchDemoView: React.FC = () => {
   }, [oodMatrix]);
 
   return (
-    <div className="w-full min-h-screen bg-[#070A11] text-slate-100 p-4 md:p-8 space-y-8 font-sans max-w-7xl mx-auto">
+    <div className="w-full min-h-screen bg-transparent text-slate-100 p-4 md:p-8 space-y-8 font-sans max-w-7xl mx-auto">
       {/* ----------------------------------------------------------------- */}
       {/* SECTION A — RESEARCH HEADER                                       */}
       {/* ----------------------------------------------------------------- */}
-      <header className="bg-[#0B0F1A]/90 border border-white/10 p-6 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-2xl backdrop-blur-md">
+      <header className="bg-[#0E1B17] border border-white/10 p-6 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-2xl backdrop-blur-md">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs font-mono tracking-widest text-[#00F0FF] font-bold uppercase">
+            <span className="text-xs font-mono tracking-widest text-[#73E6B5] font-bold uppercase">
               Scientific Machine Learning & Seismic Structural Dynamics
             </span>
-            <span className="text-xs font-mono px-2 py-0.5 rounded-full bg-[#00F0FF]/15 text-[#00F0FF] border border-[#00F0FF]/40 font-bold">
+            <span className="text-xs font-mono px-2 py-0.5 rounded-full bg-[#73E6B5]/15 text-[#73E6B5] border border-[#73E6B5]/40 font-bold">
               EXP4 → EXP5 → EXP6
             </span>
           </div>
@@ -269,7 +269,7 @@ export const ResearchDemoView: React.FC = () => {
             Hardware: <span className="text-white font-semibold">Apple Silicon GPU (MPS)</span>
           </div>
           <div className="text-slate-400">
-            Measured Speedup: <span className="text-cyan-400 font-bold">2.55× vs OpenSeesPy</span>
+            Measured Speedup: <span className="text-[#73E6B5] font-bold">2.55× vs OpenSeesPy</span>
           </div>
         </div>
       </header>
@@ -279,7 +279,7 @@ export const ResearchDemoView: React.FC = () => {
       {/* ----------------------------------------------------------------- */}
       <section className="space-y-4">
         <div className="flex items-center gap-2">
-          <GitBranch className="text-[#00F0FF]" size={18} />
+          <GitBranch className="text-[#73E6B5]" size={18} />
           <h2 className="text-lg font-bold text-white font-mono">
             Scientific Research Progression (EXP4 → EXP5 → EXP6)
           </h2>
@@ -289,26 +289,26 @@ export const ResearchDemoView: React.FC = () => {
           {progression.map((step) => {
             const topBorderColor =
               step.step === 1
-                ? "border-t-[#FF2A6D]" // neon crimson (failure)
+                ? "border-t-[#E35D5D]" // neon crimson (failure)
                 : step.step === 2
-                ? "border-t-[#FF9900]" // amber (improving)
+                ? "border-t-[#D6B56D]" // amber (improving)
                 : step.step === 3
-                ? "border-t-[#00E676]" // emerald (verified)
+                ? "border-t-[#73E6B5]" // emerald (verified)
                 : "border-t-slate-500"; // neutral
 
             const badgeStyle =
               step.step === 1
-                ? "bg-[#FF2A6D]/20 text-[#FF2A6D] border border-[#FF2A6D]/40"
+                ? "bg-[#E35D5D]/20 text-[#E35D5D] border border-[#E35D5D]/40"
                 : step.step === 2
-                ? "bg-[#FF9900]/20 text-[#FF9900] border border-[#FF9900]/40"
+                ? "bg-[#D6B56D]/20 text-[#D6B56D] border border-[#D6B56D]/40"
                 : step.step === 3
-                ? "bg-[#00E676]/20 text-[#00E676] border border-[#00E676]/40"
+                ? "bg-[#73E6B5]/20 text-[#73E6B5] border border-[#73E6B5]/40"
                 : "bg-white/10 text-slate-300 border border-white/10";
 
             return (
               <div
                 key={step.step}
-                className={`p-5 rounded-xl border border-white/10 border-t-4 ${topBorderColor} bg-[#0B0F1A]/90 flex flex-col justify-between hover:border-white/25 transition-all shadow-xl backdrop-blur-md`}
+                className={`p-5 rounded-xl border border-white/10 border-t-4 ${topBorderColor} bg-[#0E1B17] flex flex-col justify-between hover:border-white/25 transition-all shadow-xl backdrop-blur-md`}
               >
                 <div>
                   <div className="flex items-center justify-between text-xs font-mono mb-2">
@@ -318,7 +318,7 @@ export const ResearchDemoView: React.FC = () => {
                     </span>
                   </div>
                   <h3 className="text-sm font-semibold text-white mb-1.5 font-sans">{step.title}</h3>
-                  <div className="text-xs font-mono font-bold text-cyan-300 mb-2">
+                  <div className="text-xs font-mono font-bold text-[#73E6B5] mb-2">
                     {step.result_highlight}
                   </div>
                   <p className="text-xs text-slate-400 leading-relaxed font-sans">{step.finding}</p>
@@ -340,15 +340,15 @@ export const ResearchDemoView: React.FC = () => {
         {/* Left Column: Structural Configuration & Modal Analysis */}
         <div className="lg:col-span-4 space-y-6">
           {/* SECTION 00: LIVE EARTHQUAKE INTEGRATION LAYER */}
-          <div className="bg-[#0B0F1A]/90 border border-[#00F0FF]/40 rounded-xl p-5 space-y-3 shadow-xl backdrop-blur-md">
+          <div className="bg-[#0E1B17] border border-[#73E6B5]/40 rounded-xl p-5 space-y-3 shadow-xl backdrop-blur-md">
             <div className="flex items-center justify-between border-b border-white/10 pb-2">
               <div className="flex items-center gap-2">
-                <Radio size={16} className="text-[#00F0FF] animate-pulse" />
+                <Radio size={16} className="text-[#73E6B5] animate-pulse" />
                 <h3 className="text-sm font-bold text-white font-mono">
                   00 LIVE EARTHQUAKE
                 </h3>
               </div>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#00F0FF]/15 text-[#00F0FF] border border-[#00F0FF]/40 font-bold">
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#73E6B5]/15 text-[#73E6B5] border border-[#73E6B5]/40 font-bold">
                 USGS FEED
               </span>
             </div>
@@ -364,7 +364,7 @@ export const ResearchDemoView: React.FC = () => {
                 const navBtn = document.querySelector('button[title*="00 Live Earthquake"], button:has(svg)');
                 if (navBtn) (navBtn as HTMLElement).click();
               }}
-              className="w-full py-2 bg-gradient-to-r from-[#00F0FF] to-[#0099FF] hover:opacity-95 text-[#070A11] font-mono font-bold rounded-lg text-xs flex items-center justify-center gap-1.5 transition cursor-pointer shadow-[0_0_15px_rgba(0,240,255,0.3)]"
+              className="w-full py-2 bg-gradient-to-r from-[#73E6B5] to-[#0099FF] hover:opacity-95 text-[#070A11] font-mono font-bold rounded-lg text-xs flex items-center justify-center gap-1.5 transition cursor-pointer shadow-[0_0_15px_rgba(0,240,255,0.3)]"
             >
               <span>OPEN LIVE EVENT WORKSPACE</span>
               <ArrowRight size={13} />
@@ -372,13 +372,13 @@ export const ResearchDemoView: React.FC = () => {
           </div>
 
           {/* SECTION B: STRUCTURE SELECTOR */}
-          <div className="bg-[#0B0F1A]/90 border border-white/10 rounded-xl p-5 space-y-4 shadow-xl backdrop-blur-md">
+          <div className="bg-[#0E1B17] border border-white/10 rounded-xl p-5 space-y-4 shadow-xl backdrop-blur-md">
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
               <h3 className="text-sm font-bold text-white font-mono flex items-center gap-2">
-                <Layers size={16} className="text-[#00F0FF]" />
+                <Layers size={16} className="text-[#73E6B5]" />
                 Structural Archetype
               </h3>
-              <span className="text-xs font-mono px-2 py-0.5 rounded bg-[#111827] text-cyan-300 font-semibold border border-white/10">
+              <span className="text-xs font-mono px-2 py-0.5 rounded bg-[#07110F] text-[#73E6B5] font-semibold border border-white/10">
                 {currentStructure?.category}
               </span>
             </div>
@@ -390,10 +390,10 @@ export const ResearchDemoView: React.FC = () => {
               <select
                 value={selectedStructureId}
                 onChange={(e) => handleStructureChange(e.target.value)}
-                className="w-full bg-[#111827] border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-white cursor-pointer focus:border-[#00F0FF] outline-none"
+                className="w-full bg-[#07110F] border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-white cursor-pointer focus:border-[#73E6B5] outline-none"
               >
                 {structures.map((s) => (
-                  <option key={s.archetype_id} value={s.archetype_id} className="bg-[#0B0F1A]">
+                  <option key={s.archetype_id} value={s.archetype_id} className="bg-[#0E1B17]">
                     {s.archetype_id} — {s.n_stories} Stories (T1={s.T1_s.toFixed(2)}s, {s.category})
                   </option>
                 ))}
@@ -404,7 +404,7 @@ export const ResearchDemoView: React.FC = () => {
             <div className="space-y-2 pt-2 border-t border-white/10">
               <div className="flex items-center justify-between text-xs font-mono">
                 <span className="text-slate-400 font-bold uppercase">Structural Invariant:</span>
-                <span className="text-cyan-300 font-semibold">
+                <span className="text-[#73E6B5] font-semibold">
                   T₁ = {currentStructure?.T1_s.toFixed(3)}s · ω₁ = {currentStructure?.omega1_rad_s.toFixed(2)} rad/s
                 </span>
               </div>
@@ -417,8 +417,8 @@ export const ResearchDemoView: React.FC = () => {
                     onClick={() => setActiveModeShapeIdx(mIdx)}
                     className={`py-1.5 text-xs font-mono rounded-lg cursor-pointer transition ${
                       activeModeShapeIdx === mIdx
-                        ? "bg-[#00F0FF]/20 text-[#00F0FF] border border-[#00F0FF]/50 font-bold shadow-[0_0_10px_rgba(0,240,255,0.2)]"
-                        : "bg-[#111827] border border-white/10 text-slate-400 hover:text-white"
+                        ? "bg-[#73E6B5]/20 text-[#73E6B5] border border-[#73E6B5]/50 font-bold shadow-[0_0_10px_rgba(0,240,255,0.2)]"
+                        : "bg-[#07110F] border border-white/10 text-slate-400 hover:text-white"
                     }`}
                   >
                     Mode {mIdx + 1}
@@ -427,15 +427,15 @@ export const ResearchDemoView: React.FC = () => {
               </div>
             </div>
 
-            <div className="text-[11px] font-mono text-slate-400 bg-[#111827] p-2.5 rounded-lg border border-white/10 flex items-center gap-2">
-              <Info size={14} className="text-[#00F0FF] shrink-0" />
+            <div className="text-[11px] font-mono text-slate-400 bg-[#07110F] p-2.5 rounded-lg border border-white/10 flex items-center gap-2">
+              <Info size={14} className="text-[#73E6B5] shrink-0" />
               <span>
                 Pre-earthquake structural invariant computed from [M] and [K] prior to excitation.
               </span>
             </div>
 
             {/* Vertical Mode Shape Deformation Canvas */}
-            <div className="p-4 bg-[#080C16] rounded-lg border border-white/10 flex items-center justify-center">
+            <div className="p-4 bg-[#07110F] rounded-lg border border-white/10 flex items-center justify-center">
               <div className="relative w-48 h-56 border-b-2 border-slate-600 flex flex-col justify-end">
                 {/* Vertical Center Reference Line */}
                 <div className="absolute left-1/2 top-0 bottom-0 w-px border-l border-dashed border-slate-700 -translate-x-1/2" />
@@ -457,8 +457,8 @@ export const ResearchDemoView: React.FC = () => {
                           left: `${xOffsetPct}%`,
                         }}
                       >
-                        <div className="w-3.5 h-3.5 rounded-full bg-[#00F0FF] border-2 border-[#070A11] shadow-[0_0_8px_#00F0FF] flex items-center justify-center" />
-                        <span className="text-[10px] font-mono text-white font-semibold ml-1.5 whitespace-nowrap bg-[#111827] border border-white/10 px-1.5 py-0.5 rounded shadow">
+                        <div className="w-3.5 h-3.5 rounded-full bg-[#73E6B5] border-2 border-[#070A11] shadow-[0_0_8px_#73E6B5] flex items-center justify-center" />
+                        <span className="text-[10px] font-mono text-white font-semibold ml-1.5 whitespace-nowrap bg-[#07110F] border border-white/10 px-1.5 py-0.5 rounded shadow">
                           F{floorNum}: {dispNorm.toFixed(2)}
                         </span>
                       </div>
@@ -469,7 +469,7 @@ export const ResearchDemoView: React.FC = () => {
 
             <div className="text-center text-xs font-mono text-slate-400">
               Fundamental Period:{" "}
-              <strong className="text-cyan-300 font-mono">
+              <strong className="text-[#73E6B5] font-mono">
                 T{activeModeShapeIdx + 1} ={" "}
                 {currentStructure
                   ? [currentStructure.T1_s, currentStructure.T2_s, currentStructure.T3_s][
@@ -485,7 +485,7 @@ export const ResearchDemoView: React.FC = () => {
         {/* Right Column: Earthquake Selection, Model Switcher & Response Plots */}
         <div className="lg:col-span-8 space-y-6">
           {/* SECTION D & E: EARTHQUAKE & MODEL CONTROLS */}
-          <div className="bg-[#0B0F1A]/90 border border-white/10 rounded-xl p-5 space-y-4 shadow-xl backdrop-blur-md">
+          <div className="bg-[#0E1B17] border border-white/10 rounded-xl p-5 space-y-4 shadow-xl backdrop-blur-md">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* SECTION D: Earthquake Input */}
               <div>
@@ -495,10 +495,10 @@ export const ResearchDemoView: React.FC = () => {
                 <select
                   value={selectedEarthquakeId}
                   onChange={(e) => handleEarthquakeChange(e.target.value)}
-                  className="w-full bg-[#111827] border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-white cursor-pointer focus:border-[#00F0FF] outline-none"
+                  className="w-full bg-[#07110F] border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-white cursor-pointer focus:border-[#73E6B5] outline-none"
                 >
                   {earthquakes.map((eq) => (
-                    <option key={eq.record_id} value={eq.record_id} className="bg-[#0B0F1A]">
+                    <option key={eq.record_id} value={eq.record_id} className="bg-[#0E1B17]">
                       {eq.record_id} — {eq.event_name} (PGA: {eq.pga_g}g, {eq.role.split("(")[0]})
                     </option>
                   ))}
@@ -513,10 +513,10 @@ export const ResearchDemoView: React.FC = () => {
                 <select
                   value={selectedModelId}
                   onChange={(e) => handleModelChange(e.target.value)}
-                  className="w-full bg-[#111827] border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-white cursor-pointer focus:border-[#00F0FF] outline-none"
+                  className="w-full bg-[#07110F] border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-white cursor-pointer focus:border-[#73E6B5] outline-none"
                 >
                   {models.map((m) => (
-                    <option key={m.model_id} value={m.model_id} className="bg-[#0B0F1A]">
+                    <option key={m.model_id} value={m.model_id} className="bg-[#0E1B17]">
                       {m.display_name} [{m.status}]
                     </option>
                   ))}
@@ -535,8 +535,8 @@ export const ResearchDemoView: React.FC = () => {
                       onClick={() => handleFloorChange(f)}
                       className={`px-3 py-1 rounded-lg text-xs font-mono cursor-pointer transition ${
                         selectedFloor === f
-                          ? "bg-[#00F0FF]/20 text-[#00F0FF] border border-[#00F0FF]/50 font-bold shadow-[0_0_10px_rgba(0,240,255,0.2)]"
-                          : "bg-[#111827] border border-white/10 text-slate-400 hover:text-white"
+                          ? "bg-[#73E6B5]/20 text-[#73E6B5] border border-[#73E6B5]/50 font-bold shadow-[0_0_10px_rgba(0,240,255,0.2)]"
+                          : "bg-[#07110F] border border-white/10 text-slate-400 hover:text-white"
                       }`}
                     >
                       Floor {f} {f === currentStructure.n_stories ? "(Roof)" : ""}
@@ -545,14 +545,14 @@ export const ResearchDemoView: React.FC = () => {
               </div>
 
               {isLoadingSim && (
-                <div className="flex items-center gap-2 text-xs font-mono text-[#00F0FF] animate-pulse">
+                <div className="flex items-center gap-2 text-xs font-mono text-[#73E6B5] animate-pulse">
                   <Activity size={14} className="animate-spin" />
                   <span>Computing Live Surrogate Forward Pass...</span>
                 </div>
               )}
 
               {errorMsg && (
-                <div className="text-xs font-mono text-[#FF2A6D] bg-[#FF2A6D]/15 px-3 py-1 rounded-lg border border-[#FF2A6D]/30">
+                <div className="text-xs font-mono text-[#E35D5D] bg-[#E35D5D]/15 px-3 py-1 rounded-lg border border-[#E35D5D]/30">
                   {errorMsg}
                 </div>
               )}
@@ -577,11 +577,11 @@ export const ResearchDemoView: React.FC = () => {
           </div>
 
           {/* SECTION G & H: RESPONSE PREDICTION & ERROR ANALYSIS */}
-          <div className="bg-[#0B0F1A]/90 border border-white/10 rounded-xl p-5 space-y-4 shadow-xl backdrop-blur-md">
+          <div className="bg-[#0E1B17] border border-white/10 rounded-xl p-5 space-y-4 shadow-xl backdrop-blur-md">
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
               <div>
                 <h3 className="text-sm font-bold text-white font-mono flex items-center gap-2">
-                  <Activity size={16} className="text-[#00F0FF]" />
+                  <Activity size={16} className="text-[#73E6B5]" />
                   Structural Displacement Response u(t)
                 </h3>
                 <p className="text-xs text-slate-400 font-sans mt-0.5">
@@ -595,7 +595,7 @@ export const ResearchDemoView: React.FC = () => {
                     <span className="text-slate-400">Rel L₂:</span>{" "}
                     <strong
                       className={`font-mono ${
-                        simResult.metrics.rel_l2_pct > 50 ? "text-[#FF2A6D]" : "text-emerald-400"
+                        simResult.metrics.rel_l2_pct > 50 ? "text-[#E35D5D]" : "text-emerald-400"
                       }`}
                     >
                       {simResult.metrics.rel_l2_pct}%
@@ -605,7 +605,7 @@ export const ResearchDemoView: React.FC = () => {
                     <span className="text-slate-400">Peak Err:</span>{" "}
                     <strong
                       className={`font-mono ${
-                        simResult.metrics.peak_disp_err_pct > 25 ? "text-[#FF2A6D]" : "text-cyan-300"
+                        simResult.metrics.peak_disp_err_pct > 25 ? "text-[#E35D5D]" : "text-[#73E6B5]"
                       }`}
                     >
                       {simResult.metrics.peak_disp_err_pct}%
@@ -620,7 +620,7 @@ export const ResearchDemoView: React.FC = () => {
             </div>
 
             {/* Main Response Chart */}
-            <div className="h-72 w-full bg-[#080C16] p-3 rounded-lg border border-white/10">
+            <div className="h-72 w-full bg-[#07110F] p-3 rounded-lg border border-white/10">
               {trajectoryChartData && (
                 <Line
                   data={trajectoryChartData}
@@ -663,7 +663,7 @@ export const ResearchDemoView: React.FC = () => {
                   </span>
                 )}
               </div>
-              <div className="h-24 w-full bg-[#080C16] p-2 rounded-lg border border-white/10">
+              <div className="h-24 w-full bg-[#07110F] p-2 rounded-lg border border-white/10">
                 {accelerogramChartData && (
                   <Line
                     data={accelerogramChartData}
@@ -692,16 +692,16 @@ export const ResearchDemoView: React.FC = () => {
       {/* ----------------------------------------------------------------- */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* SECTION J: OOD Generalization Matrix */}
-        <div className="lg:col-span-8 bg-[#0B0F1A]/90 border border-white/10 rounded-xl p-5 space-y-4 shadow-xl backdrop-blur-md">
+        <div className="lg:col-span-8 bg-[#0E1B17] border border-white/10 rounded-xl p-5 space-y-4 shadow-xl backdrop-blur-md">
           <div className="flex items-center justify-between border-b border-white/10 pb-3">
             <h3 className="text-sm font-bold text-white font-mono flex items-center gap-2">
-              <Activity size={16} className="text-[#00F0FF]" />
+              <Activity size={16} className="text-[#73E6B5]" />
               Out-of-Distribution Generalization Matrix (Median Peak Disp Error %)
             </h3>
             <span className="text-xs font-mono text-slate-400">2,160 Physical Simulations</span>
           </div>
 
-          <div className="h-64 w-full bg-[#080C16] p-3 rounded-lg border border-white/10">
+          <div className="h-64 w-full bg-[#07110F] p-3 rounded-lg border border-white/10">
             {oodChartData && (
               <Bar
                 data={oodChartData}
@@ -729,15 +729,15 @@ export const ResearchDemoView: React.FC = () => {
             )}
           </div>
 
-          <p className="text-xs font-mono text-slate-300 bg-[#111827] p-3 rounded-lg border border-white/10 leading-relaxed">
+          <p className="text-xs font-mono text-slate-300 bg-[#07110F] p-3 rounded-lg border border-white/10 leading-relaxed">
             <strong className="text-white">Key Finding:</strong> Multi-Modal GNO achieves <strong className="text-emerald-400">13.06%</strong> median
-            peak error on held-out structure 5S_T120, compared to <strong className="text-[#FF2A6D]">35.21%</strong> for
-            unconditioned GNO (a <strong className="text-cyan-300">62.9% relative error reduction</strong>).
+            peak error on held-out structure 5S_T120, compared to <strong className="text-[#E35D5D]">35.21%</strong> for
+            unconditioned GNO (a <strong className="text-[#73E6B5]">62.9% relative error reduction</strong>).
           </p>
         </div>
 
         {/* SECTION M: Shuffled Falsification Ablation */}
-        <div className="lg:col-span-4 bg-[#0B0F1A]/90 border border-white/10 rounded-xl p-5 space-y-4 flex flex-col justify-between shadow-xl backdrop-blur-md">
+        <div className="lg:col-span-4 bg-[#0E1B17] border border-white/10 rounded-xl p-5 space-y-4 flex flex-col justify-between shadow-xl backdrop-blur-md">
           <div>
             <h3 className="text-sm font-bold text-white font-mono flex items-center gap-2 mb-1">
               <CheckCircle2 size={16} className="text-emerald-400" />
@@ -752,7 +752,7 @@ export const ResearchDemoView: React.FC = () => {
                 {ablation.metrics.map((item, idx) => (
                   <div
                     key={idx}
-                    className="p-3 bg-[#111827] rounded-lg border border-white/10 text-xs font-mono"
+                    className="p-3 bg-[#07110F] rounded-lg border border-white/10 text-xs font-mono"
                   >
                     <div className="text-white font-semibold mb-1">{item.partition}</div>
                     <div className="flex justify-between items-center text-[11px]">
@@ -760,7 +760,7 @@ export const ResearchDemoView: React.FC = () => {
                         True Modal: {item.true_multimodal_err}%
                       </span>
                       <ArrowRight size={12} className="text-slate-500" />
-                      <span className="text-[#FF2A6D] font-bold">
+                      <span className="text-[#E35D5D] font-bold">
                         Shuffled: {item.shuffled_err}%
                       </span>
                     </div>
@@ -773,7 +773,7 @@ export const ResearchDemoView: React.FC = () => {
             )}
           </div>
 
-          <div className="text-[11px] font-mono text-slate-400 bg-[#111827] p-3 rounded-lg border border-white/10 leading-relaxed">
+          <div className="text-[11px] font-mono text-slate-400 bg-[#07110F] p-3 rounded-lg border border-white/10 leading-relaxed">
             <span className="font-semibold text-white">Conservative Interpretation:</span>{" "}
             Degradation under shuffled conditioning supports the hypothesis that the model
             exploits physical eigenvalue correspondence rather than auxiliary scalar capacity.
@@ -786,9 +786,9 @@ export const ResearchDemoView: React.FC = () => {
       {/* ----------------------------------------------------------------- */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* SECTION K: Failure Analysis */}
-        <div className="lg:col-span-7 bg-[#0B0F1A]/90 border border-white/10 rounded-xl p-5 space-y-4 shadow-xl backdrop-blur-md">
+        <div className="lg:col-span-7 bg-[#0E1B17] border border-white/10 rounded-xl p-5 space-y-4 shadow-xl backdrop-blur-md">
           <div className="flex items-center gap-2 border-b border-white/10 pb-3">
-            <AlertTriangle className="text-[#FF9900]" size={18} />
+            <AlertTriangle className="text-[#D6B56D]" size={18} />
             <h3 className="text-sm font-bold text-white font-mono">
               Where the Model Fails — Scientific Limitations
             </h3>
@@ -798,15 +798,15 @@ export const ResearchDemoView: React.FC = () => {
             {failures.map((f) => (
               <div
                 key={f.id}
-                className="p-3.5 bg-[#FF9900]/10 rounded-lg border border-[#FF9900]/30 space-y-1 text-xs font-mono"
+                className="p-3.5 bg-[#D6B56D]/10 rounded-lg border border-[#D6B56D]/30 space-y-1 text-xs font-mono"
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-[#FF9900]">{f.title}</span>
-                  <span className="text-[10px] bg-[#111827] border border-[#FF9900]/40 text-[#FF9900] px-2 py-0.5 rounded font-bold">
+                  <span className="font-bold text-[#D6B56D]">{f.title}</span>
+                  <span className="text-[10px] bg-[#07110F] border border-[#D6B56D]/40 text-[#D6B56D] px-2 py-0.5 rounded font-bold">
                     {f.phase}
                   </span>
                 </div>
-                <div className="text-[#FF2A6D] font-semibold text-[11px]">Symptom: {f.symptom}</div>
+                <div className="text-[#E35D5D] font-semibold text-[11px]">Symptom: {f.symptom}</div>
                 <p className="text-slate-300 text-[11px] font-sans leading-relaxed pt-1">{f.mechanism}</p>
               </div>
             ))}
@@ -814,10 +814,10 @@ export const ResearchDemoView: React.FC = () => {
         </div>
 
         {/* SECTION L: Computational Benchmark */}
-        <div className="lg:col-span-5 bg-[#0B0F1A]/90 border border-white/10 rounded-xl p-5 space-y-4 flex flex-col justify-between shadow-xl backdrop-blur-md">
+        <div className="lg:col-span-5 bg-[#0E1B17] border border-white/10 rounded-xl p-5 space-y-4 flex flex-col justify-between shadow-xl backdrop-blur-md">
           <div>
             <div className="flex items-center gap-2 border-b border-white/10 pb-3 mb-2">
-              <Zap className="text-[#00F0FF]" size={18} />
+              <Zap className="text-[#73E6B5]" size={18} />
               <h3 className="text-sm font-bold text-white font-mono">
                 Measured Inference Benchmark (Apple Silicon MPS)
               </h3>
@@ -831,7 +831,7 @@ export const ResearchDemoView: React.FC = () => {
                 {benchmark.models.map((m, idx) => (
                   <div
                     key={idx}
-                    className="p-3 bg-[#111827] rounded-lg border border-white/10 flex items-center justify-between text-xs font-mono"
+                    className="p-3 bg-[#07110F] rounded-lg border border-white/10 flex items-center justify-between text-xs font-mono"
                   >
                     <div>
                       <div className="text-white font-semibold">{m.name}</div>
@@ -854,8 +854,8 @@ export const ResearchDemoView: React.FC = () => {
             )}
           </div>
 
-          <div className="text-[11px] font-mono text-slate-400 bg-[#111827] p-3 rounded-lg border border-white/10 leading-relaxed">
-            <strong className="text-white">Conclusion:</strong> EXP6 T₁-GNO achieves a <strong className="text-cyan-400">2.55× wall-clock speedup</strong>{" "}
+          <div className="text-[11px] font-mono text-slate-400 bg-[#07110F] p-3 rounded-lg border border-white/10 leading-relaxed">
+            <strong className="text-white">Conclusion:</strong> EXP6 T₁-GNO achieves a <strong className="text-[#73E6B5]">2.55× wall-clock speedup</strong>{" "}
             over OpenSeesPy while retaining topology flexibility and physics-informed envelope scaling.
           </div>
         </div>
@@ -871,8 +871,8 @@ export const ResearchDemoView: React.FC = () => {
             Core Scientific Contributions
           </h4>
           <div className="space-y-3 text-xs font-mono">
-            <div className="p-4 bg-[#0B0F1A]/90 border border-white/10 rounded-xl shadow-lg hover:border-cyan-500/40 transition-all">
-              <strong className="text-cyan-400 block mb-1">
+            <div className="p-4 bg-[#0E1B17] border border-white/10 rounded-xl shadow-lg hover:border-[#73E6B5]/40 transition-all">
+              <strong className="text-[#73E6B5] block mb-1">
                 01 — Topology-Native Neural Operator
               </strong>
               <p className="text-slate-300 font-sans leading-relaxed text-xs">
@@ -880,7 +880,7 @@ export const ResearchDemoView: React.FC = () => {
                 eliminating Gibbs boundary failure and reducing 3-story relative error by 77.51 pp.
               </p>
             </div>
-            <div className="p-4 bg-[#0B0F1A]/90 border border-white/10 rounded-xl shadow-lg hover:border-emerald-500/40 transition-all">
+            <div className="p-4 bg-[#0E1B17] border border-white/10 rounded-xl shadow-lg hover:border-emerald-500/40 transition-all">
               <strong className="text-emerald-400 block mb-1">
                 02 — Physics-Informed Modal Conditioning
               </strong>
@@ -889,7 +889,7 @@ export const ResearchDemoView: React.FC = () => {
                 achieving a 62.9% relative reduction in peak displacement error under modal shift.
               </p>
             </div>
-            <div className="p-4 bg-[#0B0F1A]/90 border border-white/10 rounded-xl shadow-lg hover:border-amber-500/40 transition-all">
+            <div className="p-4 bg-[#0E1B17] border border-white/10 rounded-xl shadow-lg hover:border-amber-500/40 transition-all">
               <strong className="text-amber-400 block mb-1">
                 03 — Rigorous OOD & Falsification Methodology
               </strong>
@@ -906,7 +906,7 @@ export const ResearchDemoView: React.FC = () => {
           <h4 className="text-xs font-mono uppercase tracking-wider text-slate-400 font-bold">
             Reproducibility & Verification Telemetry
           </h4>
-          <div className="p-5 bg-[#0B0F1A]/90 border border-white/10 rounded-xl shadow-lg space-y-4 text-xs font-mono">
+          <div className="p-5 bg-[#0E1B17] border border-white/10 rounded-xl shadow-lg space-y-4 text-xs font-mono">
             <div className="grid grid-cols-2 gap-3 pb-3 border-b border-white/10">
               <div>
                 <span className="text-slate-400 block text-[10px]">Python Runtime:</span>
@@ -933,7 +933,7 @@ export const ResearchDemoView: React.FC = () => {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-slate-400">Forensic Audit Verdict:</span>
-                <span className="text-cyan-400 font-bold font-mono bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20">PASS (5/5 CHECKS)</span>
+                <span className="text-[#73E6B5] font-bold font-mono bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20">PASS (5/5 CHECKS)</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-slate-400">Split Partition Overlap:</span>

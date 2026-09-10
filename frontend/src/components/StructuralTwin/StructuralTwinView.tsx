@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
-  Sliders,
   Play,
   Pause,
   RotateCcw,
-  Sparkles,
+  Sliders,
   Activity,
+  Sparkles,
 } from "lucide-react";
-import type { BuildingArchetype, ScenarioPredictionResponse } from "../../api/digitalTwinApi";
 import { Structural3DViewer } from "./Structural3DViewer";
+import type { BuildingArchetype, ScenarioPredictionResponse } from "../../api/digitalTwinApi";
 
 interface StructuralTwinViewProps {
   prediction: ScenarioPredictionResponse | null;
@@ -17,19 +17,18 @@ interface StructuralTwinViewProps {
   onSelectBuilding: (bld: BuildingArchetype) => void;
   onRunSimulation: () => void;
   isLoading: boolean;
-  // Parameter setters
   T0: number;
-  setT0: (val: number) => void;
+  setT0: (v: number) => void;
   damping: number;
-  setDamping: (val: number) => void;
+  setDamping: (v: number) => void;
   uy: number;
-  setUy: (val: number) => void;
+  setUy: (v: number) => void;
   alpha: number;
-  setAlpha: (val: number) => void;
+  setAlpha: (v: number) => void;
   materialType: "bilinear" | "elastic";
-  setMaterialType: (val: "bilinear" | "elastic") => void;
+  setMaterialType: (v: "bilinear" | "elastic") => void;
   pgaG: number;
-  setPgaG: (val: number) => void;
+  setPgaG: (v: number) => void;
 }
 
 export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
@@ -52,41 +51,47 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
   pgaG,
   setPgaG,
 }) => {
-  const [scrubIndex, setScrubIndex] = useState<number>(0);
+  // Animation / Time scrubber state
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [playbackSpeed, setPlaybackSpeed] = useState<number>(1);
+  const [scrubIndex, setScrubIndex] = useState<number>(0);
+  const [playbackSpeed, setPlaybackSpeed] = useState<number>(1.0);
   const [activeTabPlot, setActiveTabPlot] = useState<"disp" | "hysteresis" | "energy">("disp");
 
-  const animTimerRef = useRef<number | null>(null);
+  const animTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const activeBuilding = buildingArchetypes.find((b) => b.id === selectedBuildingId) || buildingArchetypes[0] || {
+  const traj = prediction?.trajectories;
+  const totalPoints = traj?.time.length || 0;
+
+  // Active Building Meta
+  const activeBuilding = buildingArchetypes.find((b) => b.id === selectedBuildingId) || {
     id: "BLD-RC-03",
     name: "3-Story RC Moment Frame",
     stories: 3,
+    fundamental_period_s: 0.5,
+    damping_ratio: 0.05,
+    yield_displacement_m: 0.01,
+    post_yield_ratio: 0.05,
   };
+  const stories = activeBuilding.stories;
 
-  const traj = prediction?.trajectories;
-  const metrics = prediction?.metrics;
-  const totalPoints = traj?.time.length || 0;
-  const currentIdx = Math.min(scrubIndex, totalPoints > 0 ? totalPoints - 1 : 0);
+  // Current time and frame deflections
+  const currentIdx = Math.min(scrubIndex, Math.max(0, totalPoints - 1));
+  const currTime = traj && traj.time.length > 0 ? traj.time[currentIdx] : 0.0;
+  const roofDispM = traj && traj.u.length > 0 ? traj.u[currentIdx] : 0.0;
+  const roofDispMm = roofDispM * 1000.0;
 
-  const currTime = traj ? traj.time[currentIdx] : 0.0;
-  const currU = traj ? traj.u[currentIdx] * 1000.0 : 0.0; // mm
+  // Calculate story deflections assuming triangular/first-mode distribution
+  const storyDeflections: number[] = [];
+  for (let s = 1; s <= stories; s++) {
+    const ratio = s / stories;
+    storyDeflections.push(roofDispMm * ratio);
+  }
 
-  const peakU = metrics?.peak_displacement_mm || 50.0;
-  const stories = activeBuilding?.stories || 3;
+  const yieldMm = uy * 1000.0;
+  const peakU = (prediction?.metrics?.peak_displacement_mm || 0.0);
+  const isCurrentlyYielded = Math.abs(roofDispMm) >= yieldMm;
 
-  // Compute multi-story deflection profile (mode shape scaled)
-  const storyDeflections = Array.from({ length: stories }, (_, i) => {
-    const fraction = (i + 1) / stories;
-    const modeWeight = Math.pow(fraction, 1.25);
-    return currU * modeWeight;
-  });
-
-  const yieldMm = uy * 1000;
-  const isCurrentlyYielded = Math.abs(currU) > yieldMm;
-
-  // Playback Loop
+  // Playback timer effect
   useEffect(() => {
     if (!isPlaying || totalPoints === 0) {
       if (animTimerRef.current) clearInterval(animTimerRef.current);
@@ -94,7 +99,7 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
     }
 
     const intervalMs = Math.max(16, Math.floor(25 / playbackSpeed));
-    animTimerRef.current = window.setInterval(() => {
+    animTimerRef.current = setInterval(() => {
       setScrubIndex((prev) => {
         if (prev >= totalPoints - 1) {
           return 0; // loop back
@@ -109,31 +114,31 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
   }, [isPlaying, totalPoints, playbackSpeed]);
 
   return (
-    <div className="p-4 md:p-6 space-y-6 font-sans text-slate-100 max-w-7xl mx-auto">
+    <div className="p-4 md:p-6 space-y-6 font-sans text-[#E8E8DE] max-w-7xl mx-auto">
       {/* Top Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 rounded-xl border border-white/10 bg-[#0B0F1A]/80 backdrop-blur-xl shadow-2xl">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 rounded-lg border border-white/[0.08] bg-[#0E1B17] shadow-lg">
         <div>
-          <div className="flex items-center space-x-3">
-            <h1 className="text-xl font-bold font-mono tracking-tight text-white flex items-center gap-2">
-              <Sparkles size={18} className="text-[#00F0FF]" />
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="text-xl font-bold font-mono tracking-tight text-[#E8E8DE] flex items-center gap-2">
+              <Sparkles size={18} className="text-[#73E6B5]" />
               3D STRUCTURAL DIGITAL TWIN & SEISMIC WORKSTATION
             </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono bg-[#00F0FF]/15 text-[#00F0FF] border border-[#00F0FF]/40 font-bold">
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono bg-[#73E6B5]/10 text-[#73E6B5] border border-[#73E6B5]/30 font-bold">
               SUB-2ms NEURAL OPERATOR
             </span>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-[#82928B] mt-1">
             Real-time nonlinear structural dynamics under earthquake excitation: 3D volumetric sway, plastic hinge formation, and hysteretic energy dissipation.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 shrink-0">
           <button
             onClick={onRunSimulation}
             disabled={isLoading}
-            className="px-5 py-2.5 bg-gradient-to-r from-[#00F0FF] to-[#0099FF] hover:opacity-95 text-[#070A11] text-xs font-mono font-bold rounded-lg flex items-center space-x-2 cursor-pointer transition shadow-[0_0_20px_rgba(0,240,255,0.4)] disabled:opacity-50"
+            className="px-5 py-2.5 bg-[#73E6B5] hover:bg-[#5cd4a2] text-[#07110F] text-xs font-mono font-bold rounded-lg flex items-center space-x-2 cursor-pointer transition shadow-md disabled:opacity-50"
           >
-            <Play size={14} className="fill-[#070A11]" />
+            <Play size={14} className="fill-[#07110F]" />
             <span>{isLoading ? "SOLVING SURROGATE..." : "RECOMPUTE SURROGATE (< 2 ms)"}</span>
           </button>
         </div>
@@ -142,28 +147,28 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Physical & Structural Controls (4 Cols) */}
         <div className="lg:col-span-4 space-y-4">
-          <div className="bg-[#0B0F1A]/90 border border-white/10 rounded-xl p-5 space-y-4 shadow-xl backdrop-blur-md">
-            <div className="flex items-center justify-between border-b border-white/10 pb-3 text-xs font-mono font-bold">
-              <div className="flex items-center space-x-2 text-cyan-400">
+          <div className="bg-[#0E1B17] border border-white/[0.08] rounded-lg p-5 space-y-4 shadow-lg">
+            <div className="flex items-center justify-between border-b border-white/[0.08] pb-3 text-xs font-mono font-bold">
+              <div className="flex items-center space-x-2 text-[#73E6B5]">
                 <Sliders size={15} />
                 <span>PHYSICAL PARAMETERS</span>
               </div>
-              <span className="text-[10px] text-slate-400">INELASTIC HARDENING</span>
+              <span className="text-[10px] text-[#82928B]">INELASTIC HARDENING</span>
             </div>
 
             {/* Building Archetype Selector */}
             <div className="space-y-1.5 text-xs font-mono">
-              <label className="text-slate-400 uppercase text-[10px] font-bold">Building Archetype</label>
+              <label className="text-[#82928B] uppercase text-[10px] font-bold">Building Archetype</label>
               <select
                 value={selectedBuildingId}
                 onChange={(e) => {
                   const bld = buildingArchetypes.find((b) => b.id === e.target.value);
                   if (bld) onSelectBuilding(bld);
                 }}
-                className="w-full bg-[#111827] border border-white/10 rounded-lg p-2.5 text-white text-xs cursor-pointer font-sans focus:border-[#00F0FF] outline-none transition"
+                className="w-full bg-[#07110F] border border-white/[0.08] rounded-lg p-2.5 text-[#E8E8DE] text-xs cursor-pointer font-sans focus:border-[#73E6B5] outline-none transition"
               >
                 {buildingArchetypes.map((b) => (
-                  <option key={b.id} value={b.id} className="bg-[#0B0F1A]">
+                  <option key={b.id} value={b.id} className="bg-[#07110F]">
                     {b.name} ({b.stories} Stories)
                   </option>
                 ))}
@@ -173,8 +178,8 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
             {/* Fundamental Period Slider */}
             <div className="space-y-1.5 text-xs font-sans">
               <div className="flex justify-between items-baseline">
-                <span className="text-slate-400">Fundamental Period (T₁):</span>
-                <span className="text-cyan-300 font-bold font-mono">{T0.toFixed(2)} s</span>
+                <span className="text-[#82928B]">Fundamental Period (T₁):</span>
+                <span className="text-[#73E6B5] font-bold font-mono">{T0.toFixed(2)} s</span>
               </div>
               <input
                 type="range"
@@ -183,9 +188,9 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
                 step="0.05"
                 value={T0}
                 onChange={(e) => setT0(parseFloat(e.target.value))}
-                className="w-full"
+                className="w-full cursor-pointer accent-[#73E6B5]"
               />
-              <div className="flex justify-between text-[10px] font-mono text-slate-400">
+              <div className="flex justify-between text-[10px] font-mono text-[#82928B]">
                 <span>0.10s (Stiff)</span>
                 <span>2.50s (Flexible)</span>
               </div>
@@ -194,8 +199,8 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
             {/* Viscous Damping Slider */}
             <div className="space-y-1.5 text-xs font-sans">
               <div className="flex justify-between items-baseline">
-                <span className="text-slate-400">Rayleigh Damping (ζ):</span>
-                <span className="text-emerald-400 font-bold font-mono">{(damping * 100).toFixed(1)} %</span>
+                <span className="text-[#82928B]">Rayleigh Damping (ζ):</span>
+                <span className="text-[#73E6B5] font-bold font-mono">{(damping * 100).toFixed(1)} %</span>
               </div>
               <input
                 type="range"
@@ -204,9 +209,9 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
                 step="0.005"
                 value={damping}
                 onChange={(e) => setDamping(parseFloat(e.target.value))}
-                className="w-full"
+                className="w-full cursor-pointer accent-[#73E6B5]"
               />
-              <div className="flex justify-between text-[10px] font-mono text-slate-400">
+              <div className="flex justify-between text-[10px] font-mono text-[#82928B]">
                 <span>1% (Light)</span>
                 <span>15% (Heavy)</span>
               </div>
@@ -215,8 +220,8 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
             {/* Yield Displacement Slider */}
             <div className="space-y-1.5 text-xs font-sans">
               <div className="flex justify-between items-baseline">
-                <span className="text-slate-400">Yield Drift Limit (uᵧ):</span>
-                <span className="text-[#FF9900] font-bold font-mono">{yieldMm.toFixed(1)} mm</span>
+                <span className="text-[#82928B]">Yield Drift Limit (uᵧ):</span>
+                <span className="text-[#D6B56D] font-bold font-mono">{yieldMm.toFixed(1)} mm</span>
               </div>
               <input
                 type="range"
@@ -225,9 +230,9 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
                 step="0.001"
                 value={uy}
                 onChange={(e) => setUy(parseFloat(e.target.value))}
-                className="w-full"
+                className="w-full cursor-pointer accent-[#D6B56D]"
               />
-              <div className="flex justify-between text-[10px] font-mono text-slate-400">
+              <div className="flex justify-between text-[10px] font-mono text-[#82928B]">
                 <span>2 mm (Low Ductility)</span>
                 <span>40 mm (High Ductility)</span>
               </div>
@@ -236,8 +241,8 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
             {/* Post-Yield Ratio Slider */}
             <div className="space-y-1.5 text-xs font-sans">
               <div className="flex justify-between items-baseline">
-                <span className="text-slate-400">Post-Yield Ratio (α):</span>
-                <span className="text-purple-400 font-bold font-mono">{(alpha * 100).toFixed(0)} %</span>
+                <span className="text-[#82928B]">Post-Yield Ratio (α):</span>
+                <span className="text-[#D6B56D] font-bold font-mono">{(alpha * 100).toFixed(0)} %</span>
               </div>
               <input
                 type="range"
@@ -246,9 +251,9 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
                 step="0.01"
                 value={alpha}
                 onChange={(e) => setAlpha(parseFloat(e.target.value))}
-                className="w-full"
+                className="w-full cursor-pointer accent-[#D6B56D]"
               />
-              <div className="flex justify-between text-[10px] font-mono text-slate-400">
+              <div className="flex justify-between text-[10px] font-mono text-[#82928B]">
                 <span>0% (Elastoplastic)</span>
                 <span>25% (Strain Hardening)</span>
               </div>
@@ -257,8 +262,8 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
             {/* Excitation PGA Scaling Slider */}
             <div className="space-y-1.5 text-xs font-sans">
               <div className="flex justify-between items-baseline">
-                <span className="text-slate-400">Target Excitation PGA:</span>
-                <span className="text-[#00F0FF] font-bold font-mono">{pgaG.toFixed(2)} g</span>
+                <span className="text-[#82928B]">Target Excitation PGA:</span>
+                <span className="text-[#73E6B5] font-bold font-mono">{pgaG.toFixed(2)} g</span>
               </div>
               <input
                 type="range"
@@ -267,9 +272,9 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
                 step="0.05"
                 value={pgaG}
                 onChange={(e) => setPgaG(parseFloat(e.target.value))}
-                className="w-full"
+                className="w-full cursor-pointer accent-[#73E6B5]"
               />
-              <div className="flex justify-between text-[10px] font-mono text-slate-400">
+              <div className="flex justify-between text-[10px] font-mono text-[#82928B]">
                 <span>0.05g (Minor)</span>
                 <span>1.20g (Severe MCE)</span>
               </div>
@@ -277,14 +282,14 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
 
             {/* Constitutive Law Selector */}
             <div className="space-y-1.5 text-xs font-sans">
-              <label className="text-slate-400 uppercase text-[10px] font-bold">Constitutive Law</label>
+              <label className="text-[#82928B] uppercase text-[10px] font-bold">Constitutive Law</label>
               <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={() => setMaterialType("bilinear")}
                   className={`py-2 rounded-lg border text-xs font-mono cursor-pointer transition ${
                     materialType === "bilinear"
-                      ? "bg-[#00F0FF]/15 border-[#00F0FF] text-[#00F0FF] font-bold shadow-[0_0_12px_rgba(0,240,255,0.2)]"
-                      : "bg-[#111827] border-white/10 text-slate-400 hover:text-white"
+                      ? "bg-[#73E6B5]/20 border-[#73E6B5] text-[#73E6B5] font-bold shadow-sm"
+                      : "bg-[#07110F] border-white/[0.08] text-[#82928B] hover:text-[#E8E8DE]"
                   }`}
                 >
                   Bilinear Inelastic
@@ -293,8 +298,8 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
                   onClick={() => setMaterialType("elastic")}
                   className={`py-2 rounded-lg border text-xs font-mono cursor-pointer transition ${
                     materialType === "elastic"
-                      ? "bg-[#00F0FF]/15 border-[#00F0FF] text-[#00F0FF] font-bold shadow-[0_0_12px_rgba(0,240,255,0.2)]"
-                      : "bg-[#111827] border-white/10 text-slate-400 hover:text-white"
+                      ? "bg-[#73E6B5]/20 border-[#73E6B5] text-[#73E6B5] font-bold shadow-sm"
+                      : "bg-[#07110F] border-white/[0.08] text-[#82928B] hover:text-[#E8E8DE]"
                   }`}
                 >
                   Linear Elastic
@@ -303,14 +308,14 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
             </div>
 
             {/* Engineering Metrics Summary Badge */}
-            <div className="pt-3 border-t border-white/10 grid grid-cols-2 gap-2 text-[11px] font-mono">
-              <div className="bg-[#111827]/80 p-2 rounded border border-white/5">
-                <span className="text-slate-400 block text-[9px] uppercase">Peak Roof Drift</span>
-                <span className="text-white font-bold text-xs">{peakU.toFixed(1)} mm</span>
+            <div className="pt-3 border-t border-white/[0.08] grid grid-cols-2 gap-2 text-[11px] font-mono">
+              <div className="bg-[#07110F] p-2 rounded border border-white/[0.06]">
+                <span className="text-[#82928B] block text-[9px] uppercase">Peak Roof Drift</span>
+                <span className="text-[#E8E8DE] font-bold text-xs">{peakU.toFixed(1)} mm</span>
               </div>
-              <div className="bg-[#111827]/80 p-2 rounded border border-white/5">
-                <span className="text-slate-400 block text-[9px] uppercase">Ductility μ</span>
-                <span className="text-cyan-400 font-bold text-xs">{(peakU / yieldMm).toFixed(2)}</span>
+              <div className="bg-[#07110F] p-2 rounded border border-white/[0.06]">
+                <span className="text-[#82928B] block text-[9px] uppercase">Ductility μ</span>
+                <span className="text-[#73E6B5] font-bold text-xs">{(peakU / (yieldMm || 1)).toFixed(2)}</span>
               </div>
             </div>
           </div>
@@ -331,15 +336,15 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
             />
 
             {/* Playback Controls & Time Scrubber Deck */}
-            <div className="bg-[#0B0F1A]/90 border border-white/10 rounded-xl p-4 space-y-2.5 shadow-xl backdrop-blur-md">
-              <div className="flex items-center justify-between text-xs font-mono">
+            <div className="bg-[#0E1B17] border border-white/[0.08] rounded-lg p-4 space-y-2.5 shadow-lg">
+              <div className="flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={() => setIsPlaying(!isPlaying)}
                     className={`px-3 py-1.5 rounded-lg flex items-center space-x-1.5 font-bold cursor-pointer transition ${
                       isPlaying
-                        ? "bg-[#FF2A6D]/20 border border-[#FF2A6D] text-[#FF2A6D]"
-                        : "bg-[#00F0FF]/20 border border-[#00F0FF] text-[#00F0FF]"
+                        ? "bg-[#E35D5D]/20 border border-[#E35D5D] text-[#E35D5D]"
+                        : "bg-[#73E6B5]/20 border border-[#73E6B5] text-[#73E6B5]"
                     }`}
                   >
                     {isPlaying ? <Pause size={13} /> : <Play size={13} className="fill-current" />}
@@ -352,21 +357,21 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
                       setScrubIndex(0);
                     }}
                     title="Reset to t = 0s"
-                    className="p-1.5 rounded-lg bg-[#111827] hover:bg-[#1E293B] border border-white/10 text-slate-300 cursor-pointer transition"
+                    className="p-1.5 rounded-lg bg-[#07110F] hover:bg-[#101D19] border border-white/[0.08] text-[#82928B] hover:text-[#E8E8DE] cursor-pointer transition"
                   >
                     <RotateCcw size={14} />
                   </button>
 
-                  <div className="flex items-center space-x-1 pl-2 border-l border-white/10 text-[10px]">
-                    <span className="text-slate-400">SPEED:</span>
+                  <div className="flex items-center space-x-1 pl-2 border-l border-white/[0.08] text-[10px]">
+                    <span className="text-[#82928B]">SPEED:</span>
                     {[0.5, 1, 2].map((s) => (
                       <button
                         key={s}
                         onClick={() => setPlaybackSpeed(s)}
                         className={`px-1.5 py-0.5 rounded cursor-pointer ${
                           playbackSpeed === s
-                            ? "bg-[#00F0FF]/20 text-cyan-300 font-bold border border-[#00F0FF]/40"
-                            : "text-slate-400 hover:text-white"
+                            ? "bg-[#73E6B5]/20 text-[#73E6B5] font-bold border border-[#73E6B5]/40"
+                            : "text-[#82928B] hover:text-[#E8E8DE]"
                         }`}
                       >
                         {s}x
@@ -375,9 +380,9 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
                   </div>
                 </div>
 
-                <div className="text-slate-400">
-                  TIME: <span className="text-white font-bold">{currTime.toFixed(2)}s</span> /{" "}
-                  <span className="text-slate-400">{traj ? traj.time[traj.time.length - 1].toFixed(2) : "20.48"}s</span>
+                <div className="text-[#82928B]">
+                  TIME: <span className="text-[#E8E8DE] font-bold">{currTime.toFixed(2)}s</span> /{" "}
+                  <span className="text-[#82928B]">{traj ? traj.time[traj.time.length - 1].toFixed(2) : "20.48"}s</span>
                 </div>
               </div>
 
@@ -391,45 +396,45 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
                   setIsPlaying(false);
                   setScrubIndex(parseInt(e.target.value));
                 }}
-                className="w-full cursor-pointer"
+                className="w-full cursor-pointer accent-[#73E6B5]"
               />
             </div>
           </div>
 
           {/* Bottom: Dynamic Engineering Waveform & Hysteresis Plots */}
-          <div className="bg-[#0B0F1A]/90 border border-white/10 rounded-xl p-5 space-y-3 shadow-xl backdrop-blur-md">
-            <div className="flex items-center justify-between border-b border-white/10 pb-3 text-xs font-mono">
-              <div className="flex items-center space-x-2 text-white font-bold">
-                <Activity size={15} className="text-[#00F0FF]" />
+          <div className="bg-[#0E1B17] border border-white/[0.08] rounded-lg p-5 space-y-3 shadow-lg">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] pb-3 text-xs font-mono">
+              <div className="flex items-center space-x-2 text-[#E8E8DE] font-bold">
+                <Activity size={15} className="text-[#73E6B5]" />
                 <span>DYNAMIC RESPONSE TRAJECTORY & HYSTERESIS</span>
               </div>
-              <div className="flex space-x-1">
+              <div className="flex space-x-1 bg-[#07110F] p-1 rounded border border-white/[0.06]">
                 <button
                   onClick={() => setActiveTabPlot("disp")}
-                  className={`px-3 py-1 rounded-lg text-xs font-mono cursor-pointer transition ${
+                  className={`px-3 py-1 rounded text-xs font-mono cursor-pointer transition ${
                     activeTabPlot === "disp"
-                      ? "bg-[#00F0FF]/20 text-[#00F0FF] border border-[#00F0FF]/50 font-bold"
-                      : "text-slate-400 hover:text-white"
+                      ? "bg-[#73E6B5] text-[#07110F] font-bold"
+                      : "text-[#82928B] hover:text-[#E8E8DE]"
                   }`}
                 >
                   Displacement u(t)
                 </button>
                 <button
                   onClick={() => setActiveTabPlot("hysteresis")}
-                  className={`px-3 py-1 rounded-lg text-xs font-mono cursor-pointer transition ${
+                  className={`px-3 py-1 rounded text-xs font-mono cursor-pointer transition ${
                     activeTabPlot === "hysteresis"
-                      ? "bg-[#00F0FF]/20 text-[#00F0FF] border border-[#00F0FF]/50 font-bold"
-                      : "text-slate-400 hover:text-white"
+                      ? "bg-[#73E6B5] text-[#07110F] font-bold"
+                      : "text-[#82928B] hover:text-[#E8E8DE]"
                   }`}
                 >
                   Hysteresis Loop f(u)
                 </button>
                 <button
                   onClick={() => setActiveTabPlot("energy")}
-                  className={`px-3 py-1 rounded-lg text-xs font-mono cursor-pointer transition ${
+                  className={`px-3 py-1 rounded text-xs font-mono cursor-pointer transition ${
                     activeTabPlot === "energy"
-                      ? "bg-[#00F0FF]/20 text-[#00F0FF] border border-[#00F0FF]/50 font-bold"
-                      : "text-slate-400 hover:text-white"
+                      ? "bg-[#73E6B5] text-[#07110F] font-bold"
+                      : "text-[#82928B] hover:text-[#E8E8DE]"
                   }`}
                 >
                   Energy Dissipation Eₕ(t)
@@ -438,23 +443,12 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
             </div>
 
             {/* Plot Surface Canvas */}
-            <div className="h-56 bg-[#080C16] rounded-lg border border-white/10 flex items-center justify-center p-3 relative overflow-hidden">
+            <div className="h-56 bg-[#07110F] rounded-lg border border-white/[0.08] flex items-center justify-center p-3 relative overflow-hidden">
               {traj && traj.u.length > 0 ? (
                 <svg className="w-full h-full" viewBox="0 0 600 200">
-                  <defs>
-                    <linearGradient id="cyanGlow" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#00F0FF" stopOpacity="0.4" />
-                      <stop offset="100%" stopColor="#00F0FF" stopOpacity="0.0" />
-                    </linearGradient>
-                    <linearGradient id="emeraldGlow" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#00E676" stopOpacity="0.4" />
-                      <stop offset="100%" stopColor="#00E676" stopOpacity="0.0" />
-                    </linearGradient>
-                  </defs>
-
                   {/* Axis Zero Line */}
-                  <line x1="20" y1="100" x2="580" y2="100" stroke="#334155" strokeDasharray="3 3" />
-                  <line x1="20" y1="20" x2="20" y2="180" stroke="#334155" />
+                  <line x1="20" y1="100" x2="580" y2="100" stroke="rgba(255,255,255,0.12)" strokeDasharray="3 3" />
+                  <line x1="20" y1="20" x2="20" y2="180" stroke="rgba(255,255,255,0.12)" />
 
                   {/* Active Plot Content */}
                   {activeTabPlot === "disp" && (
@@ -465,18 +459,18 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
                         y1={100 - (yieldMm / (peakU || 1)) * 80}
                         x2="580"
                         y2={100 - (yieldMm / (peakU || 1)) * 80}
-                        stroke="#FF2A6D"
+                        stroke="#E35D5D"
                         strokeDasharray="2 2"
-                        strokeOpacity="0.5"
+                        strokeOpacity="0.6"
                       />
                       <line
                         x1="20"
                         y1={100 + (yieldMm / (peakU || 1)) * 80}
                         x2="580"
                         y2={100 + (yieldMm / (peakU || 1)) * 80}
-                        stroke="#FF2A6D"
+                        stroke="#E35D5D"
                         strokeDasharray="2 2"
-                        strokeOpacity="0.5"
+                        strokeOpacity="0.6"
                       />
 
                       <path
@@ -489,9 +483,8 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
                           })
                           .join(" ")}
                         fill="none"
-                        stroke="#00F0FF"
-                        strokeWidth="2.2"
-                        filter="drop-shadow(0 0 4px #00F0FF)"
+                        stroke="#73E6B5"
+                        strokeWidth="2.0"
                       />
                     </>
                   )}
@@ -509,9 +502,8 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
                         })
                         .join(" ")}
                       fill="none"
-                      stroke="#FF9900"
+                      stroke="#D6B56D"
                       strokeWidth="2.0"
-                      filter="drop-shadow(0 0 5px #FF9900)"
                     />
                   )}
 
@@ -526,9 +518,8 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
                         })
                         .join(" ")}
                       fill="none"
-                      stroke="#00E676"
-                      strokeWidth="2.2"
-                      filter="drop-shadow(0 0 4px #00E676)"
+                      stroke="#73E6B5"
+                      strokeWidth="2.0"
                     />
                   )}
 
@@ -538,7 +529,7 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
                     y1="10"
                     x2={20 + (currentIdx / (totalPoints - 1)) * 560}
                     y2="190"
-                    stroke="#FF2A6D"
+                    stroke="#E35D5D"
                     strokeWidth="1.8"
                   />
                   <circle
@@ -551,12 +542,11 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
                         : 100
                     }
                     r="4"
-                    fill="#FF2A6D"
-                    filter="drop-shadow(0 0 6px #FF2A6D)"
+                    fill="#E35D5D"
                   />
                 </svg>
               ) : (
-                <div className="text-xs font-mono text-slate-400">Computing structural dynamics...</div>
+                <div className="text-xs font-mono text-[#82928B]">Computing structural dynamics...</div>
               )}
             </div>
           </div>
@@ -565,3 +555,5 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
     </div>
   );
 };
+
+export default StructuralTwinView;
