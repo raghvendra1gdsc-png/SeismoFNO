@@ -191,67 +191,71 @@ export const App: React.FC = () => {
 
   return (
     <div className="h-screen w-screen flex flex-col bg-[#070A11] text-slate-100 overflow-hidden font-sans select-none">
-      {/* Top Application Header */}
-      <header className="h-14 bg-[#0B0F1A]/90 border-b border-white/10 px-5 flex items-center justify-between z-30 shrink-0 backdrop-blur-xl">
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2.5">
-            <div className="w-3 h-3 rounded-full bg-[#00F0FF] shadow-[0_0_12px_#00F0FF]" />
-            <span className="font-mono text-sm font-bold tracking-wider text-white">
-              SEISMO<span className="text-[#00F0FF]">FNO</span>
+      {/* Top Application Header - Professional Workstation Instrumentation */}
+      <header className="h-11 bg-[#080C12] border-b border-white/[0.07] px-4 flex items-center justify-between z-30 shrink-0 select-none">
+        {/* Left: Branding & Physics System Title */}
+        <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2">
+            <span className="w-2 h-2 rounded-full bg-[#28D7FF] shadow-[0_0_6px_#28D7FF]" />
+            <span className="font-mono text-xs font-bold tracking-widest text-[#E8EDF3]">
+              SEISMO<span className="text-[#28D7FF]">FNO</span>
             </span>
           </div>
-          <div className="h-4 w-px bg-white/10 hidden sm:block" />
-          <div className="text-xs font-mono text-slate-400 tracking-wide hidden sm:inline">
-            Physics-Grounded Neural Operator Workstation
+          <span className="text-white/[0.1] hidden sm:inline">|</span>
+          <div className="text-[10px] font-mono text-[#8D9AAA] tracking-wide uppercase hidden sm:inline">
+            PHYSICS-GROUNDED NEURAL OPERATOR
           </div>
         </div>
 
-        {/* Center Quick Switch Tabs */}
-        <div className="hidden md:flex items-center space-x-1 bg-[#111827] p-1 rounded-lg border border-white/10">
+        {/* Center: Workstation Quick Switch Tabs with subtle cyan bottom border */}
+        <div className="hidden md:flex items-center h-full space-x-1">
           <button
             onClick={() => handleSelectTab("structural_twin")}
-            className={`px-3 py-1 text-xs font-mono rounded-md flex items-center space-x-1.5 transition cursor-pointer ${
+            className={`h-full px-3 text-[11px] font-mono flex items-center space-x-1.5 transition cursor-pointer border-b-2 ${
               activeTab === "structural_twin"
-                ? "bg-[#00F0FF]/20 text-cyan-300 font-bold border border-cyan-500/40 shadow-[0_0_10px_rgba(0,240,255,0.2)]"
-                : "text-slate-400 hover:text-white"
+                ? "border-[#28D7FF] text-[#28D7FF] font-bold bg-white/[0.03]"
+                : "border-transparent text-[#8D9AAA] hover:text-[#E8EDF3]"
             }`}
           >
-            <Building2 size={13} />
-            <span>3D Digital Twin</span>
+            <Building2 size={12} />
+            <span>3D DIGITAL TWIN</span>
           </button>
           <button
             onClick={() => handleSelectTab("research_demo")}
-            className={`px-3 py-1 text-xs font-mono rounded-md flex items-center space-x-1.5 transition cursor-pointer ${
+            className={`h-full px-3 text-[11px] font-mono flex items-center space-x-1.5 transition cursor-pointer border-b-2 ${
               activeTab === "research_demo"
-                ? "bg-[#00F0FF]/20 text-cyan-300 font-bold border border-cyan-500/40 shadow-[0_0_10px_rgba(0,240,255,0.2)]"
-                : "text-slate-400 hover:text-white"
+                ? "border-[#28D7FF] text-[#28D7FF] font-bold bg-white/[0.03]"
+                : "border-transparent text-[#8D9AAA] hover:text-[#E8EDF3]"
             }`}
           >
-            <GraduationCap size={13} />
-            <span>Research Defense</span>
+            <GraduationCap size={12} />
+            <span>RESEARCH DEFENSE</span>
           </button>
           <button
             onClick={() => handleSelectTab("live_earthquake")}
-            className={`px-3 py-1 text-xs font-mono rounded-md flex items-center space-x-1.5 transition cursor-pointer ${
+            className={`h-full px-3 text-[11px] font-mono flex items-center space-x-1.5 transition cursor-pointer border-b-2 ${
               activeTab === "live_earthquake"
-                ? "bg-[#00F0FF]/20 text-cyan-300 font-bold border border-cyan-500/40 shadow-[0_0_10px_rgba(0,240,255,0.2)]"
-                : "text-slate-400 hover:text-white"
+                ? "border-[#28D7FF] text-[#28D7FF] font-bold bg-white/[0.03]"
+                : "border-transparent text-[#8D9AAA] hover:text-[#E8EDF3]"
             }`}
           >
-            <Radio size={13} />
-            <span>Live USGS</span>
+            <Radio size={12} />
+            <span>LIVE USGS</span>
           </button>
         </div>
 
-        {/* Right System Telemetry */}
-        <div className="flex items-center space-x-3 text-xs font-mono">
-          <span className="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-slate-300 text-[10px] flex items-center gap-1.5">
-            <Cpu size={12} className="text-[#00F0FF]" />
-            <span>{systemInfo?.device ? systemInfo.device.toUpperCase() : "APPLE MPS"}</span>
+        {/* Right: Rectangular Technical Badges */}
+        <div className="flex items-center space-x-2 text-[10px] font-mono">
+          <span className="px-2 py-0.5 rounded-[2px] bg-[#111821] border border-white/[0.07] text-[#8D9AAA] flex items-center gap-1.5">
+            <Cpu size={11} className="text-[#28D7FF]" />
+            <span className="text-[#E8EDF3] font-bold">{systemInfo?.device ? systemInfo.device.toUpperCase() : "APPLE MPS"}</span>
           </span>
-          <span className="px-2.5 py-1 rounded-md bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-[10px] font-bold flex items-center gap-1.5 shadow-[0_0_10px_rgba(16,185,129,0.2)]">
-            <ShieldCheck size={12} />
+          <span className="px-2 py-0.5 rounded-[2px] bg-[#31D17C]/10 border border-[#31D17C]/30 text-[#31D17C] font-bold flex items-center gap-1">
+            <ShieldCheck size={11} />
             <span>305 TESTS PASSING</span>
+          </span>
+          <span className="hidden sm:inline px-2 py-0.5 rounded-[2px] bg-[#111821] border border-white/[0.07] text-[#31D17C] font-semibold">
+            SYSTEM ONLINE
           </span>
         </div>
       </header>
@@ -329,41 +333,41 @@ export const App: React.FC = () => {
         </main>
       </div>
 
-      {/* Bottom Status Bar */}
-      <footer className="h-7 bg-[#0B0F1A] border-t border-white/10 px-4 flex items-center justify-between text-[11px] font-mono text-slate-400 select-none z-20">
-        <div className="flex items-center space-x-4">
+      {/* Bottom Status Bar - Scientific Workstation Telemetry */}
+      <footer className="h-6 bg-[#080C12] border-t border-white/[0.07] px-4 flex items-center justify-between text-[10px] font-mono text-[#8D9AAA] select-none z-20">
+        <div className="flex items-center space-x-3">
           <div className="flex items-center space-x-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#10B981]" />
-            <span className="text-slate-400">SURROGATE:</span>
-            <span className="text-white font-bold uppercase">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#31D17C] shadow-[0_0_5px_#31D17C]" />
+            <span className="text-[#667487]">SURROGATE:</span>
+            <span className="text-[#E8EDF3] font-bold">
               {prediction ? `${prediction.inference_time_ms.toFixed(2)} ms` : "< 2.0 ms"}
             </span>
           </div>
 
-          <div className="h-3 w-px bg-white/10" />
+          <span className="text-white/[0.1]">|</span>
 
           <div className="flex items-center space-x-1.5">
-            <span className="text-slate-400">GROUND TRUTH:</span>
-            <span className="text-cyan-300 font-semibold">OpenSeesPy C-Runtime NLTHA</span>
+            <span className="text-[#667487]">GROUND TRUTH:</span>
+            <span className="text-[#28D7FF] font-semibold">OpenSeesPy C-Runtime NLTHA</span>
           </div>
 
-          <div className="h-3 w-px bg-white/10" />
+          <span className="text-white/[0.1] hidden sm:inline">|</span>
 
-          <div className="flex items-center space-x-1.5">
-            <span className="text-slate-400">THROUGHPUT:</span>
-            <span className="text-emerald-400 font-semibold">1,060 sim/s (Batch-32)</span>
+          <div className="hidden sm:flex items-center space-x-1.5">
+            <span className="text-[#667487]">THROUGHPUT:</span>
+            <span className="text-[#31D17C] font-semibold">1,060 sim/s (Batch-32)</span>
           </div>
         </div>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-3">
           <div className="flex items-center space-x-1.5">
-            <span className="text-slate-400">EARTHQUAKE:</span>
-            <span className="text-white font-semibold">{selectedEarthquakeName}</span>
+            <span className="text-[#667487]">ACTIVE RECORD:</span>
+            <span className="text-[#E8EDF3] font-semibold">{selectedEarthquakeName}</span>
           </div>
-          <div className="h-3 w-px bg-white/10" />
-          <span className="text-emerald-400 font-bold flex items-center gap-1">
-            <ShieldCheck size={12} />
-            <span>EXP6 FROZEN & AUDITED</span>
+          <span className="text-white/[0.1]">|</span>
+          <span className="text-[#31D17C] font-bold flex items-center gap-1">
+            <ShieldCheck size={11} />
+            <span>EXP6 / FROZEN / AUDITED</span>
           </span>
         </div>
       </footer>
