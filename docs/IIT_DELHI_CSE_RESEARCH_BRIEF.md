@@ -1,11 +1,10 @@
-# SeismoFNO — IIT Delhi CSE/AI Research Brief
-## Scientific Machine Learning & Neural Operators for Seismic Structural Dynamics
+# SeismoFNO — Research Brief
+## Physics-Grounded Neural Operators for Seismic Structural Dynamics
 
-**Target Evaluation:** Research Brief — IIT Delhi CSE Research Internship Application  
-**Author:** Raghvendra Singh Gahlot (B.E. Building and Construction Technology, Structural Engineering)  
+**Author:** Raghvendra Singh Gahlot (B.Tech, Civil Engineering)  
 **Focus Area:** Scientific Machine Learning (SciML), Neural Operators, Graph Representation Learning, Out-of-Distribution (OOD) Generalization  
-**Repository:** `SeismoFNO` (Strict Project Boundary Enforced)  
-**Version:** September 2026 | **Status:** Research Core FROZEN & AUDITED | **294 Passed, 2 Skipped, 0 Failed**  
+**Repository:** `SeismoFNO`  
+**Version:** September 2026 | **Status:** Research Core FROZEN & AUDITED | **305 Passed, 2 Skipped, 0 Failed**  
 
 ---
 
@@ -95,7 +94,7 @@ While modal conditioning successfully informs the model of the structural stiffn
 ### 9. Relevance to CSE / AI Research
 - **Operator Learning on Dynamic Graphs:** Demonstrates how to couple graph message-passing with spectral convolutions for physical systems that exhibit dual spatial-discrete and temporal-continuous characteristics.
 - **Out-of-Distribution Physics Generalization:** Provides an empirical case study showing that physics conditioning can repair amplitude/envelope generalization while leaving global spectral phase drift uncorrected.
-- **Scientific Software Engineering & Forensic Auditing:** Full repository integrity enforced through 294 passing unit tests, zero-leakage hash verification, frozen baseline artifacts, and automated forensic auditing.
+- **Scientific Software Engineering & Forensic Auditing:** Full repository integrity enforced through 305 passing unit tests, zero-leakage hash verification, frozen baseline artifacts, and automated forensic auditing.
 
 ---
 
