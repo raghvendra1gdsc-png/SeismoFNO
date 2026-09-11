@@ -15,14 +15,12 @@ interface WorkspaceNavProps {
   activeTab: WorkspaceTab;
   onSelectTab: (tab: WorkspaceTab) => void;
   latencyMs?: number;
-  onOpenGreeting?: () => void;
 }
 
 export const WorkspaceNav: React.FC<WorkspaceNavProps> = ({
   activeTab,
   onSelectTab,
   latencyMs,
-  onOpenGreeting,
 }) => {
   const [hoveredId, setHoveredId] = useState<WorkspaceTab | null>(null);
 
@@ -37,25 +35,25 @@ export const WorkspaceNav: React.FC<WorkspaceNavProps> = ({
     {
       id: "structural_twin",
       code: "01",
-      label: "Structural Simulator",
-      category: "NLTHA SDOF/MDOF",
+      label: "Structural Response",
+      category: "NONLINEAR SDOF/MDOF",
       previewSummary: "Nonlinear hysteretic response under continuous Fourier operator",
       icon: Activity,
     },
     {
       id: "model_validation",
       code: "02",
-      label: "OpenSees Benchmark",
-      category: "C++ VERIFICATION",
+      label: "Physics Reference",
+      category: "OPENSeesPy C++ SOLVER",
       previewSummary: "Physical Newmark-β integration vs FNO continuous inference",
       icon: ShieldCheck,
     },
     {
       id: "earthquake_intel",
       code: "03",
-      label: "Seismic Hazard & Map",
-      category: "IS 1893 & PEER",
-      previewSummary: "Indian seismic microzonation & PEER ground motion catalog",
+      label: "Seismic Input",
+      category: "IS 1893 & PEER DATABASE",
+      previewSummary: "Indian seismic microzonation & PEER ground motion records",
       icon: MapPin,
     },
     {
@@ -63,7 +61,7 @@ export const WorkspaceNav: React.FC<WorkspaceNavProps> = ({
       code: "04",
       label: "Retrofit Lab",
       category: "DUAL COMPARISON",
-      previewSummary: "Structural yield displacement & period retrofit testing",
+      previewSummary: "Yield displacement & fundamental period retrofit sensitivity",
       icon: Sliders,
     },
     {
@@ -77,7 +75,7 @@ export const WorkspaceNav: React.FC<WorkspaceNavProps> = ({
     {
       id: "research_demo",
       code: "06",
-      label: "Multi-Story Research",
+      label: "Multi-Story Operator",
       category: "MODAL GNO (EXP6)",
       previewSummary: "Physics/Modal-conditioned spatiotemporal graph operator",
       icon: Layers,
@@ -93,46 +91,37 @@ export const WorkspaceNav: React.FC<WorkspaceNavProps> = ({
     {
       id: "command_center",
       code: "08",
-      label: "Overview & KPIs",
-      category: "EXECUTIVE AUDIT",
-      previewSummary: "305 passing unit tests & forensic benchmark metrics",
+      label: "Results & Audit",
+      category: "FORENSIC SUITE",
+      previewSummary: "305 passing deterministic checks & benchmark provenance",
       icon: Cpu,
     },
   ];
 
   return (
-    <aside className="w-[280px] shrink-0 bg-[#07110F]/90 backdrop-blur-xl border-r border-white/[0.08] flex flex-col justify-between py-5 px-3.5 select-none text-[#E8E8DE] font-sans relative z-20">
-      <div className="space-y-6">
-        {/* Kinetic Header / Brand Studio Index */}
-        <div className="px-1.5 space-y-1.5">
-          <button
-            onClick={onOpenGreeting}
-            className="group flex items-center justify-between w-full text-left transition cursor-pointer"
-            title="Click to view Welcome Overview"
-          >
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#73E6B5] group-hover:scale-125 transition-transform" />
-              <span className="text-xs font-bold tracking-wider text-[#E8E8DE] uppercase font-mono group-hover:text-[#73E6B5] transition-colors">
-                SEISMOFNO
-              </span>
-            </div>
-            <span className="text-[10px] font-mono text-[#73E6B5] opacity-80 group-hover:opacity-100 flex items-center gap-0.5">
-              INTRO ↗
+    <aside className="w-[270px] shrink-0 bg-[#FFFFFF] border-r border-[#E2E8F0] flex flex-col justify-between py-4 px-3 select-none text-[#0F172A] font-sans relative z-20 shadow-[1px_0_3px_rgba(0,0,0,0.02)]">
+      <div className="space-y-4">
+        {/* Academic Laboratory Index Header */}
+        <div className="px-2 pt-1 pb-2 border-b border-[#E2E8F0]">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-none bg-[#047857]" />
+            <span className="text-xs font-bold tracking-wider text-[#0F172A] uppercase font-mono">
+              SEISMOFNO
             </span>
-          </button>
-          <div className="text-[10px] font-mono text-[#82928B] pl-4 uppercase tracking-wider">
-            Neural Operator Research Desk
+          </div>
+          <div className="text-[10px] font-mono text-[#64748B] mt-0.5 tracking-tight">
+            Neural Operator Research Workstation
           </div>
         </div>
 
         {/* Section Header */}
         <div className="space-y-1">
-          <div className="px-1.5 flex items-center justify-between text-[9px] font-mono tracking-widest uppercase text-[#82928B] pb-1 border-b border-white/[0.06]">
-            <span>Workspaces</span>
-            <span>Index '26</span>
+          <div className="px-2 flex items-center justify-between text-[9px] font-mono tracking-wider uppercase text-[#64748B] pb-1">
+            <span>Research Index</span>
+            <span>v1.0 (Audit Passed)</span>
           </div>
 
-          {/* Kinetic Interactive Navigation Menu (inspired by 21st.dev Kinetic Team Hybrid) */}
+          {/* Light Academic Navigation Menu */}
           <nav
             className="space-y-1 pt-1"
             onMouseLeave={() => setHoveredId(null)}
@@ -147,26 +136,26 @@ export const WorkspaceNav: React.FC<WorkspaceNavProps> = ({
                   <button
                     onClick={() => onSelectTab(item.id)}
                     onMouseEnter={() => setHoveredId(item.id)}
-                    className={`group w-full flex flex-col px-3 py-2.5 rounded-xl transition-all duration-200 cursor-pointer text-left border ${
+                    className={`group w-full flex flex-col px-2.5 py-2 rounded transition-all duration-150 cursor-pointer text-left border ${
                       isActive
-                        ? "bg-[#0E1B17] border-[#73E6B5]/40 text-[#E8E8DE] shadow-lg shadow-black/40"
+                        ? "bg-[#F1F5F9] border-[#CBD5E1] border-l-2 border-l-[#047857] text-[#0F172A] shadow-xs"
                         : isHovered
-                        ? "bg-[#0E1B17]/70 border-white/10 text-white"
+                        ? "bg-[#F8FAFC] border-[#E2E8F0] text-[#0F172A]"
                         : isAnyHovered
-                        ? "opacity-40 border-transparent text-[#82928B] hover:opacity-100"
-                        : "border-transparent text-[#A3B2AC] hover:text-[#E8E8DE] hover:bg-[#0E1B17]/40"
+                        ? "opacity-45 border-transparent text-[#64748B] hover:opacity-100"
+                        : "border-transparent text-[#334155] hover:text-[#0F172A] hover:bg-[#F8FAFC]"
                     }`}
                   >
                     {/* Top Row: Index number, Label, and Arrow */}
                     <div className="flex items-baseline justify-between w-full">
-                      <div className="flex items-center gap-2.5 truncate">
+                      <div className="flex items-center gap-2 truncate">
                         <span
                           className={`font-mono text-[10px] transition-colors ${
                             isActive
-                              ? "text-[#73E6B5] font-bold"
+                              ? "text-[#047857] font-bold"
                               : isHovered
-                              ? "text-[#73E6B5]"
-                              : "text-[#556660]"
+                              ? "text-[#0F172A]"
+                              : "text-[#64748B]"
                           }`}
                         >
                           {item.code}
@@ -174,9 +163,9 @@ export const WorkspaceNav: React.FC<WorkspaceNavProps> = ({
                         <span
                           className={`text-xs tracking-tight transition-colors ${
                             isActive
-                              ? "font-bold text-[#E8E8DE]"
+                              ? "font-bold text-[#0F172A]"
                               : isHovered
-                              ? "font-semibold text-white"
+                              ? "font-semibold text-[#0F172A]"
                               : "font-medium"
                           }`}
                         >
@@ -184,47 +173,44 @@ export const WorkspaceNav: React.FC<WorkspaceNavProps> = ({
                         </span>
                       </div>
 
-                      <div className="flex items-center gap-1 shrink-0 ml-2">
-                        {isActive && (
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#73E6B5] mr-1 shadow-[0_0_8px_#73E6B5]" />
-                        )}
+                      <div className="flex items-center gap-1 shrink-0 ml-1.5">
                         <ArrowUpRight
                           size={12}
-                          className={`transition-all duration-200 ${
+                          className={`transition-all duration-150 ${
                             isActive
-                              ? "text-[#73E6B5] translate-x-0.5 -translate-y-0.5"
+                              ? "text-[#047857] translate-x-0.5 -translate-y-0.5"
                               : isHovered
-                              ? "text-[#73E6B5] translate-x-0.5 -translate-y-0.5 opacity-100"
-                              : "text-[#556660] opacity-50"
+                              ? "text-[#0F172A] translate-x-0.5 -translate-y-0.5 opacity-100"
+                              : "text-[#94A3B8] opacity-50"
                           }`}
                         />
                       </div>
                     </div>
 
                     {/* Bottom Row: Category & Role Monospace Tag */}
-                    <div className="flex items-center justify-between mt-1 pl-5">
-                      <span className="text-[9px] font-mono tracking-wider uppercase text-[#82928B]">
+                    <div className="flex items-center justify-between mt-0.5 pl-4">
+                      <span className="text-[9px] font-mono tracking-wider uppercase text-[#64748B]">
                         {item.category}
                       </span>
                     </div>
                   </button>
 
-                  {/* Kinetic Hover Card Preview (Inspired by 21st.dev Kinetic Team Hybrid) */}
+                  {/* Clean Technical Hover Card Preview */}
                   {isHovered && !isActive && (
-                    <div className="absolute left-[290px] top-0 z-50 w-64 p-3.5 bg-[#0E1B17]/95 backdrop-blur-xl rounded-xl border border-[#73E6B5]/30 shadow-2xl pointer-events-none transform -translate-y-1 animate-in fade-in zoom-in-95 duration-150">
-                      <div className="flex items-center gap-2 text-[#73E6B5] text-[10px] font-mono uppercase tracking-wider pb-1.5 border-b border-white/[0.08]">
+                    <div className="absolute left-[275px] top-0 z-50 w-64 p-3 bg-[#FFFFFF] rounded border border-[#CBD5E1] shadow-lg pointer-events-none transform -translate-y-0.5 animate-in fade-in duration-100">
+                      <div className="flex items-center gap-1.5 text-[#047857] text-[10px] font-mono uppercase tracking-wider pb-1 border-b border-[#E2E8F0]">
                         <item.icon size={12} />
                         <span>{item.category}</span>
                       </div>
-                      <div className="text-xs font-bold text-[#E8E8DE] mt-2 mb-1">
+                      <div className="text-xs font-bold text-[#0F172A] mt-1.5 mb-0.5">
                         {item.label}
                       </div>
-                      <div className="text-[11px] text-[#82928B] leading-relaxed">
+                      <div className="text-[11px] text-[#475569] leading-relaxed">
                         {item.previewSummary}
                       </div>
-                      <div className="mt-2.5 pt-1.5 border-t border-white/[0.06] flex items-center justify-between text-[9px] font-mono text-[#73E6B5]">
-                        <span>OPEN WORKSPACE</span>
-                        <span>[ENTER] ↗</span>
+                      <div className="mt-2 pt-1 border-t border-[#F1F5F9] flex items-center justify-between text-[9px] font-mono text-[#047857]">
+                        <span>SELECT VIEW</span>
+                        <span>[CLICK] ↗</span>
                       </div>
                     </div>
                   )}
@@ -235,26 +221,26 @@ export const WorkspaceNav: React.FC<WorkspaceNavProps> = ({
         </div>
       </div>
 
-      {/* Bottom Telemetry Strip */}
-      <div className="space-y-2 px-1.5 pt-4 border-t border-white/[0.06] font-mono text-[10px] text-[#82928B]">
-        <div className="text-[9px] uppercase tracking-wider text-[#82928B] flex items-center justify-between">
-          <span>System Status</span>
-          <span className="text-[#73E6B5]">ONLINE</span>
+      {/* Bottom Laboratory Telemetry Strip */}
+      <div className="space-y-1.5 px-2 pt-3 border-t border-[#E2E8F0] font-mono text-[10px] text-[#64748B]">
+        <div className="text-[9px] uppercase tracking-wider text-[#64748B] flex items-center justify-between">
+          <span>Bench Telemetry</span>
+          <span className="text-[#047857] font-semibold">VERIFIED</span>
         </div>
-        <div className="space-y-1 bg-[#050D0B]/80 p-2.5 rounded-lg border border-white/[0.04]">
+        <div className="space-y-1 bg-[#F8FAFC] p-2 rounded border border-[#E2E8F0]">
           <div className="flex justify-between">
-            <span>Inference:</span>
-            <span className="text-[#E8E8DE] font-semibold">
-              {latencyMs ? `${latencyMs.toFixed(2)} ms` : "< 2.0 ms"}
+            <span>Single Latency:</span>
+            <span className="text-[#0F172A] font-semibold">
+              {latencyMs ? `${latencyMs.toFixed(2)} ms` : "1.84 ms"}
             </span>
           </div>
           <div className="flex justify-between">
-            <span>Throughput:</span>
-            <span className="text-[#73E6B5] font-bold">1,060 sim/s</span>
+            <span>Batched Speed:</span>
+            <span className="text-[#047857] font-bold">1,060 sim/s</span>
           </div>
           <div className="flex justify-between">
             <span>Verification:</span>
-            <span className="text-[#E8E8DE]">305 Tests Passing</span>
+            <span className="text-[#0F172A]">305 Tests Passing</span>
           </div>
         </div>
       </div>

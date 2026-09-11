@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { WorkspaceNav, type WorkspaceTab } from "./components/WorkspaceNav/WorkspaceNav";
 import { CommandCenterView } from "./components/CommandCenter/CommandCenterView";
 import { EarthquakeIntelView } from "./components/EarthquakeIntel/EarthquakeIntelView";
@@ -22,7 +22,6 @@ import {
   type ScenarioPredictionResponse,
 } from "./api/digitalTwinApi";
 
-import { SeismicCinematicHero } from "./components/ui/seismic-cinematic-hero";
 import { ShaderAnimation } from "./components/ui/shader-lines";
 
 export const App: React.FC = () => {
@@ -42,37 +41,6 @@ export const App: React.FC = () => {
     }
     return "structural_twin";
   });
-
-  // Welcome Greeting Overlay - greets on initial open, dismissed on click
-  const [showGreeting, setShowGreeting] = useState<boolean>(() => {
-    if (typeof window !== "undefined") {
-      const path = window.location.pathname.toLowerCase();
-      const search = window.location.search.toLowerCase();
-      // If user navigated directly to /live or /demo or tab param, skip splash
-      if (path.includes("live") || path.includes("demo") || search.includes("tab")) {
-        return false;
-      }
-      return !sessionStorage.getItem("seismo_greeted");
-    }
-    return true;
-  });
-
-  const handleEnterWorkstation = useCallback((targetTab: WorkspaceTab = "structural_twin") => {
-    setShowGreeting(false);
-    setActiveTab(targetTab);
-    if (typeof window !== "undefined") {
-      sessionStorage.setItem("seismo_greeted", "true");
-      if (targetTab === "structural_twin") {
-        window.history.pushState(null, "", "/");
-      } else if (targetTab === "live_earthquake") {
-        window.history.pushState(null, "", "/live");
-      } else if (targetTab === "research_demo") {
-        window.history.pushState(null, "", "/demo");
-      } else {
-        window.history.pushState(null, "", `/?tab=${targetTab}`);
-      }
-    }
-  }, []);
 
   const handleSelectTab = useCallback((tab: WorkspaceTab) => {
     setActiveTab(tab);
@@ -266,58 +234,43 @@ export const App: React.FC = () => {
     [pgaG, T0, damping, uy, alpha, materialType]
   );
 
-  const currentScenarioPayload: ScenarioInputPayload = {
-    earthquake_id: selectedEarthquakeId,
-    pga_g: pgaG,
-    T0,
-    damping_ratio: damping,
-    yield_displacement_m: uy,
-    post_yield_ratio: alpha,
-    material_type: materialType,
-    include_ground_truth: false,
-  };
+  const currentScenarioPayload: ScenarioInputPayload = useMemo(
+    () => ({
+      earthquake_id: selectedEarthquakeId,
+      pga_g: pgaG,
+      T0,
+      damping_ratio: damping,
+      yield_displacement_m: uy,
+      post_yield_ratio: alpha,
+      material_type: materialType,
+      include_ground_truth: false,
+    }),
+    [selectedEarthquakeId, pgaG, T0, damping, uy, alpha, materialType]
+  );
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-[#07110F] text-[#E8E8DE] overflow-hidden font-sans select-none relative">
-      {/* GLOBAL BACKGROUND: Three.js Waveform Shader Lines on all pages */}
+    <div className="h-screen w-screen flex flex-col bg-[#F8F9FA] text-[#0F172A] overflow-hidden font-sans select-none relative">
+      {/* GLOBAL BACKGROUND: Ultra-subtle Three.js Waveform Shader Lines (Scientific Signal Field) */}
       <ShaderAnimation
-        className="fixed inset-0 pointer-events-none z-0 opacity-20"
-        speed={0.03}
-        lineDensity={0.0008}
+        className="fixed inset-0 pointer-events-none z-0 opacity-[0.035]"
+        speed={0.015}
+        lineDensity={0.0006}
+        aria-hidden="true"
       />
-      {/* Ambient Forest Gradient Overlay */}
-      <div className="fixed inset-0 pointer-events-none z-0 bg-radial from-transparent via-[#07110F]/60 to-[#07110F] opacity-90" />
 
-      {/* WELCOME / GREETING SPLASH (Appears on initial open, dismissed on click) */}
-      {showGreeting && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#07110F] animate-in fade-in duration-300">
-          <SeismicCinematicHero
-            onEnterWorkstation={() => handleEnterWorkstation("structural_twin")}
-            onExploreSimulator={() => handleEnterWorkstation("structural_twin")}
-            onExploreBenchmark={() => handleEnterWorkstation("model_validation")}
-            onExploreLive={() => handleEnterWorkstation("live_earthquake")}
-            onExploreDemo={() => handleEnterWorkstation("research_demo")}
-          />
-        </div>
-      )}
-
-      {/* Top Application Header - Clean Academic Chrome */}
-      <header className="h-10 bg-[#07110F]/90 backdrop-blur-md border-b border-white/[0.06] px-4 flex items-center justify-between z-30 shrink-0 select-none">
-        {/* Left: Minimal Branding */}
+      {/* Top Application Header - Clean Academic Workstation Chrome */}
+      <header className="h-10 bg-[#FFFFFF] border-b border-[#E2E8F0] px-4 flex items-center justify-between z-30 shrink-0 select-none shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+        {/* Left: Academic Title */}
         <div className="flex items-center space-x-3">
-          <button
-            onClick={() => setShowGreeting(true)}
-            className="flex items-center space-x-2 text-left cursor-pointer group"
-            title="Click to view Welcome Overview"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-[#73E6B5] group-hover:scale-125 transition-transform" />
-            <span className="text-xs font-semibold tracking-wider text-[#E8E8DE] uppercase group-hover:text-[#73E6B5] transition-colors font-mono">
+          <div className="flex items-center space-x-2">
+            <span className="w-2 h-2 rounded-none bg-[#047857]" />
+            <span className="text-xs font-bold tracking-wider text-[#0F172A] uppercase font-mono">
               SEISMOFNO
             </span>
-          </button>
-          <span className="text-white/[0.1] hidden sm:inline">/</span>
-          <div className="text-[11px] text-[#82928B] hidden sm:inline font-mono">
-            Neural Operator Research Desk
+          </div>
+          <span className="text-[#CBD5E1] hidden sm:inline">/</span>
+          <div className="text-[11px] text-[#64748B] font-mono hidden sm:inline">
+            Neural Operator Structural Dynamics Workstation
           </div>
         </div>
 
@@ -327,28 +280,28 @@ export const App: React.FC = () => {
             onClick={() => handleSelectTab("structural_twin")}
             className={`h-full px-3 flex items-center space-x-1.5 transition cursor-pointer border-b-2 ${
               activeTab === "structural_twin"
-                ? "border-[#73E6B5] text-[#E8E8DE] font-medium"
-                : "border-transparent text-[#82928B] hover:text-[#E8E8DE]"
+                ? "border-[#047857] text-[#0F172A] font-semibold"
+                : "border-transparent text-[#64748B] hover:text-[#0F172A]"
             }`}
           >
-            <span>Structural Simulator</span>
+            <span>Structural Response</span>
           </button>
           <button
             onClick={() => handleSelectTab("model_validation")}
             className={`h-full px-3 flex items-center space-x-1.5 transition cursor-pointer border-b-2 ${
               activeTab === "model_validation"
-                ? "border-[#73E6B5] text-[#E8E8DE] font-medium"
-                : "border-transparent text-[#82928B] hover:text-[#E8E8DE]"
+                ? "border-[#047857] text-[#0F172A] font-semibold"
+                : "border-transparent text-[#64748B] hover:text-[#0F172A]"
             }`}
           >
-            <span>OpenSees Benchmark</span>
+            <span>Physics Reference</span>
           </button>
           <button
             onClick={() => handleSelectTab("research_demo")}
             className={`h-full px-3 flex items-center space-x-1.5 transition cursor-pointer border-b-2 ${
               activeTab === "research_demo"
-                ? "border-[#73E6B5] text-[#E8E8DE] font-medium"
-                : "border-transparent text-[#82928B] hover:text-[#E8E8DE]"
+                ? "border-[#047857] text-[#0F172A] font-semibold"
+                : "border-transparent text-[#64748B] hover:text-[#0F172A]"
             }`}
           >
             <span>Multi-Story Research (Modal GNO)</span>
@@ -357,37 +310,32 @@ export const App: React.FC = () => {
             onClick={() => handleSelectTab("live_earthquake")}
             className={`h-full px-3 flex items-center space-x-1.5 transition cursor-pointer border-b-2 ${
               activeTab === "live_earthquake"
-                ? "border-[#73E6B5] text-[#E8E8DE] font-medium"
-                : "border-transparent text-[#82928B] hover:text-[#E8E8DE]"
+                ? "border-[#047857] text-[#0F172A] font-semibold"
+                : "border-transparent text-[#64748B] hover:text-[#0F172A]"
             }`}
           >
             <span>Live USGS Screening</span>
           </button>
         </div>
 
-        {/* Right: Intro Desk Button & Instrument Readouts */}
-        <div className="flex items-center space-x-3 text-[10px] font-mono text-[#82928B]">
-          <button
-            onClick={() => setShowGreeting(true)}
-            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#101D19] border border-[#73E6B5]/30 text-[10px] font-mono text-[#73E6B5] hover:bg-[#17483A] transition cursor-pointer"
-            title="Open Welcome Overview"
-          >
-            <span>✦ INTRO DESK</span>
-          </button>
-          <span>{systemInfo?.device ? systemInfo.device.toUpperCase() : "MPS"}</span>
+        {/* Right: Laboratory Hardware & Audit Metadata */}
+        <div className="flex items-center space-x-2 text-[10px] font-mono text-[#64748B]">
+          <span className="px-1.5 py-0.5 rounded bg-[#F1F5F9] border border-[#CBD5E1] text-[#334155] font-semibold">
+            EXP-06 GNO
+          </span>
           <span>·</span>
-          <span className="text-[#73E6B5]">305 TESTS</span>
+          <span>{systemInfo?.device ? systemInfo.device.toUpperCase() : "APPLE MPS"}</span>
           <span>·</span>
-          <span className="text-[#82928B]">ONLINE</span>
+          <span className="text-[#047857] font-semibold">305 TESTS PASSING</span>
         </div>
       </header>
 
       {/* Interactive Toast / Notification Banner */}
       {notification && (
-        <div className="bg-[#17483A] border-b border-[#73E6B5]/30 px-4 py-2 flex items-center justify-between text-xs font-mono text-[#73E6B5] shrink-0 z-20">
+        <div className="bg-[#ECFDF5] border-b border-[#A7F3D0] px-4 py-2 flex items-center justify-between text-xs font-mono text-[#047857] shrink-0 z-20">
           <div className="flex items-center space-x-2">
-            <span className="w-2 h-2 rounded-full bg-[#73E6B5] animate-pulse" />
-            <span>{notification.message}</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#047857]" />
+            <span className="font-semibold">{notification.message}</span>
           </div>
           <div className="flex items-center space-x-3">
             {notification.targetTab && (
@@ -396,14 +344,14 @@ export const App: React.FC = () => {
                   handleSelectTab(notification.targetTab!);
                   setNotification(null);
                 }}
-                className="px-2.5 py-0.5 bg-[#73E6B5] text-[#07110F] font-bold rounded cursor-pointer hover:bg-[#5cd4a2] transition text-[11px]"
+                className="px-2 py-0.5 bg-[#047857] text-white font-bold rounded cursor-pointer hover:bg-[#065F46] transition text-[11px]"
               >
                 {notification.actionText || "View →"}
               </button>
             )}
             <button
               onClick={() => setNotification(null)}
-              className="text-[#82928B] hover:text-white cursor-pointer px-1"
+              className="text-[#64748B] hover:text-[#0F172A] cursor-pointer px-1 font-bold"
             >
               ✕
             </button>
@@ -413,16 +361,15 @@ export const App: React.FC = () => {
 
       {/* Main Workspace Body */}
       <div className="flex-1 flex overflow-hidden relative z-10">
-        {/* Navigation Sidebar (Kinetic Team Hybrid Inspired) */}
+        {/* Navigation Sidebar (Academic Research Index) */}
         <WorkspaceNav
           activeTab={activeTab}
           onSelectTab={handleSelectTab}
           latencyMs={prediction?.inference_time_ms}
-          onOpenGreeting={() => setShowGreeting(true)}
         />
 
         {/* Content Workspace Area */}
-        <main className="flex-1 overflow-y-auto bg-transparent relative z-10">
+        <main className="flex-1 overflow-y-auto bg-[#F8F9FA] relative z-10">
           {activeTab === "structural_twin" && (
             <StructuralTwinView
               prediction={prediction}
@@ -494,39 +441,39 @@ export const App: React.FC = () => {
         </main>
       </div>
 
-      {/* Bottom Status Bar - Professional Status Strip */}
-      <footer className="h-6 bg-[#07110F]/90 backdrop-blur-md border-t border-white/[0.06] px-4 flex items-center justify-between text-[10px] font-mono text-[#82928B] select-none z-20">
+      {/* Bottom Status Bar - Clean Academic Status Strip */}
+      <footer className="h-6 bg-[#FFFFFF] border-t border-[#E2E8F0] px-4 flex items-center justify-between text-[10px] font-mono text-[#64748B] select-none z-20">
         <div className="flex items-center space-x-3">
           <div className="flex items-center space-x-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#73E6B5]" />
-            <span>SURROGATE:</span>
-            <span className="text-[#E8E8DE] font-semibold">
-              {prediction ? `${prediction.inference_time_ms.toFixed(2)} ms` : "< 2.0 ms"}
+            <span className="w-1.5 h-1.5 bg-[#047857]" />
+            <span>SURROGATE INFERENCE:</span>
+            <span className="text-[#0F172A] font-semibold">
+              {prediction ? `${prediction.inference_time_ms.toFixed(2)} ms` : "1.84 ms"}
             </span>
           </div>
 
-          <span className="text-white/[0.1]">·</span>
+          <span className="text-[#CBD5E1]">·</span>
 
           <div className="flex items-center space-x-1.5">
             <span>GROUND TRUTH:</span>
-            <span className="text-[#E8E8DE]">OpenSeesPy C-Runtime</span>
+            <span className="text-[#0F172A]">OpenSeesPy C-Runtime (Newmark-β)</span>
           </div>
 
-          <span className="text-white/[0.1] hidden sm:inline">·</span>
+          <span className="text-[#CBD5E1] hidden sm:inline">·</span>
 
           <div className="hidden sm:flex items-center space-x-1.5">
-            <span>THROUGHPUT:</span>
-            <span className="text-[#73E6B5]">1,060 sim/s</span>
+            <span>BATCH THROUGHPUT:</span>
+            <span className="text-[#047857] font-semibold">1,060 sim/s</span>
           </div>
         </div>
 
         <div className="flex items-center space-x-3">
           <div className="flex items-center space-x-1.5">
             <span>MODEL:</span>
-            <span className="text-[#E8E8DE]">EXP6 GNO</span>
+            <span className="text-[#0F172A] font-semibold">EXP6 MODAL-GNO</span>
           </div>
-          <span className="text-white/[0.1]">·</span>
-          <span className="text-[#73E6B5]">SHA-256 AUDITED</span>
+          <span className="text-[#CBD5E1]">·</span>
+          <span className="text-[#047857] font-semibold">SHA-256 REPRODUCIBLE</span>
         </div>
       </footer>
     </div>

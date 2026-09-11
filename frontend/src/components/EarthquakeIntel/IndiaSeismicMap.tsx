@@ -42,15 +42,15 @@ export const IndiaSeismicMap: React.FC<IndiaSeismicMapProps> = ({
 
   const [provider, setProvider] = useState<"maptiler" | "carto">("maptiler");
 
-  // Providers tile URL definitions
+  // Providers tile URL definitions (Light theme cartography)
   const TILE_URLS = {
-    maptiler: "https://api.maptiler.com/maps/dataviz-dark/{z}/{x}/{y}.png?key=JAI9tztyvk89wmyqsDWx",
-    carto: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?api_key=cb1_2yru_1_be975c21c3c99af922bcf25c",
+    maptiler: "https://api.maptiler.com/maps/dataviz-light/{z}/{x}/{y}.png?key=JAI9tztyvk89wmyqsDWx",
+    carto: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?api_key=cb1_2yru_1_be975c21c3c99af922bcf25c",
   };
 
   const ATTRIBUTIONS = {
-    maptiler: '&copy; <a href="https://www.maptiler.com/copyright/" target="_blank" class="text-[#73E6B5]">MapTiler</a> &copy; OpenStreetMap',
-    carto: '&copy; <a href="https://carto.com/attributions" target="_blank" class="text-[#73E6B5]">CARTO</a> &copy; OpenStreetMap',
+    maptiler: '&copy; <a href="https://www.maptiler.com/copyright/" target="_blank" class="text-[#047857]">MapTiler</a> &copy; OpenStreetMap',
+    carto: '&copy; <a href="https://carto.com/attributions" target="_blank" class="text-[#047857]">CARTO</a> &copy; OpenStreetMap',
   };
 
   // Initialize Leaflet Map
@@ -68,7 +68,7 @@ export const IndiaSeismicMap: React.FC<IndiaSeismicMapProps> = ({
       attributionControl: false,
     });
 
-    // Custom dark zoom control in top right
+    // Custom light zoom control in top right
     L.control.zoom({ position: "topright" }).addTo(map);
 
     // Initial tile layer
@@ -84,7 +84,7 @@ export const IndiaSeismicMap: React.FC<IndiaSeismicMapProps> = ({
 
     // Fault line polyline
     const faultLine = L.polyline(HIMALAYAN_FAULT_COORDS, {
-      color: "#E35D5D",
+      color: "#DC2626",
       weight: 2.2,
       dashArray: "6, 6",
       opacity: 0.85,
@@ -139,10 +139,10 @@ export const IndiaSeismicMap: React.FC<IndiaSeismicMapProps> = ({
       // Color coding based on IS 1893 Zone
       const color =
         evt.is1893_zone === "Zone V"
-          ? "#E35D5D" // Very Severe (red)
+          ? "#DC2626" // Very Severe (crimson)
           : evt.is1893_zone === "Zone IV"
-          ? "#D6B56D" // Severe (amber)
-          : "#73E6B5"; // Moderate (mint)
+          ? "#B45309" // Severe (amber)
+          : "#047857"; // Moderate (emerald)
 
       const radius = Math.max(7, (evt.magnitude - 5.5) * 5.5);
 
@@ -150,16 +150,16 @@ export const IndiaSeismicMap: React.FC<IndiaSeismicMapProps> = ({
       const circleMarker = L.circleMarker([evt.latitude, evt.longitude], {
         radius: isSelected ? radius + 4 : radius,
         fillColor: color,
-        fillOpacity: isSelected ? 0.95 : 0.75,
-        color: isSelected ? "#FFFFFF" : color,
+        fillOpacity: isSelected ? 0.95 : 0.80,
+        color: isSelected ? "#0F172A" : color,
         weight: isSelected ? 2.5 : 1.2,
       });
 
       // HTML Tooltip on hover
       circleMarker.bindTooltip(
-        `<div style="font-family: monospace; font-size: 11px; padding: 2px 4px;">
-          <strong style="color: #73E6B5;">${evt.name} (${evt.year})</strong><br/>
-          <span>Magnitude: <strong style="color: #E8E8DE;">Mw ${evt.magnitude.toFixed(1)}</strong></span><br/>
+        `<div style="font-family: monospace; font-size: 11px; padding: 4px 6px; background: #FFFFFF; color: #0F172A; border: 1px solid #CBD5E1; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+          <strong style="color: #047857;">${evt.name} (${evt.year})</strong><br/>
+          <span>Magnitude: <strong style="color: #0F172A;">Mw ${evt.magnitude.toFixed(1)}</strong></span><br/>
           <span>Zone: <strong style="color: ${color};">${evt.is1893_zone}</strong></span>
         </div>`,
         {
@@ -191,85 +191,85 @@ export const IndiaSeismicMap: React.FC<IndiaSeismicMapProps> = ({
   };
 
   return (
-    <div className="relative w-full h-full min-h-[500px] lg:min-h-[560px] rounded-lg overflow-hidden bg-[#07110F] border border-white/[0.08] select-none">
+    <div className="relative w-full h-full min-h-[500px] lg:min-h-[560px] rounded-lg overflow-hidden bg-[#F8FAFC] border border-[#E2E8F0] select-none shadow-xs">
       {/* Map container */}
       <div ref={mapContainerRef} className="w-full h-full min-h-[500px] lg:min-h-[560px]" />
 
       {/* TOP-LEFT HUD: Title & Provider Badge */}
       <div className="absolute top-3 left-3 z-[1000] pointer-events-none space-y-1 font-sans">
-        <div className="flex items-center gap-2 px-2.5 py-1 bg-[#07110F]/90 border border-white/[0.08] rounded backdrop-blur-sm">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#73E6B5]" />
-          <span className="text-xs font-semibold text-[#E8E8DE]">
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-white/95 border border-[#CBD5E1] rounded shadow-xs">
+          <span className="w-2 h-2 rounded-full bg-[#047857]" />
+          <span className="text-xs font-bold text-[#0F172A]">
             India Seismotectonic & Epicenter Map
           </span>
-          <span className="text-[10px] font-mono text-[#82928B]">
+          <span className="badge-tech bg-[#F1F5F9] text-[#334155] border-[#CBD5E1]">
             IS 1893:2016
           </span>
         </div>
       </div>
 
       {/* TOP-RIGHT CONTROLS: Provider Switcher & Recenter */}
-      <div className="absolute top-3 right-12 z-[1000] flex items-center gap-1.5 font-mono text-[10px]">
-        <div className="flex items-center bg-[#07110F]/90 border border-white/[0.08] p-0.5 rounded backdrop-blur-sm">
+      <div className="absolute top-3 right-14 z-[1000] flex items-center gap-1.5 font-mono text-[10px]">
+        <div className="flex items-center bg-white/95 border border-[#CBD5E1] p-0.5 rounded shadow-xs">
           <button
             onClick={() => setProvider("maptiler")}
-            className={`px-2 py-0.5 rounded transition cursor-pointer ${
+            className={`px-2 py-0.5 rounded transition cursor-pointer font-medium ${
               provider === "maptiler"
-                ? "bg-[#17483A] text-[#73E6B5] font-bold"
-                : "text-[#82928B] hover:text-[#E8E8DE]"
+                ? "bg-[#047857] text-white font-bold"
+                : "text-[#64748B] hover:text-[#0F172A]"
             }`}
-            title="MapTiler Vector Dark Tiles"
+            title="MapTiler Vector Light Tiles"
           >
-            MapTiler Dark
+            MapTiler Light
           </button>
           <button
             onClick={() => setProvider("carto")}
-            className={`px-2 py-0.5 rounded transition cursor-pointer ${
+            className={`px-2 py-0.5 rounded transition cursor-pointer font-medium ${
               provider === "carto"
-                ? "bg-[#17483A] text-[#73E6B5] font-bold"
-                : "text-[#82928B] hover:text-[#E8E8DE]"
+                ? "bg-[#047857] text-white font-bold"
+                : "text-[#64748B] hover:text-[#0F172A]"
             }`}
-            title="Carto Dark Matter Tiles"
+            title="Carto Positron Tiles"
           >
-            Carto Dark
+            Carto Light
           </button>
         </div>
 
         <button
           onClick={handleRecenter}
-          className="p-1.5 bg-[#07110F]/90 hover:bg-[#101D19] border border-white/[0.08] rounded text-[#82928B] hover:text-[#E8E8DE] transition cursor-pointer backdrop-blur-sm"
+          className="p-1.5 bg-white/95 hover:bg-[#F8FAFC] border border-[#CBD5E1] rounded text-[#64748B] hover:text-[#0F172A] transition cursor-pointer shadow-xs"
           title="Recenter Map of India"
         >
-          <Compass size={12} />
+          <Compass size={13} />
         </button>
       </div>
 
       {/* BOTTOM-LEFT: IS 1893 ZONATION LEGEND */}
-      <div className="absolute bottom-3 left-3 z-[1000] bg-[#07110F]/90 border border-white/[0.08] p-2.5 rounded text-[10px] font-mono text-[#82928B] space-y-1.5 backdrop-blur-sm">
-        <div className="font-semibold text-[#E8E8DE] uppercase text-[9px] tracking-wider">
+      <div className="absolute bottom-3 left-3 z-[1000] bg-white/95 border border-[#CBD5E1] p-3 rounded text-[10px] font-mono text-[#475569] space-y-1.5 shadow-xs">
+        <div className="font-bold text-[#0F172A] uppercase text-[9px] tracking-wider">
           IS 1893 Seismic Severity
         </div>
         <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#E35D5D] border border-white/20" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[#DC2626] border border-white" />
           <span>Zone V (PGA &gt; 0.36g)</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#D6B56D] border border-white/20" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[#B45309] border border-white" />
           <span>Zone IV (PGA 0.24g)</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#73E6B5] border border-white/20" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[#047857] border border-white" />
           <span>Zone III (PGA 0.16g)</span>
         </div>
-        <div className="flex items-center gap-2 pt-1 border-t border-white/[0.06]">
-          <span className="w-3.5 h-0.5 bg-[#E35D5D] inline-block" />
+        <div className="flex items-center gap-2 pt-1 border-t border-[#E2E8F0]">
+          <span className="w-4 h-0.5 bg-[#DC2626] inline-block" />
           <span className="text-[9px]">Himalayan Frontal Thrust</span>
         </div>
       </div>
 
       {/* BOTTOM-RIGHT: Tile Attribution Tag */}
-      <div className="absolute bottom-2 right-2 z-[1000] text-[9px] font-mono text-[#82928B]/70 bg-[#07110F]/80 px-1.5 py-0.5 rounded pointer-events-none">
-        {provider === "maptiler" ? "MapTiler Dark" : "CARTO Dark"} · OpenStreetMap
+      <div className="absolute bottom-2 right-2 z-[1000] text-[9px] font-mono text-[#64748B] bg-white/90 border border-[#CBD5E1] px-1.5 py-0.5 rounded pointer-events-none">
+        {provider === "maptiler" ? "MapTiler Light" : "CARTO Light"} · OpenStreetMap
       </div>
     </div>
   );

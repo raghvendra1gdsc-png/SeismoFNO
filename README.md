@@ -35,9 +35,10 @@ The project ran from mid-2025 through September 2026. Six experiments. Two major
 
 If you're a professor or researcher reviewing this work, here is the recommended reading path:
 
+- **[IIT Delhi CSE Research Statement (PDF)](docs/IIT_DELHI_CSE_RESEARCH_BRIEF.pdf)** ([Markdown](docs/IIT_DELHI_CSE_RESEARCH_BRIEF.md)) — Research statement formulated for faculty reviewing Scientific ML, neural operator architectures, and structural dynamics.
 - **[Research Brief (PDF)](docs/RESEARCH_BRIEF.pdf)** ([Markdown](docs/RESEARCH_BRIEF.md)) — 2-page paper-style executive summary of problem, hypothesis, results, and limitations.
 - **[Research Walkthrough (PDF)](docs/RESEARCH_WALKTHROUGH.pdf)** ([Markdown](docs/RESEARCH_WALKTHROUGH.md)) — 6-page comprehensive technical report with structural mechanics derivations, architecture schematics, and full evaluation tables.
-- **[Personal Statement (PDF)](docs/PERSONAL_STATEMENT.pdf)** ([Markdown](docs/PERSONAL_STATEMENT.md)) — Candidate background, motivation, research philosophy, and research interests for upcoming winter/summer internships.
+- **[Personal Statement (PDF)](docs/PERSONAL_STATEMENT.pdf)** ([Markdown](docs/PERSONAL_STATEMENT.md)) — Candidate background, motivation, research philosophy, and research interests.
 - **[Independent Forensic Audit](results/experiments/exp6/INDEPENDENT_FORENSIC_AUDIT.md)** — Automated verification of partition isolation, metric recalculation from raw CSVs, and checkpoint weight hashes.
 
 If you're a developer cloning the repo:
@@ -378,20 +379,32 @@ The canonical results table (used as the source of truth for all documents) is a
 
 ---
 
-## Interactive demo
+## Interactive Research Workstation (Localhost)
 
-A FastAPI + React dashboard enables real-time evaluation:
+A single unified command launches both the FastAPI neural surrogate backend and the React/Three.js research interface:
 
 ```bash
-# Backend
-uvicorn api.main:app --host 0.0.0.0 --port 8000
-
-# Frontend (separate terminal)
-cd frontend && npm run dev
-# Open: http://localhost:5173/demo
+# Unified one-command launch (Backend + Frontend)
+./run_demo.sh
 ```
 
-The dashboard allows selecting structural archetypes, running live OpenSeesPy NLTHA, executing neural operator forward passes, and overlaying predicted vs. ground-truth trajectories with real-time error computation.
+Or launch individually across separate terminals:
+
+```bash
+# Terminal 1 — Backend (FastAPI on port 8000)
+PYTHONPATH=. python3 -m uvicorn api.main:app --host 127.0.0.1 --port 8000
+
+# Terminal 2 — Frontend (Vite on port 5173)
+npm --prefix frontend run dev
+```
+
+### Direct Workspace Endpoints:
+- **Structural Response Simulator**: [http://localhost:5173](http://localhost:5173)
+- **Multi-Story Research (Modal GNO)**: [http://localhost:5173/demo](http://localhost:5173/demo)
+- **Live USGS Global Seismic Screening**: [http://localhost:5173/live](http://localhost:5173/live)
+- **OpenSeesPy Physics Reference**: [http://localhost:5173/?tab=model_validation](http://localhost:5173/?tab=model_validation)
+- **Dual Twin Scenario Lab**: [http://localhost:5173/?tab=scenario_lab](http://localhost:5173/?tab=scenario_lab)
+- **Interactive OpenAPI Documentation**: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 
 ---
 
@@ -435,8 +448,26 @@ SeismoFNO/
 
 ---
 
+## Citation
+
+If you use this codebase, models, or data splits in your research, please cite:
+
+```bibtex
+@misc{gahlot2026seismofno,
+  author       = {Gahlot, Raghvendra Singh},
+  title        = {SeismoFNO: Physics-Grounded Modal-Conditioned Neural Operators for Seismic Structural Dynamics},
+  year         = {2026},
+  publisher    = {GitHub},
+  howpublished = {\url{https://github.com/raghvendra1gdsc-png/SeismoFNO}},
+  note         = {Validated against OpenSeesPy ground truth across 2,160 physical nonlinear simulations}
+}
+```
+
+---
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
 
 *All performance numbers in this document are computed from raw evaluation CSV files. No result is manually entered or estimated.*
+

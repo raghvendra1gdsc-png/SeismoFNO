@@ -5,7 +5,6 @@ import {
   RotateCcw,
   Sliders,
   Activity,
-  Sparkles,
 } from "lucide-react";
 import { Structural3DViewer } from "./Structural3DViewer";
 import type { BuildingArchetype, ScenarioPredictionResponse } from "../../api/digitalTwinApi";
@@ -88,7 +87,7 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
   }
 
   const yieldMm = uy * 1000.0;
-  const peakU = (prediction?.metrics?.peak_displacement_mm || 0.0);
+  const peakU = prediction?.metrics?.peak_displacement_mm || 0.0;
   const isCurrentlyYielded = Math.abs(roofDispMm) >= yieldMm;
 
   // Playback timer effect
@@ -98,11 +97,12 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
       return;
     }
 
-    const intervalMs = Math.max(16, Math.floor(25 / playbackSpeed));
+    const intervalMs = Math.max(10, Math.round(20 / playbackSpeed));
     animTimerRef.current = setInterval(() => {
       setScrubIndex((prev) => {
         if (prev >= totalPoints - 1) {
-          return 0; // loop back
+          setIsPlaying(false);
+          return 0;
         }
         return prev + 1;
       });
@@ -113,73 +113,126 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
     };
   }, [isPlaying, totalPoints, playbackSpeed]);
 
-  // Real-time automatic surrogate recomputation on parameter slider change
+  // Live Auto-Recompute on Slider Change (debounced at 180ms)
+  const isFirstMount = useRef(true);
   useEffect(() => {
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
     const timer = setTimeout(() => {
       onRunSimulation();
     }, 180);
     return () => clearTimeout(timer);
   }, [T0, damping, uy, alpha, pgaG, materialType, selectedBuildingId, onRunSimulation]);
 
+  // When a new simulation finishes, auto-play dynamic vibration from t=0 so the building visibly vibrates
+  const prevPredTimeRef = useRef<number | null>(null);
+  useEffect(() => {
+    if (prediction && prediction.inference_time_ms !== prevPredTimeRef.current && totalPoints > 0) {
+      prevPredTimeRef.current = prediction.inference_time_ms;
+      setScrubIndex(0);
+      setIsPlaying(true);
+    }
+  }, [prediction, totalPoints]);
+
   return (
-    <div className="p-4 md:p-6 space-y-6 font-sans text-[#E8E8DE] max-w-7xl mx-auto">
-      {/* Top Banner with Clear Professor-Facing Academic Context */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 rounded-lg border border-white/[0.08] bg-[#0E1B17] shadow-lg">
-        <div>
-          <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-xl font-bold font-mono tracking-tight text-[#E8E8DE] flex items-center gap-2">
-              <Sparkles size={18} className="text-[#73E6B5]" />
-              INTERACTIVE NONLINEAR STRUCTURAL SIMULATOR
-            </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono bg-[#73E6B5]/10 text-[#73E6B5] border border-[#73E6B5]/30 font-bold flex items-center gap-1.5">
-              <span className={`w-1.5 h-1.5 rounded-full ${isLoading ? "bg-[#D6B56D] animate-ping" : "bg-[#73E6B5]"}`} />
-              <span>{isLoading ? "SOLVING..." : "LIVE SURROGATE (< 2 ms)"}</span>
-            </span>
+    <div className="p-4 md:p-6 space-y-4 font-sans text-[#0F172A] max-w-7xl mx-auto">
+      {/* 1. Academic Header & Input -> Model -> Output Technical Strip */}
+      <div className="panel-workstation p-4 space-y-3">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="w-2 h-2 bg-[#047857]" />
+              <h1 className="text-base font-bold font-mono tracking-tight text-[#0F172A]">
+                STRUCTURAL RESPONSE: Nonlinear SDOF/MDOF Dynamic Analysis
+              </h1>
+              <span className="badge-tech-green">
+                SURROGATE: {prediction ? `${prediction.inference_time_ms.toFixed(1)} ms` : "1.84 ms"}
+              </span>
+            </div>
+            <p className="text-xs text-[#475569] mt-1 leading-relaxed">
+              Earthquake ground motion excitation + structural physical parameters → continuous Fourier Neural Operator → nonlinear displacement and hysteretic dissipation.
+            </p>
           </div>
-          <p className="text-xs text-[#82928B] mt-1 leading-relaxed">
-            <strong className="text-[#E8E8DE]">PURPOSE:</strong> Real-time simulation of nonlinear seismic structural response using continuous Fourier Neural Operators.
-            <br />
-            <strong className="text-[#73E6B5]">HOW IT WORKS:</strong> Move any slider on the left (<span className="font-mono text-[#E8E8DE]">T₁, ζ, uᵧ, α, PGA</span>). The neural operator solves the nonlinear equations of motion in &lt; 2 ms, dynamically updating the 3D building sway, plastic hinge formation, and hysteresis loops live.
-          </p>
+
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={onRunSimulation}
+              disabled={isLoading}
+              className="btn-engineering px-4 py-2 bg-[#047857] hover:bg-[#065F46] text-white font-mono text-xs font-bold rounded transition cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 shadow-xs"
+            >
+              <Play size={12} className={isLoading ? "animate-spin" : "fill-white"} />
+              <span>{isLoading ? "COMPUTING FORWARD PASS..." : "Execute Surrogate Simulation"}</span>
+            </button>
+          </div>
         </div>
 
-        <div className="flex items-center gap-3 shrink-0">
-          <button
-            onClick={onRunSimulation}
-            disabled={isLoading}
-            className="px-5 py-2.5 bg-[#73E6B5] hover:bg-[#5cd4a2] text-[#07110F] text-xs font-mono font-bold rounded-lg flex items-center space-x-2 cursor-pointer transition shadow-md disabled:opacity-50"
-          >
-            <Play size={14} className="fill-[#07110F]" />
-            <span>{isLoading ? "SOLVING SURROGATE..." : "RECOMPUTE SURROGATE"}</span>
-          </button>
+        {/* Real-Time Forward Pass Execution Banner */}
+        {prediction && (
+          <div className="p-2.5 bg-[#ECFDF5] border border-[#A7F3D0] rounded text-xs font-mono text-[#047857] flex items-center justify-between shadow-xs">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#047857] animate-ping" />
+              <span className="font-semibold">
+                Surrogate forward pass active on {activeBuilding.name} · Peak Roof Drift = {peakU.toFixed(2)} mm · Dynamic 3D response playing
+              </span>
+            </div>
+            <span className="text-[10px] text-[#065F46] font-bold shrink-0 ml-2">
+              {prediction.inference_time_ms.toFixed(1)} ms · Apple MPS
+            </span>
+          </div>
+        )}
+
+        {/* Scientific Input -> Model -> Output Pipeline Strip */}
+        <div className="pt-2.5 border-t border-[#E2E8F0] grid grid-cols-1 md:grid-cols-3 gap-2.5 text-xs font-mono">
+          <div className="bg-[#F8FAFC] p-2 rounded border border-[#E2E8F0]">
+            <span className="text-[10px] text-[#64748B] uppercase font-semibold block">1. INPUT EXCITATION & STRUCTURAL PARAMETERS</span>
+            <span className="text-[#0F172A] font-medium text-[11px] truncate block mt-0.5">
+              ü_g(t) · T₁={T0.toFixed(2)}s · ζ={(damping * 100).toFixed(1)}% · uᵧ={yieldMm.toFixed(1)}mm · α={(alpha * 100).toFixed(0)}% · PGA={pgaG.toFixed(2)}g
+            </span>
+          </div>
+
+          <div className="bg-[#F8FAFC] p-2 rounded border border-[#E2E8F0]">
+            <span className="text-[10px] text-[#64748B] uppercase font-semibold block">2. NEURAL OPERATOR SURROGATE</span>
+            <span className="text-[#047857] font-semibold text-[11px] truncate block mt-0.5">
+              Continuous FNO-1D / Modal GNO · 16 Modes · Apple MPS
+            </span>
+          </div>
+
+          <div className="bg-[#F8FAFC] p-2 rounded border border-[#E2E8F0]">
+            <span className="text-[10px] text-[#64748B] uppercase font-semibold block">3. OUTPUT PREDICTION</span>
+            <span className="text-[#0F172A] font-medium text-[11px] truncate block mt-0.5">
+              Floor u(t) · Interstory Drift IDR · Hysteresis F_s(u)
+            </span>
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
         {/* Left Column: Physical & Structural Controls (4 Cols) */}
         <div className="lg:col-span-4 space-y-4">
-          <div className="bg-[#0E1B17] border border-white/[0.08] rounded-lg p-5 space-y-4 shadow-lg">
-            <div className="flex items-center justify-between border-b border-white/[0.08] pb-3 text-xs font-mono font-bold">
-              <div className="flex items-center space-x-2 text-[#73E6B5]">
-                <Sliders size={15} />
+          <div className="panel-workstation p-4 space-y-3.5">
+            <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-2 text-xs font-mono font-bold">
+              <div className="flex items-center space-x-1.5 text-[#0F172A]">
+                <Sliders size={13} className="text-[#047857]" />
                 <span>PHYSICAL PARAMETERS</span>
               </div>
-              <span className="text-[10px] text-[#82928B]">INELASTIC HARDENING</span>
+              <span className="text-[10px] text-[#64748B]">INELASTIC LAW</span>
             </div>
 
             {/* Building Archetype Selector */}
-            <div className="space-y-1.5 text-xs font-mono">
-              <label className="text-[#82928B] uppercase text-[10px] font-bold">Building Archetype</label>
+            <div className="space-y-1 text-xs font-mono">
+              <label className="text-[#64748B] uppercase text-[10px] font-bold">Building Archetype</label>
               <select
                 value={selectedBuildingId}
                 onChange={(e) => {
                   const bld = buildingArchetypes.find((b) => b.id === e.target.value);
                   if (bld) onSelectBuilding(bld);
                 }}
-                className="w-full bg-[#07110F] border border-white/[0.08] rounded-lg p-2.5 text-[#E8E8DE] text-xs cursor-pointer font-sans focus:border-[#73E6B5] outline-none transition"
+                className="w-full bg-[#FFFFFF] border border-[#CBD5E1] rounded p-2 text-[#0F172A] text-xs cursor-pointer font-sans focus:border-[#047857] outline-none transition"
               >
                 {buildingArchetypes.map((b) => (
-                  <option key={b.id} value={b.id} className="bg-[#07110F]">
+                  <option key={b.id} value={b.id}>
                     {b.name} ({b.stories} Stories)
                   </option>
                 ))}
@@ -187,10 +240,10 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
             </div>
 
             {/* Fundamental Period Slider */}
-            <div className="space-y-1.5 text-xs font-sans">
+            <div className="space-y-1 text-xs font-sans">
               <div className="flex justify-between items-baseline">
-                <span className="text-[#82928B]">Fundamental Period (T₁):</span>
-                <span className="text-[#73E6B5] font-bold font-mono">{T0.toFixed(2)} s</span>
+                <span className="text-[#475569] font-medium">Fundamental Period (T₁):</span>
+                <span className="text-[#0F172A] font-bold font-mono">{T0.toFixed(2)} s</span>
               </div>
               <input
                 type="range"
@@ -199,19 +252,19 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
                 step="0.05"
                 value={T0}
                 onChange={(e) => setT0(parseFloat(e.target.value))}
-                className="w-full cursor-pointer accent-[#73E6B5]"
+                className="w-full cursor-pointer"
               />
-              <div className="flex justify-between text-[10px] font-mono text-[#82928B]">
-                <span>0.10s (Stiff)</span>
-                <span>2.50s (Flexible)</span>
+              <div className="flex justify-between text-[10px] font-mono text-[#64748B]">
+                <span>0.10 s (Stiff)</span>
+                <span>2.50 s (Flexible)</span>
               </div>
             </div>
 
             {/* Viscous Damping Slider */}
-            <div className="space-y-1.5 text-xs font-sans">
+            <div className="space-y-1 text-xs font-sans">
               <div className="flex justify-between items-baseline">
-                <span className="text-[#82928B]">Rayleigh Damping (ζ):</span>
-                <span className="text-[#73E6B5] font-bold font-mono">{(damping * 100).toFixed(1)} %</span>
+                <span className="text-[#475569] font-medium">Rayleigh Damping (ζ):</span>
+                <span className="text-[#0F172A] font-bold font-mono">{(damping * 100).toFixed(1)} %</span>
               </div>
               <input
                 type="range"
@@ -220,19 +273,19 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
                 step="0.005"
                 value={damping}
                 onChange={(e) => setDamping(parseFloat(e.target.value))}
-                className="w-full cursor-pointer accent-[#73E6B5]"
+                className="w-full cursor-pointer"
               />
-              <div className="flex justify-between text-[10px] font-mono text-[#82928B]">
+              <div className="flex justify-between text-[10px] font-mono text-[#64748B]">
                 <span>1% (Light)</span>
                 <span>15% (Heavy)</span>
               </div>
             </div>
 
             {/* Yield Displacement Slider */}
-            <div className="space-y-1.5 text-xs font-sans">
+            <div className="space-y-1 text-xs font-sans">
               <div className="flex justify-between items-baseline">
-                <span className="text-[#82928B]">Yield Drift Limit (uᵧ):</span>
-                <span className="text-[#D6B56D] font-bold font-mono">{yieldMm.toFixed(1)} mm</span>
+                <span className="text-[#475569] font-medium">Yield Drift Limit (uᵧ):</span>
+                <span className="text-[#B45309] font-bold font-mono">{yieldMm.toFixed(1)} mm</span>
               </div>
               <input
                 type="range"
@@ -241,19 +294,19 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
                 step="0.001"
                 value={uy}
                 onChange={(e) => setUy(parseFloat(e.target.value))}
-                className="w-full cursor-pointer accent-[#D6B56D]"
+                className="w-full cursor-pointer"
               />
-              <div className="flex justify-between text-[10px] font-mono text-[#82928B]">
-                <span>2 mm (Low Ductility)</span>
-                <span>40 mm (High Ductility)</span>
+              <div className="flex justify-between text-[10px] font-mono text-[#64748B]">
+                <span>2.0 mm (Low Ductility)</span>
+                <span>40.0 mm (High Ductility)</span>
               </div>
             </div>
 
             {/* Post-Yield Ratio Slider */}
-            <div className="space-y-1.5 text-xs font-sans">
+            <div className="space-y-1 text-xs font-sans">
               <div className="flex justify-between items-baseline">
-                <span className="text-[#82928B]">Post-Yield Ratio (α):</span>
-                <span className="text-[#D6B56D] font-bold font-mono">{(alpha * 100).toFixed(0)} %</span>
+                <span className="text-[#475569] font-medium">Post-Yield Ratio (α):</span>
+                <span className="text-[#B45309] font-bold font-mono">{(alpha * 100).toFixed(0)} %</span>
               </div>
               <input
                 type="range"
@@ -262,19 +315,19 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
                 step="0.01"
                 value={alpha}
                 onChange={(e) => setAlpha(parseFloat(e.target.value))}
-                className="w-full cursor-pointer accent-[#D6B56D]"
+                className="w-full cursor-pointer"
               />
-              <div className="flex justify-between text-[10px] font-mono text-[#82928B]">
+              <div className="flex justify-between text-[10px] font-mono text-[#64748B]">
                 <span>0% (Elastoplastic)</span>
                 <span>25% (Strain Hardening)</span>
               </div>
             </div>
 
             {/* Excitation PGA Scaling Slider */}
-            <div className="space-y-1.5 text-xs font-sans">
+            <div className="space-y-1 text-xs font-sans">
               <div className="flex justify-between items-baseline">
-                <span className="text-[#82928B]">Target Excitation PGA:</span>
-                <span className="text-[#73E6B5] font-bold font-mono">{pgaG.toFixed(2)} g</span>
+                <span className="text-[#475569] font-medium">Target Excitation PGA:</span>
+                <span className="text-[#047857] font-bold font-mono">{pgaG.toFixed(2)} g</span>
               </div>
               <input
                 type="range"
@@ -283,34 +336,34 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
                 step="0.05"
                 value={pgaG}
                 onChange={(e) => setPgaG(parseFloat(e.target.value))}
-                className="w-full cursor-pointer accent-[#73E6B5]"
+                className="w-full cursor-pointer"
               />
-              <div className="flex justify-between text-[10px] font-mono text-[#82928B]">
-                <span>0.05g (Minor)</span>
-                <span>1.20g (Severe MCE)</span>
+              <div className="flex justify-between text-[10px] font-mono text-[#64748B]">
+                <span>0.05 g (Moderate)</span>
+                <span>1.20 g (Severe MCE)</span>
               </div>
             </div>
 
             {/* Constitutive Law Selector */}
-            <div className="space-y-1.5 text-xs font-sans">
-              <label className="text-[#82928B] uppercase text-[10px] font-bold">Constitutive Law</label>
+            <div className="space-y-1 text-xs font-sans">
+              <label className="text-[#64748B] uppercase text-[10px] font-bold">Constitutive Law</label>
               <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={() => setMaterialType("bilinear")}
-                  className={`py-2 rounded-lg border text-xs font-mono cursor-pointer transition ${
+                  className={`py-1.5 rounded border text-xs font-mono cursor-pointer transition ${
                     materialType === "bilinear"
-                      ? "bg-[#73E6B5]/20 border-[#73E6B5] text-[#73E6B5] font-bold shadow-sm"
-                      : "bg-[#07110F] border-white/[0.08] text-[#82928B] hover:text-[#E8E8DE]"
+                      ? "bg-[#0F172A] text-white font-semibold border-[#0F172A]"
+                      : "bg-[#FFFFFF] border-[#CBD5E1] text-[#475569] hover:text-[#0F172A]"
                   }`}
                 >
                   Bilinear Inelastic
                 </button>
                 <button
                   onClick={() => setMaterialType("elastic")}
-                  className={`py-2 rounded-lg border text-xs font-mono cursor-pointer transition ${
+                  className={`py-1.5 rounded border text-xs font-mono cursor-pointer transition ${
                     materialType === "elastic"
-                      ? "bg-[#73E6B5]/20 border-[#73E6B5] text-[#73E6B5] font-bold shadow-sm"
-                      : "bg-[#07110F] border-white/[0.08] text-[#82928B] hover:text-[#E8E8DE]"
+                      ? "bg-[#0F172A] text-white font-semibold border-[#0F172A]"
+                      : "bg-[#FFFFFF] border-[#CBD5E1] text-[#475569] hover:text-[#0F172A]"
                   }`}
                 >
                   Linear Elastic
@@ -318,24 +371,37 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
               </div>
             </div>
 
-            {/* Engineering Metrics Summary Badge */}
-            <div className="pt-3 border-t border-white/[0.08] grid grid-cols-2 gap-2 text-[11px] font-mono">
-              <div className="bg-[#07110F] p-2 rounded border border-white/[0.06]">
-                <span className="text-[#82928B] block text-[9px] uppercase">Peak Roof Drift</span>
-                <span className="text-[#E8E8DE] font-bold text-xs">{peakU.toFixed(1)} mm</span>
-              </div>
-              <div className="bg-[#07110F] p-2 rounded border border-white/[0.06]">
-                <span className="text-[#82928B] block text-[9px] uppercase">Ductility μ</span>
-                <span className="text-[#73E6B5] font-bold text-xs">{(peakU / (yieldMm || 1)).toFixed(2)}</span>
+            {/* Technical Response Status Readout */}
+            <div className="pt-3 border-t border-[#E2E8F0] space-y-1.5 font-mono text-[11px]">
+              <span className="text-[10px] text-[#64748B] uppercase font-semibold block">STRUCTURAL STATUS</span>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="bg-[#F8FAFC] p-2 rounded border border-[#E2E8F0]">
+                  <span className="text-[#64748B] block text-[9px] uppercase">State</span>
+                  <span className={`font-bold text-xs ${isCurrentlyYielded ? "text-[#DC2626]" : "text-[#047857]"}`}>
+                    {isCurrentlyYielded ? "PLASTIC YIELD" : "ELASTIC"}
+                  </span>
+                </div>
+                <div className="bg-[#F8FAFC] p-2 rounded border border-[#E2E8F0]">
+                  <span className="text-[#64748B] block text-[9px] uppercase">Time</span>
+                  <span className="font-bold text-xs text-[#0F172A]">{currTime.toFixed(2)} s</span>
+                </div>
+                <div className="bg-[#F8FAFC] p-2 rounded border border-[#E2E8F0]">
+                  <span className="text-[#64748B] block text-[9px] uppercase">Peak Roof Drift</span>
+                  <span className="text-[#0F172A] font-bold text-xs">{peakU.toFixed(1)} mm</span>
+                </div>
+                <div className="bg-[#F8FAFC] p-2 rounded border border-[#E2E8F0]">
+                  <span className="text-[#64748B] block text-[9px] uppercase">Ductility Demand</span>
+                  <span className="text-[#047857] font-bold text-xs">μ = {(peakU / (yieldMm || 1)).toFixed(2)}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Center & Right Column: 3D Building Visualizer & Engineering Plots (8 Cols) */}
+        {/* Center & Right Column: 3D Building Visualizer & Scientific Plots (8 Cols) */}
         <div className="lg:col-span-8 space-y-4">
           {/* Top: 3D Interactive Three.js Structural Twin */}
-          <div className="space-y-3">
+          <div className="space-y-2">
             <Structural3DViewer
               stories={stories}
               storyDeflectionsMm={storyDeflections}
@@ -347,19 +413,15 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
             />
 
             {/* Playback Controls & Time Scrubber Deck */}
-            <div className="bg-[#0E1B17] border border-white/[0.08] rounded-lg p-4 space-y-2.5 shadow-lg">
-              <div className="flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+            <div className="panel-workstation p-3 space-y-2">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={() => setIsPlaying(!isPlaying)}
-                    className={`px-3 py-1.5 rounded-lg flex items-center space-x-1.5 font-bold cursor-pointer transition ${
-                      isPlaying
-                        ? "bg-[#E35D5D]/20 border border-[#E35D5D] text-[#E35D5D]"
-                        : "bg-[#73E6B5]/20 border border-[#73E6B5] text-[#73E6B5]"
-                    }`}
+                    className="btn-engineering-secondary"
                   >
-                    {isPlaying ? <Pause size={13} /> : <Play size={13} className="fill-current" />}
-                    <span>{isPlaying ? "PAUSE" : "PLAY"}</span>
+                    {isPlaying ? <Pause size={12} /> : <Play size={12} className="fill-current" />}
+                    <span>{isPlaying ? "Pause" : "Play"}</span>
                   </button>
 
                   <button
@@ -368,21 +430,21 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
                       setScrubIndex(0);
                     }}
                     title="Reset to t = 0s"
-                    className="p-1.5 rounded-lg bg-[#07110F] hover:bg-[#101D19] border border-white/[0.08] text-[#82928B] hover:text-[#E8E8DE] cursor-pointer transition"
+                    className="p-1.5 rounded bg-[#FFFFFF] hover:bg-[#F8FAFC] border border-[#CBD5E1] text-[#64748B] hover:text-[#0F172A] cursor-pointer transition"
                   >
-                    <RotateCcw size={14} />
+                    <RotateCcw size={12} />
                   </button>
 
-                  <div className="flex items-center space-x-1 pl-2 border-l border-white/[0.08] text-[10px]">
-                    <span className="text-[#82928B]">SPEED:</span>
+                  <div className="flex items-center space-x-1 pl-2 border-l border-[#CBD5E1] text-[10px]">
+                    <span className="text-[#64748B]">SPEED:</span>
                     {[0.5, 1, 2].map((s) => (
                       <button
                         key={s}
                         onClick={() => setPlaybackSpeed(s)}
                         className={`px-1.5 py-0.5 rounded cursor-pointer ${
                           playbackSpeed === s
-                            ? "bg-[#73E6B5]/20 text-[#73E6B5] font-bold border border-[#73E6B5]/40"
-                            : "text-[#82928B] hover:text-[#E8E8DE]"
+                            ? "bg-[#0F172A] text-white font-bold"
+                            : "text-[#64748B] hover:text-[#0F172A]"
                         }`}
                       >
                         {s}x
@@ -391,9 +453,9 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
                   </div>
                 </div>
 
-                <div className="text-[#82928B]">
-                  TIME: <span className="text-[#E8E8DE] font-bold">{currTime.toFixed(2)}s</span> /{" "}
-                  <span className="text-[#82928B]">{traj ? traj.time[traj.time.length - 1].toFixed(2) : "20.48"}s</span>
+                <div className="text-[#64748B]">
+                  TIME: <span className="text-[#0F172A] font-bold">{currTime.toFixed(2)} s</span> /{" "}
+                  <span className="text-[#64748B]">{traj ? traj.time[traj.time.length - 1].toFixed(2) : "20.48"} s</span>
                 </div>
               </div>
 
@@ -407,83 +469,84 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
                   setIsPlaying(false);
                   setScrubIndex(parseInt(e.target.value));
                 }}
-                className="w-full cursor-pointer accent-[#73E6B5]"
+                className="w-full cursor-pointer"
               />
             </div>
           </div>
 
-          {/* Bottom: Dynamic Engineering Waveform & Hysteresis Plots */}
-          <div className="bg-[#0E1B17] border border-white/[0.08] rounded-lg p-5 space-y-3 shadow-lg">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] pb-3 text-xs font-mono">
-              <div className="flex items-center space-x-2 text-[#E8E8DE] font-bold">
-                <Activity size={15} className="text-[#73E6B5]" />
+          {/* Bottom: Scientific Engineering Waveform & Hysteresis Plots */}
+          <div className="panel-workstation p-4 space-y-2.5">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#E2E8F0] pb-2.5 text-xs font-mono">
+              <div className="flex items-center space-x-1.5 text-[#0F172A] font-bold">
+                <Activity size={14} className="text-[#047857]" />
                 <span>DYNAMIC RESPONSE TRAJECTORY & HYSTERESIS</span>
               </div>
-              <div className="flex space-x-1 bg-[#07110F] p-1 rounded border border-white/[0.06]">
+              <div className="flex space-x-1 bg-[#F1F5F9] p-0.5 rounded border border-[#CBD5E1]">
                 <button
                   onClick={() => setActiveTabPlot("disp")}
-                  className={`px-3 py-1 rounded text-xs font-mono cursor-pointer transition ${
+                  className={`px-2.5 py-0.5 rounded text-xs font-mono cursor-pointer transition ${
                     activeTabPlot === "disp"
-                      ? "bg-[#73E6B5] text-[#07110F] font-bold"
-                      : "text-[#82928B] hover:text-[#E8E8DE]"
+                      ? "bg-[#FFFFFF] text-[#0F172A] font-bold shadow-xs border border-[#CBD5E1]"
+                      : "text-[#64748B] hover:text-[#0F172A]"
                   }`}
                 >
                   Displacement u(t)
                 </button>
                 <button
                   onClick={() => setActiveTabPlot("hysteresis")}
-                  className={`px-3 py-1 rounded text-xs font-mono cursor-pointer transition ${
+                  className={`px-2.5 py-0.5 rounded text-xs font-mono cursor-pointer transition ${
                     activeTabPlot === "hysteresis"
-                      ? "bg-[#73E6B5] text-[#07110F] font-bold"
-                      : "text-[#82928B] hover:text-[#E8E8DE]"
+                      ? "bg-[#FFFFFF] text-[#0F172A] font-bold shadow-xs border border-[#CBD5E1]"
+                      : "text-[#64748B] hover:text-[#0F172A]"
                   }`}
                 >
                   Hysteresis Loop f(u)
                 </button>
                 <button
                   onClick={() => setActiveTabPlot("energy")}
-                  className={`px-3 py-1 rounded text-xs font-mono cursor-pointer transition ${
+                  className={`px-2.5 py-0.5 rounded text-xs font-mono cursor-pointer transition ${
                     activeTabPlot === "energy"
-                      ? "bg-[#73E6B5] text-[#07110F] font-bold"
-                      : "text-[#82928B] hover:text-[#E8E8DE]"
+                      ? "bg-[#FFFFFF] text-[#0F172A] font-bold shadow-xs border border-[#CBD5E1]"
+                      : "text-[#64748B] hover:text-[#0F172A]"
                   }`}
                 >
-                  Energy Dissipation Eₕ(t)
+                  Energy Dissipation E_h(t)
                 </button>
               </div>
             </div>
 
-            {/* Plot Surface Canvas */}
-            <div className="h-56 bg-[#07110F] rounded-lg border border-white/[0.08] flex items-center justify-center p-3 relative overflow-hidden">
+            {/* Scientific Plot Surface (Clean White Canvas) */}
+            <div className="h-56 bg-[#FFFFFF] rounded border border-[#E2E8F0] flex items-center justify-center p-3 relative overflow-hidden">
               {traj && traj.u.length > 0 ? (
                 <svg className="w-full h-full" viewBox="0 0 600 200">
-                  {/* Axis Zero Line */}
-                  <line x1="20" y1="100" x2="580" y2="100" stroke="rgba(255,255,255,0.12)" strokeDasharray="3 3" />
-                  <line x1="20" y1="20" x2="20" y2="180" stroke="rgba(255,255,255,0.12)" />
+                  {/* Axis Zero Line & Neutral Grid */}
+                  <line x1="20" y1="100" x2="580" y2="100" stroke="#CBD5E1" strokeDasharray="3 3" />
+                  <line x1="20" y1="20" x2="20" y2="180" stroke="#CBD5E1" />
 
                   {/* Active Plot Content */}
                   {activeTabPlot === "disp" && (
                     <>
-                      {/* Yield lines */}
+                      {/* Yield lines (Red Dashed) */}
                       <line
                         x1="20"
                         y1={100 - (yieldMm / (peakU || 1)) * 80}
                         x2="580"
                         y2={100 - (yieldMm / (peakU || 1)) * 80}
-                        stroke="#E35D5D"
+                        stroke="#DC2626"
                         strokeDasharray="2 2"
-                        strokeOpacity="0.6"
+                        strokeOpacity="0.7"
                       />
                       <line
                         x1="20"
                         y1={100 + (yieldMm / (peakU || 1)) * 80}
                         x2="580"
                         y2={100 + (yieldMm / (peakU || 1)) * 80}
-                        stroke="#E35D5D"
+                        stroke="#DC2626"
                         strokeDasharray="2 2"
-                        strokeOpacity="0.6"
+                        strokeOpacity="0.7"
                       />
 
+                      {/* Displacement curve: Clean Restrained Green */}
                       <path
                         d={traj.u
                           .map((val, idx, arr) => {
@@ -494,7 +557,7 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
                           })
                           .join(" ")}
                         fill="none"
-                        stroke="#73E6B5"
+                        stroke="#047857"
                         strokeWidth="2.0"
                       />
                     </>
@@ -513,7 +576,7 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
                         })
                         .join(" ")}
                       fill="none"
-                      stroke="#D6B56D"
+                      stroke="#B45309"
                       strokeWidth="2.0"
                     />
                   )}
@@ -529,7 +592,7 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
                         })
                         .join(" ")}
                       fill="none"
-                      stroke="#73E6B5"
+                      stroke="#047857"
                       strokeWidth="2.0"
                     />
                   )}
@@ -540,8 +603,8 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
                     y1="10"
                     x2={20 + (currentIdx / (totalPoints - 1)) * 560}
                     y2="190"
-                    stroke="#E35D5D"
-                    strokeWidth="1.8"
+                    stroke="#DC2626"
+                    strokeWidth="1.5"
                   />
                   <circle
                     cx={20 + (currentIdx / (totalPoints - 1)) * 560}
@@ -552,12 +615,12 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
                         ? 180 - (traj.eh[currentIdx] / (Math.max(...traj.eh) || 1e-4)) * 160
                         : 100
                     }
-                    r="4"
-                    fill="#E35D5D"
+                    r="3.5"
+                    fill="#DC2626"
                   />
                 </svg>
               ) : (
-                <div className="text-xs font-mono text-[#82928B]">Computing structural dynamics...</div>
+                <div className="text-xs font-mono text-[#64748B]">Computing structural dynamics...</div>
               )}
             </div>
           </div>

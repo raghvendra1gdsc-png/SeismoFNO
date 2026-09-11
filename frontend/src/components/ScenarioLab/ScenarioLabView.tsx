@@ -123,19 +123,19 @@ export const ScenarioLabView: React.FC<ScenarioLabViewProps> = ({ baseScenario }
   }, [mA, mB, intervention, scenarioA, scenarioB, deltaU, deltaDrift, deltaEh]);
 
   return (
-    <div className="p-6 space-y-6 font-sans text-[#E8E8DE]">
+    <div className="p-4 md:p-8 space-y-6 font-sans text-[#0F172A] max-w-7xl mx-auto">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border border-white/[0.08] bg-[#0E1B17] p-5 rounded-lg shadow-lg">
+      <div className="panel-workstation p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
           <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-xl font-bold font-mono tracking-tight text-[#E8E8DE]">
+            <h1 className="text-xl font-bold font-mono tracking-tight text-[#0F172A]">
               SCENARIO LAB — DUAL DIGITAL-TWIN COMPARISON
             </h1>
-            <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-[#73E6B5]/10 text-[#73E6B5] border border-[#73E6B5]/30 font-semibold">
+            <span className="badge-tech bg-[#ECFDF5] border border-[#A7F3D0] text-[#047857]">
               FEATURED COMPARATIVE TOOL
             </span>
           </div>
-          <p className="text-xs text-[#82928B] mt-1 font-sans">
+          <p className="text-xs text-[#475569] mt-1 font-sans">
             Execute side-by-side scenario evaluations in sub-milliseconds to assess retrofits, stiffness variations, and seismic sensitivity.
           </p>
         </div>
@@ -143,16 +143,16 @@ export const ScenarioLabView: React.FC<ScenarioLabViewProps> = ({ baseScenario }
         <button
           onClick={runComparison}
           disabled={isComparing}
-          className="px-4 py-2 bg-[#73E6B5] hover:bg-[#5cd4a2] disabled:opacity-50 text-[#07110F] text-xs font-mono font-bold rounded flex items-center space-x-2 cursor-pointer transition shadow-md shrink-0"
+          className="btn-engineering px-4 py-2 bg-[#047857] hover:bg-[#065F46] disabled:opacity-50 text-white text-xs font-mono font-bold rounded flex items-center space-x-2 cursor-pointer transition shadow-xs shrink-0"
         >
-          <Play size={14} className="fill-[#07110F]" />
+          <Play size={14} className={isComparing ? "animate-spin" : "fill-white"} />
           <span>{isComparing ? "EVALUATING BOTH..." : "EVALUATE SCENARIOS (< 5 ms)"}</span>
         </button>
       </div>
 
       {/* Preset Intervention Selectors */}
-      <div className="bg-[#0E1B17] border border-white/[0.08] rounded-lg p-4 space-y-2.5">
-        <div className="text-xs font-mono font-bold text-[#82928B] uppercase tracking-wider">
+      <div className="panel-workstation p-5 space-y-2.5">
+        <div className="text-xs font-mono font-bold text-[#64748B] uppercase tracking-wider">
           Select Engineering Intervention for Scenario B:
         </div>
         <div className="flex flex-wrap gap-2">
@@ -160,8 +160,8 @@ export const ScenarioLabView: React.FC<ScenarioLabViewProps> = ({ baseScenario }
             onClick={() => applyIntervention("STIFFNESS_PLUS_20")}
             className={`px-3 py-1.5 rounded text-xs font-mono cursor-pointer transition border ${
               intervention === "STIFFNESS_PLUS_20"
-                ? "bg-[#73E6B5]/20 border-[#73E6B5] text-[#73E6B5] font-bold"
-                : "bg-[#07110F] border-white/[0.08] text-[#82928B] hover:text-[#E8E8DE] hover:bg-[#101D19]"
+                ? "bg-[#ECFDF5] border-[#A7F3D0] text-[#047857] font-bold"
+                : "bg-[#F8FAFC] border-[#E2E8F0] text-[#475569] hover:text-[#0F172A] hover:bg-[#F1F5F9]"
             }`}
           >
             +20% Lateral Stiffness (Retrofit Bracing)
@@ -170,8 +170,8 @@ export const ScenarioLabView: React.FC<ScenarioLabViewProps> = ({ baseScenario }
             onClick={() => applyIntervention("YIELD_PLUS_20")}
             className={`px-3 py-1.5 rounded text-xs font-mono cursor-pointer transition border ${
               intervention === "YIELD_PLUS_20"
-                ? "bg-[#73E6B5]/20 border-[#73E6B5] text-[#73E6B5] font-bold"
-                : "bg-[#07110F] border-white/[0.08] text-[#82928B] hover:text-[#E8E8DE] hover:bg-[#101D19]"
+                ? "bg-[#ECFDF5] border-[#A7F3D0] text-[#047857] font-bold"
+                : "bg-[#F8FAFC] border-[#E2E8F0] text-[#475569] hover:text-[#0F172A] hover:bg-[#F1F5F9]"
             }`}
           >
             +20% Yield Strength (Steel Jacketing)
@@ -180,8 +180,8 @@ export const ScenarioLabView: React.FC<ScenarioLabViewProps> = ({ baseScenario }
             onClick={() => applyIntervention("DAMPING_PLUS_2PC")}
             className={`px-3 py-1.5 rounded text-xs font-mono cursor-pointer transition border ${
               intervention === "DAMPING_PLUS_2PC"
-                ? "bg-[#73E6B5]/20 border-[#73E6B5] text-[#73E6B5] font-bold"
-                : "bg-[#07110F] border-white/[0.08] text-[#82928B] hover:text-[#E8E8DE] hover:bg-[#101D19]"
+                ? "bg-[#ECFDF5] border-[#A7F3D0] text-[#047857] font-bold"
+                : "bg-[#F8FAFC] border-[#E2E8F0] text-[#475569] hover:text-[#0F172A] hover:bg-[#F1F5F9]"
             }`}
           >
             +2.0% Supplemental Damping (Fluid Dampers)
@@ -190,8 +190,8 @@ export const ScenarioLabView: React.FC<ScenarioLabViewProps> = ({ baseScenario }
             onClick={() => applyIntervention("ALTERNATIVE_EARTHQUAKE")}
             className={`px-3 py-1.5 rounded text-xs font-mono cursor-pointer transition border ${
               intervention === "ALTERNATIVE_EARTHQUAKE"
-                ? "bg-[#73E6B5]/20 border-[#73E6B5] text-[#73E6B5] font-bold"
-                : "bg-[#07110F] border-white/[0.08] text-[#82928B] hover:text-[#E8E8DE] hover:bg-[#101D19]"
+                ? "bg-[#ECFDF5] border-[#A7F3D0] text-[#047857] font-bold"
+                : "bg-[#F8FAFC] border-[#E2E8F0] text-[#475569] hover:text-[#0F172A] hover:bg-[#F1F5F9]"
             }`}
           >
             Alternative Earthquake (Bhuj 2001)
@@ -200,8 +200,8 @@ export const ScenarioLabView: React.FC<ScenarioLabViewProps> = ({ baseScenario }
             onClick={() => setIntervention("CUSTOM")}
             className={`px-3 py-1.5 rounded text-xs font-mono cursor-pointer transition border ${
               intervention === "CUSTOM"
-                ? "bg-[#73E6B5]/20 border-[#73E6B5] text-[#73E6B5] font-bold"
-                : "bg-[#07110F] border-white/[0.08] text-[#82928B] hover:text-[#E8E8DE] hover:bg-[#101D19]"
+                ? "bg-[#ECFDF5] border-[#A7F3D0] text-[#047857] font-bold"
+                : "bg-[#F8FAFC] border-[#E2E8F0] text-[#475569] hover:text-[#0F172A] hover:bg-[#F1F5F9]"
             }`}
           >
             Custom Scenario
@@ -210,53 +210,53 @@ export const ScenarioLabView: React.FC<ScenarioLabViewProps> = ({ baseScenario }
       </div>
 
       {/* Side-by-Side Metric Comparison Table */}
-      <div className="bg-[#0E1B17] border border-white/[0.08] rounded-lg overflow-hidden shadow-lg">
-        <div className="p-4 border-b border-white/[0.08] flex flex-wrap items-center justify-between gap-3 text-xs font-mono bg-[#0B1714]">
+      <div className="panel-workstation overflow-hidden">
+        <div className="p-4 border-b border-[#E2E8F0] flex flex-wrap items-center justify-between gap-3 text-xs font-mono bg-[#F8FAFC]">
           <div className="flex items-center space-x-2">
-            <GitCompare size={15} className="text-[#73E6B5]" />
-            <span className="font-bold text-[#E8E8DE]">QUANTITATIVE COMPARISON: SCENARIO A vs SCENARIO B</span>
+            <GitCompare size={15} className="text-[#047857]" />
+            <span className="font-bold text-[#0F172A]">QUANTITATIVE COMPARISON: SCENARIO A vs SCENARIO B</span>
           </div>
           <div className="flex items-center space-x-4 text-[11px]">
             <span className="flex items-center space-x-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-[#73E6B5] inline-block" />
-              <span className="text-[#E8E8DE] font-semibold">Scenario A (Baseline)</span>
+              <span className="h-2.5 w-2.5 rounded-full bg-[#047857] inline-block" />
+              <span className="text-[#0F172A] font-semibold">Scenario A (Baseline)</span>
             </span>
             <span className="flex items-center space-x-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-[#D6B56D] inline-block" />
-              <span className="text-[#E8E8DE] font-semibold">Scenario B (Intervention)</span>
+              <span className="h-2.5 w-2.5 rounded-full bg-[#B45309] inline-block" />
+              <span className="text-[#0F172A] font-semibold">Scenario B (Intervention)</span>
             </span>
           </div>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs font-mono">
-            <thead className="bg-[#07110F] text-[#82928B] uppercase text-[10px] border-b border-white/[0.08]">
+          <table className="table-engineering w-full text-left text-xs font-mono">
+            <thead>
               <tr>
-                <th className="p-3 font-sans font-semibold">Engineering Parameter / Metric</th>
-                <th className="p-3">
+                <th className="font-sans font-semibold">Engineering Parameter / Metric</th>
+                <th>
                   <span className="inline-flex items-center">
-                    <span className="w-2 h-2 rounded-full bg-[#73E6B5] mr-1.5" />
+                    <span className="w-2 h-2 rounded-full bg-[#047857] mr-1.5" />
                     Scenario A (Baseline)
                   </span>
                 </th>
-                <th className="p-3">
+                <th>
                   <span className="inline-flex items-center">
-                    <span className="w-2 h-2 rounded-full bg-[#D6B56D] mr-1.5" />
+                    <span className="w-2 h-2 rounded-full bg-[#B45309] mr-1.5" />
                     Scenario B (Intervention)
                   </span>
                 </th>
-                <th className="p-3 text-right">Delta (%)</th>
+                <th className="text-right">Delta (%)</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/[0.06]">
+            <tbody>
               {/* Row 1: Peak Relative Displacement */}
-              <tr className="bg-[#0E1B17] hover:bg-[#101D19] transition-colors">
-                <td className="p-3 font-semibold text-[#E8E8DE] font-sans">Peak Relative Displacement (mm)</td>
-                <td className="p-3 text-[#73E6B5] font-bold font-mono">{mA?.peak_displacement_mm?.toFixed(1) ?? "—"} mm</td>
-                <td className="p-3 text-[#D6B56D] font-bold font-mono">{mB?.peak_displacement_mm?.toFixed(1) ?? "—"} mm</td>
+              <tr>
+                <td className="font-semibold text-[#0F172A] font-sans">Peak Relative Displacement (mm)</td>
+                <td className="text-[#047857] font-bold font-mono">{mA?.peak_displacement_mm?.toFixed(1) ?? "—"} mm</td>
+                <td className="text-[#B45309] font-bold font-mono">{mB?.peak_displacement_mm?.toFixed(1) ?? "—"} mm</td>
                 <td
-                  className={`p-3 text-right font-bold font-mono ${
-                    deltaU <= 0 ? "text-[#73E6B5]" : "text-[#E35D5D]"
+                  className={`text-right font-bold font-mono ${
+                    deltaU <= 0 ? "text-[#047857]" : "text-[#DC2626]"
                   }`}
                 >
                   {deltaU > 0 ? `+${deltaU.toFixed(1)}%` : `${deltaU.toFixed(1)}%`}
@@ -264,13 +264,13 @@ export const ScenarioLabView: React.FC<ScenarioLabViewProps> = ({ baseScenario }
               </tr>
 
               {/* Row 2: Inter-Story Drift Demand */}
-              <tr className="bg-[#0B1714] hover:bg-[#101D19] transition-colors">
-                <td className="p-3 font-semibold text-[#E8E8DE] font-sans">Inter-Story Drift Demand (%)</td>
-                <td className="p-3 text-[#E8E8DE] font-mono">{mA?.drift_ratio_percent?.toFixed(2) ?? "—"} %</td>
-                <td className="p-3 text-[#E8E8DE] font-mono">{mB?.drift_ratio_percent?.toFixed(2) ?? "—"} %</td>
+              <tr>
+                <td className="font-semibold text-[#0F172A] font-sans">Inter-Story Drift Demand (%)</td>
+                <td className="text-[#0F172A] font-mono">{mA?.drift_ratio_percent?.toFixed(2) ?? "—"} %</td>
+                <td className="text-[#0F172A] font-mono">{mB?.drift_ratio_percent?.toFixed(2) ?? "—"} %</td>
                 <td
-                  className={`p-3 text-right font-bold font-mono ${
-                    deltaDrift <= 0 ? "text-[#73E6B5]" : "text-[#E35D5D]"
+                  className={`text-right font-bold font-mono ${
+                    deltaDrift <= 0 ? "text-[#047857]" : "text-[#DC2626]"
                   }`}
                 >
                   {deltaDrift > 0 ? `+${deltaDrift.toFixed(1)}%` : `${deltaDrift.toFixed(1)}%`}
@@ -278,13 +278,13 @@ export const ScenarioLabView: React.FC<ScenarioLabViewProps> = ({ baseScenario }
               </tr>
 
               {/* Row 3: Ductility Demand */}
-              <tr className="bg-[#0E1B17] hover:bg-[#101D19] transition-colors">
-                <td className="p-3 font-semibold text-[#E8E8DE] font-sans">Ductility Demand (μ = u_max / uy)</td>
-                <td className="p-3 text-[#E8E8DE] font-mono">{mA?.ductility_demand_mu?.toFixed(2) ?? "—"}</td>
-                <td className="p-3 text-[#E8E8DE] font-mono">{mB?.ductility_demand_mu?.toFixed(2) ?? "—"}</td>
+              <tr>
+                <td className="font-semibold text-[#0F172A] font-sans">Ductility Demand (μ = u_max / uy)</td>
+                <td className="text-[#0F172A] font-mono">{mA?.ductility_demand_mu?.toFixed(2) ?? "—"}</td>
+                <td className="text-[#0F172A] font-mono">{mB?.ductility_demand_mu?.toFixed(2) ?? "—"}</td>
                 <td
-                  className={`p-3 text-right font-bold font-mono ${
-                    deltaMu <= 0 ? "text-[#73E6B5]" : "text-[#E35D5D]"
+                  className={`text-right font-bold font-mono ${
+                    deltaMu <= 0 ? "text-[#047857]" : "text-[#DC2626]"
                   }`}
                 >
                   {deltaMu > 0 ? `+${deltaMu.toFixed(1)}%` : `${deltaMu.toFixed(1)}%`}
@@ -292,13 +292,13 @@ export const ScenarioLabView: React.FC<ScenarioLabViewProps> = ({ baseScenario }
               </tr>
 
               {/* Row 4: Peak Restoring Force */}
-              <tr className="bg-[#0B1714] hover:bg-[#101D19] transition-colors">
-                <td className="p-3 font-semibold text-[#E8E8DE] font-sans">Peak Restoring Force (N)</td>
-                <td className="p-3 text-[#E8E8DE] font-mono">{mA?.peak_restoring_force_N?.toFixed(1) ?? "—"} N</td>
-                <td className="p-3 text-[#E8E8DE] font-mono">{mB?.peak_restoring_force_N?.toFixed(1) ?? "—"} N</td>
+              <tr>
+                <td className="font-semibold text-[#0F172A] font-sans">Peak Restoring Force (N)</td>
+                <td className="text-[#0F172A] font-mono">{mA?.peak_restoring_force_N?.toFixed(1) ?? "—"} N</td>
+                <td className="text-[#0F172A] font-mono">{mB?.peak_restoring_force_N?.toFixed(1) ?? "—"} N</td>
                 <td
-                  className={`p-3 text-right font-bold font-mono ${
-                    deltaFR <= 0 ? "text-[#73E6B5]" : "text-[#E35D5D]"
+                  className={`text-right font-bold font-mono ${
+                    deltaFR <= 0 ? "text-[#047857]" : "text-[#DC2626]"
                   }`}
                 >
                   {deltaFR > 0 ? `+${deltaFR.toFixed(1)}%` : `${deltaFR.toFixed(1)}%`}
@@ -306,13 +306,13 @@ export const ScenarioLabView: React.FC<ScenarioLabViewProps> = ({ baseScenario }
               </tr>
 
               {/* Row 5: Total Dissipated Hysteretic Energy */}
-              <tr className="bg-[#0E1B17] hover:bg-[#101D19] transition-colors">
-                <td className="p-3 font-semibold text-[#E8E8DE] font-sans">Total Dissipated Hysteretic Energy (J)</td>
-                <td className="p-3 text-[#73E6B5] font-bold font-mono">{mA?.total_hysteretic_energy_J?.toFixed(1) ?? "—"} J</td>
-                <td className="p-3 text-[#D6B56D] font-bold font-mono">{mB?.total_hysteretic_energy_J?.toFixed(1) ?? "—"} J</td>
+              <tr>
+                <td className="font-semibold text-[#0F172A] font-sans">Total Dissipated Hysteretic Energy (J)</td>
+                <td className="text-[#047857] font-bold font-mono">{mA?.total_hysteretic_energy_J?.toFixed(1) ?? "—"} J</td>
+                <td className="text-[#B45309] font-bold font-mono">{mB?.total_hysteretic_energy_J?.toFixed(1) ?? "—"} J</td>
                 <td
-                  className={`p-3 text-right font-bold font-mono ${
-                    deltaEh <= 0 ? "text-[#73E6B5]" : "text-[#E35D5D]"
+                  className={`text-right font-bold font-mono ${
+                    deltaEh <= 0 ? "text-[#047857]" : "text-[#DC2626]"
                   }`}
                 >
                   {deltaEh > 0 ? `+${deltaEh.toFixed(1)}%` : `${deltaEh.toFixed(1)}%`}
@@ -320,21 +320,21 @@ export const ScenarioLabView: React.FC<ScenarioLabViewProps> = ({ baseScenario }
               </tr>
 
               {/* Row 6: Initial Yield Onset Time */}
-              <tr className="bg-[#0B1714] hover:bg-[#101D19] transition-colors">
-                <td className="p-3 font-semibold text-[#E8E8DE] font-sans">Initial Yield Onset Time</td>
-                <td className="p-3 text-[#82928B] font-mono">
+              <tr>
+                <td className="font-semibold text-[#0F172A] font-sans">Initial Yield Onset Time</td>
+                <td className="text-[#64748B] font-mono">
                   {mA?.yield_time_sec !== null && mA?.yield_time_sec !== undefined
                     ? `t = ${mA.yield_time_sec.toFixed(2)}s`
                     : "Elastic (No Yield)"}
                 </td>
-                <td className="p-3 text-[#82928B] font-mono">
+                <td className="text-[#64748B] font-mono">
                   {mB?.yield_time_sec !== null && mB?.yield_time_sec !== undefined
                     ? `t = ${mB.yield_time_sec.toFixed(2)}s`
                     : "Elastic (No Yield)"}
                 </td>
-                <td className="p-3 text-right text-[#82928B] text-[11px] font-mono">
+                <td className="text-right text-[#64748B] text-[11px] font-mono">
                   {(mB?.yield_time_sec ?? 0) > (mA?.yield_time_sec ?? 0) ? (
-                    <span className="text-[#73E6B5] font-bold">Yield Delayed</span>
+                    <span className="text-[#047857] font-bold">Yield Delayed</span>
                   ) : (
                     "Similar"
                   )}
@@ -346,16 +346,16 @@ export const ScenarioLabView: React.FC<ScenarioLabViewProps> = ({ baseScenario }
       </div>
 
       {/* Comparative Overlaid Trajectory Plot */}
-      <div className="bg-[#0E1B17] border border-white/[0.08] rounded-lg p-5 space-y-3 shadow-lg">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] pb-3 text-xs font-mono">
+      <div className="panel-workstation p-6 space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#E2E8F0] pb-3 text-xs font-mono">
           <div className="flex items-center space-x-2">
-            <span className="font-bold text-[#E8E8DE]">OVERLAID DYNAMIC RESPONSE TRAJECTORIES</span>
+            <span className="font-bold text-[#0F172A]">OVERLAID DYNAMIC RESPONSE TRAJECTORIES</span>
           </div>
-          <div className="flex space-x-1 bg-[#07110F] p-1 rounded border border-white/[0.06]">
+          <div className="flex space-x-1 bg-[#F1F5F9] p-1 rounded border border-[#E2E8F0]">
             <button
               onClick={() => setActiveOverlay("disp")}
               className={`px-3 py-1 rounded cursor-pointer transition font-medium ${
-                activeOverlay === "disp" ? "bg-[#73E6B5] text-[#07110F] font-bold" : "text-[#82928B] hover:text-[#E8E8DE]"
+                activeOverlay === "disp" ? "bg-white text-[#0F172A] font-bold shadow-xs" : "text-[#64748B] hover:text-[#0F172A]"
               }`}
             >
               Displacement u(t)
@@ -363,7 +363,7 @@ export const ScenarioLabView: React.FC<ScenarioLabViewProps> = ({ baseScenario }
             <button
               onClick={() => setActiveOverlay("force")}
               className={`px-3 py-1 rounded cursor-pointer transition font-medium ${
-                activeOverlay === "force" ? "bg-[#73E6B5] text-[#07110F] font-bold" : "text-[#82928B] hover:text-[#E8E8DE]"
+                activeOverlay === "force" ? "bg-white text-[#0F172A] font-bold shadow-xs" : "text-[#64748B] hover:text-[#0F172A]"
               }`}
             >
               Restoring Force FR(t)
@@ -371,7 +371,7 @@ export const ScenarioLabView: React.FC<ScenarioLabViewProps> = ({ baseScenario }
             <button
               onClick={() => setActiveOverlay("energy")}
               className={`px-3 py-1 rounded cursor-pointer transition font-medium ${
-                activeOverlay === "energy" ? "bg-[#73E6B5] text-[#07110F] font-bold" : "text-[#82928B] hover:text-[#E8E8DE]"
+                activeOverlay === "energy" ? "bg-white text-[#0F172A] font-bold shadow-xs" : "text-[#64748B] hover:text-[#0F172A]"
               }`}
             >
               Energy Dissipation Eh(t)
@@ -380,12 +380,12 @@ export const ScenarioLabView: React.FC<ScenarioLabViewProps> = ({ baseScenario }
         </div>
 
         {/* Dual Waveform Overlay Canvas */}
-        <div className="h-64 bg-[#07110F] rounded-lg border border-white/[0.08] flex items-center justify-center p-3 relative">
+        <div className="h-64 bg-[#FFFFFF] rounded border border-[#E2E8F0] flex items-center justify-center p-3 relative">
           {predA && predB && predA.trajectories.u.length > 0 ? (
             <svg className="w-full h-full" viewBox="0 0 600 240">
-              <line x1="20" y1="120" x2="580" y2="120" stroke="rgba(255,255,255,0.12)" strokeDasharray="3 3" />
+              <line x1="20" y1="120" x2="580" y2="120" stroke="#E2E8F0" strokeWidth="1.5" strokeDasharray="3 3" />
 
-              {/* Scenario A Line (Mint green solid) */}
+              {/* Scenario A Line (Emerald green solid) */}
               <path
                 d={(activeOverlay === "disp"
                   ? predA.trajectories.u
@@ -410,7 +410,7 @@ export const ScenarioLabView: React.FC<ScenarioLabViewProps> = ({ baseScenario }
                   })
                   .join(" ")}
                 fill="none"
-                stroke="#73E6B5"
+                stroke="#047857"
                 strokeWidth="2.0"
               />
 
@@ -439,27 +439,27 @@ export const ScenarioLabView: React.FC<ScenarioLabViewProps> = ({ baseScenario }
                   })
                   .join(" ")}
                 fill="none"
-                stroke="#D6B56D"
+                stroke="#B45309"
                 strokeWidth="2.0"
                 strokeDasharray="4 3"
               />
             </svg>
           ) : (
-            <div className="text-[#82928B] text-xs font-mono">Evaluating scenarios...</div>
+            <div className="text-[#64748B] text-xs font-mono">Evaluating scenarios...</div>
           )}
         </div>
       </div>
 
       {/* "WHAT CHANGED?" Root-Cause Engineering Analysis Panel */}
-      <div className="bg-[#0E1B17] border border-white/[0.08] rounded-lg p-5 space-y-3 shadow-lg">
-        <div className="flex items-center space-x-2 text-[#73E6B5] font-mono font-bold text-xs uppercase tracking-wider">
+      <div className="panel-workstation p-6 space-y-3">
+        <div className="flex items-center space-x-2 text-[#047857] font-mono font-bold text-xs uppercase tracking-wider">
           <HelpCircle size={16} />
           <span>"WHAT CHANGED?" — ENGINEERING ROOT-CAUSE INTERPRETATION</span>
         </div>
-        <div className="bg-[#07110F] p-4 rounded border border-white/[0.08] font-mono text-xs text-[#E8E8DE] whitespace-pre-line leading-relaxed">
+        <div className="bg-[#F8FAFC] p-4 rounded border border-[#E2E8F0] font-mono text-xs text-[#0F172A] whitespace-pre-line leading-relaxed">
           {whatChangedExplanation}
         </div>
-        <p className="text-[10px] font-mono text-[#82928B]">
+        <p className="text-[10px] font-mono text-[#64748B]">
           All conclusions are deterministically derived from computed spectral surrogate integration and physical mechanics formulas.
         </p>
       </div>
