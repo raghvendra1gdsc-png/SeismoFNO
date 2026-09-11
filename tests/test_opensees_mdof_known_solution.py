@@ -16,7 +16,9 @@ Performs three rigorous independent validation checks against OpenSeesPy MDOF so
      - Verifies post-yield inter-story shear forces, hysteretic looping, and positive monotonic energy dissipation.
 """
 
+from __future__ import annotations
 import math
+from typing import Tuple
 import numpy as np
 import pytest
 import scipy.linalg

@@ -5,8 +5,9 @@ Provides realistic building classifications, structural dynamics properties,
 and ductility parameters derived from standard civil engineering codes (ASCE 7-22, IS 1893:2016).
 """
 
+from __future__ import annotations
 from dataclasses import dataclass, asdict
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 
 
 @dataclass
