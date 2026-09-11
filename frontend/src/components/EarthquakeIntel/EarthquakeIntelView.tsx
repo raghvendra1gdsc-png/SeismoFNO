@@ -8,6 +8,7 @@ interface EarthquakeIntelViewProps {
   peerRecords: PeerRecord[];
   selectedEarthquakeId: string;
   onSelectEarthquake: (id: string, name: string) => void;
+  onNavigateTab?: (tab: string) => void;
 }
 
 export const EarthquakeIntelView: React.FC<EarthquakeIntelViewProps> = ({
@@ -15,8 +16,10 @@ export const EarthquakeIntelView: React.FC<EarthquakeIntelViewProps> = ({
   peerRecords,
   selectedEarthquakeId,
   onSelectEarthquake,
+  onNavigateTab,
 }) => {
   const [activeSubTab, setActiveSubTab] = useState<"india_map" | "peer_library">("india_map");
+  const [appliedNotification, setAppliedNotification] = useState<string | null>(null);
   const [selectedEventId, setSelectedEventId] = useState<string>(
     indianCatalog.length > 0 ? indianCatalog[0].id : "IND-2001-BHUJ"
   );
@@ -197,20 +200,39 @@ export const EarthquakeIntelView: React.FC<EarthquakeIntelViewProps> = ({
                 </div>
 
                 {/* Digital-Twin Load Action */}
-                <div className="pt-3 border-t border-white/[0.06]">
+                <div className="pt-3 border-t border-white/[0.06] space-y-2">
                   <button
-                    onClick={() =>
+                    onClick={() => {
                       onSelectEarthquake(
                         activeIndianEvent.id,
                         `${activeIndianEvent.name} (${activeIndianEvent.year})`
-                      )
-                    }
-                    className="w-full py-2.5 bg-[#17483A] hover:bg-[#1C5746] text-[#73E6B5] border border-[#73E6B5]/30 font-mono text-xs font-semibold rounded flex items-center justify-center space-x-2 cursor-pointer transition"
+                      );
+                      setAppliedNotification(activeIndianEvent.name);
+                    }}
+                    className="w-full py-2.5 bg-[#17483A] hover:bg-[#1C5746] text-[#73E6B5] border border-[#73E6B5]/30 font-mono text-xs font-semibold rounded flex items-center justify-center space-x-2 cursor-pointer transition shadow-md"
                   >
                     <Activity size={14} />
                     <span>SET AS ACTIVE EXCITATION FOR DIGITAL TWIN</span>
                   </button>
-                  <p className="text-[10px] font-mono text-[#82928B] text-center mt-2">
+
+                  {appliedNotification === activeIndianEvent.name && (
+                    <div className="p-3 bg-[#73E6B5]/10 border border-[#73E6B5]/30 rounded flex items-center justify-between text-xs font-mono">
+                      <span className="text-[#73E6B5] flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-[#73E6B5] animate-ping" />
+                        Active excitation loaded & recomputed
+                      </span>
+                      {onNavigateTab && (
+                        <button
+                          onClick={() => onNavigateTab("structural_twin")}
+                          className="px-2.5 py-1 bg-[#73E6B5] text-[#07110F] font-bold rounded cursor-pointer hover:bg-[#5cd4a2] transition text-[11px]"
+                        >
+                          View Structural Twin →
+                        </button>
+                      )}
+                    </div>
+                  )}
+
+                  <p className="text-[10px] font-mono text-[#82928B] text-center">
                     Applies proxy kinematic acceleration record scaled to scenario PGA.
                   </p>
                 </div>
@@ -260,44 +282,77 @@ export const EarthquakeIntelView: React.FC<EarthquakeIntelViewProps> = ({
       ) : (
         /* PEER Library Tab */
         <div className="bg-[#0E1B17] border border-white/[0.08] rounded-lg p-6 space-y-4">
-          <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/[0.06] pb-3">
             <div>
               <h3 className="text-sm font-semibold font-mono text-[#E8E8DE]">
                 PEER NGA-WEST2 ACCELEROGRAM LIBRARY ({peerRecords.length} RECORDS)
               </h3>
-              <p className="text-xs text-[#82928B] mt-0.5">
-                Authoritative Pacific Earthquake Engineering Research Center database ground motions.
+              <p className="text-xs text-[#82928B] mt-0.5 font-sans">
+                Click any record to set it as active seismic excitation for instant surrogate simulation.
               </p>
             </div>
+
+            {onNavigateTab && (
+              <button
+                onClick={() => onNavigateTab("structural_twin")}
+                className="px-3 py-1.5 bg-[#17483A] hover:bg-[#1C5746] text-[#73E6B5] border border-[#73E6B5]/30 font-mono text-xs font-semibold rounded cursor-pointer transition shrink-0"
+              >
+                Go to Structural Simulator →
+              </button>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {peerRecords.map((rec) => (
-              <div
-                key={rec.filename}
-                onClick={() => onSelectEarthquake(rec.filename, rec.earthquake_name || rec.filename)}
-                className={`p-3 rounded border text-xs font-mono cursor-pointer transition ${
-                  rec.filename === selectedEarthquakeId
-                    ? "bg-[#17483A]/40 border-[#73E6B5]/50 text-[#73E6B5]"
-                    : "bg-[#07110F] border-white/[0.06] text-[#82928B] hover:text-[#E8E8DE] hover:bg-[#101D19]"
-                }`}
-              >
-                <div className="flex items-center justify-between font-semibold">
-                  <span className="truncate text-[#E8E8DE]">{rec.earthquake_name || rec.filename}</span>
-                  <span className="text-[#82928B] text-[10px] shrink-0 ml-1 font-mono">{rec.year}</span>
+            {peerRecords.map((rec) => {
+              const isSelected = rec.filename === selectedEarthquakeId;
+              return (
+                <div
+                  key={rec.filename}
+                  onClick={() => {
+                    onSelectEarthquake(rec.filename, rec.earthquake_name || rec.filename);
+                    setAppliedNotification(rec.earthquake_name || rec.filename);
+                  }}
+                  className={`p-3 rounded border text-xs font-mono cursor-pointer transition ${
+                    isSelected
+                      ? "bg-[#17483A]/50 border-[#73E6B5] text-[#73E6B5] shadow-md"
+                      : "bg-[#07110F] border-white/[0.06] text-[#82928B] hover:text-[#E8E8DE] hover:bg-[#101D19]"
+                  }`}
+                >
+                  <div className="flex items-center justify-between font-semibold">
+                    <span className="truncate text-[#E8E8DE]">{rec.earthquake_name || rec.filename}</span>
+                    <span className="text-[#82928B] text-[10px] shrink-0 ml-1 font-mono">{rec.year}</span>
+                  </div>
+                  <div className="mt-1 flex justify-between text-[11px]">
+                    <span>PGA: <strong className="text-[#73E6B5]">{rec.raw_pga_g?.toFixed(3) ?? "—"}g</strong></span>
+                    <span>dt: {rec.raw_dt ?? "—"}s</span>
+                  </div>
+                  <div className="mt-1 text-[10px] text-[#82928B] truncate">
+                    Station: {rec.station}
+                  </div>
+                  {isSelected && (
+                    <div className="mt-2 text-[10px] font-mono text-[#73E6B5] font-bold flex items-center justify-between pt-1 border-t border-[#73E6B5]/30">
+                      <span>✓ ACTIVE EXCITATION</span>
+                      {onNavigateTab && (
+                        <span
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onNavigateTab("structural_twin");
+                          }}
+                          className="underline cursor-pointer hover:text-white"
+                        >
+                          Simulate →
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </div>
-                <div className="mt-1 flex justify-between text-[11px]">
-                  <span>PGA: <strong className="text-[#73E6B5]">{rec.raw_pga_g?.toFixed(3) ?? "—"}g</strong></span>
-                  <span>dt: {rec.raw_dt ?? "—"}s</span>
-                </div>
-                <div className="mt-1 text-[10px] text-[#82928B] truncate">
-                  Station: {rec.station}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
     </div>
   );
 };
+
+export default EarthquakeIntelView;

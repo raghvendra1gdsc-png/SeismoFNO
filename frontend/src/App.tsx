@@ -115,6 +115,13 @@ export const App: React.FC = () => {
     init();
   }, []);
 
+  // Toast notification state
+  const [notification, setNotification] = useState<{
+    message: string;
+    actionText?: string;
+    targetTab?: WorkspaceTab;
+  } | null>(null);
+
   // Run Simulation Handler
   const handleRunSimulation = useCallback(async () => {
     setIsLoading(true);
@@ -139,29 +146,44 @@ export const App: React.FC = () => {
     }
   }, [selectedEarthquakeId, pgaG, T0, damping, uy, alpha, materialType]);
 
-  // Run OpenSees Ground Truth Comparison Handler
-  const handleRunGroundTruth = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const payload: ScenarioInputPayload = {
-        earthquake_id: selectedEarthquakeId,
-        pga_g: pgaG,
-        T0,
-        damping_ratio: damping,
-        yield_displacement_m: uy,
-        post_yield_ratio: alpha,
-        material_type: materialType,
-        include_ground_truth: true,
-        stride: 2,
-      };
-      const res = await predictDigitalTwin(payload);
-      setPrediction(res);
-    } catch (err) {
-      console.error("Ground truth run failed:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [selectedEarthquakeId, pgaG, T0, damping, uy, alpha, materialType]);
+  // Run OpenSees Ground Truth Comparison Handler with dynamic custom parameters
+  const handleRunGroundTruth = useCallback(
+    async (customParams?: Partial<ScenarioInputPayload>) => {
+      setIsLoading(true);
+      try {
+        const payload: ScenarioInputPayload = {
+          earthquake_id: customParams?.earthquake_id || selectedEarthquakeId,
+          pga_g: customParams?.pga_g !== undefined ? customParams.pga_g : pgaG,
+          T0: customParams?.T0 !== undefined ? customParams.T0 : T0,
+          damping_ratio:
+            customParams?.damping_ratio !== undefined ? customParams.damping_ratio : damping,
+          yield_displacement_m:
+            customParams?.yield_displacement_m !== undefined ? customParams.yield_displacement_m : uy,
+          post_yield_ratio:
+            customParams?.post_yield_ratio !== undefined ? customParams.post_yield_ratio : alpha,
+          material_type: customParams?.material_type || materialType,
+          include_ground_truth: true,
+          stride: 2,
+        };
+        const res = await predictDigitalTwin(payload);
+        setPrediction(res);
+
+        // Keep local parameters in sync
+        if (customParams?.pga_g !== undefined) setPgaG(customParams.pga_g);
+        if (customParams?.T0 !== undefined) setT0(customParams.T0);
+        if (customParams?.damping_ratio !== undefined) setDamping(customParams.damping_ratio);
+        if (customParams?.yield_displacement_m !== undefined) setUy(customParams.yield_displacement_m);
+        if (customParams?.post_yield_ratio !== undefined) setAlpha(customParams.post_yield_ratio);
+        if (customParams?.material_type) setMaterialType(customParams.material_type);
+        if (customParams?.earthquake_id) setSelectedEarthquakeId(customParams.earthquake_id);
+      } catch (err) {
+        console.error("Ground truth run failed:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [selectedEarthquakeId, pgaG, T0, damping, uy, alpha, materialType]
+  );
 
   const handleSelectBuilding = useCallback((bld: BuildingArchetype) => {
     setSelectedBuildingId(bld.id);
@@ -172,10 +194,43 @@ export const App: React.FC = () => {
     setAlpha(bld.post_yield_ratio);
   }, []);
 
-  const handleSelectEarthquake = useCallback((recordId: string, name: string) => {
-    setSelectedEarthquakeId(recordId);
-    setSelectedEarthquakeName(name);
-  }, []);
+  const handleSelectEarthquake = useCallback(
+    (recordId: string, name: string) => {
+      setSelectedEarthquakeId(recordId);
+      setSelectedEarthquakeName(name);
+
+      // Auto-recompute digital twin with newly selected record immediately
+      setIsLoading(true);
+      const payload: ScenarioInputPayload = {
+        earthquake_id: recordId,
+        pga_g: pgaG,
+        T0,
+        damping_ratio: damping,
+        yield_displacement_m: uy,
+        post_yield_ratio: alpha,
+        material_type: materialType,
+        include_ground_truth: false,
+        stride: 2,
+      };
+
+      predictDigitalTwin(payload)
+        .then((res) => {
+          setPrediction(res);
+          setNotification({
+            message: `✓ Active Excitation set to "${name}". Structural twin recomputed (${res.inference_time_ms.toFixed(1)} ms).`,
+            actionText: "View in Structural Simulator →",
+            targetTab: "structural_twin",
+          });
+        })
+        .catch((err) => {
+          console.error("Auto-simulation on earthquake select failed:", err);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    },
+    [pgaG, T0, damping, uy, alpha, materialType]
+  );
 
   const currentScenarioPayload: ScenarioInputPayload = {
     earthquake_id: selectedEarthquakeId,
@@ -190,7 +245,7 @@ export const App: React.FC = () => {
 
   return (
     <div className="h-screen w-screen flex flex-col bg-[#07110F] text-[#E8E8DE] overflow-hidden font-sans select-none">
-      {/* Top Application Header - Minimal Studio Chrome */}
+      {/* Top Application Header - Clean Academic Chrome */}
       <header className="h-10 bg-[#07110F] border-b border-white/[0.06] px-4 flex items-center justify-between z-30 shrink-0 select-none">
         {/* Left: Minimal Branding */}
         <div className="flex items-center space-x-3">
@@ -206,7 +261,7 @@ export const App: React.FC = () => {
           </div>
         </div>
 
-        {/* Center: Tabs with minimal active indicator */}
+        {/* Center: Core Research Workspaces */}
         <div className="hidden md:flex items-center h-full space-x-1 font-sans text-xs">
           <button
             onClick={() => handleSelectTab("structural_twin")}
@@ -216,7 +271,17 @@ export const App: React.FC = () => {
                 : "border-transparent text-[#82928B] hover:text-[#E8E8DE]"
             }`}
           >
-            <span>Digital Twin</span>
+            <span>Structural Simulator</span>
+          </button>
+          <button
+            onClick={() => handleSelectTab("model_validation")}
+            className={`h-full px-3 flex items-center space-x-1.5 transition cursor-pointer border-b-2 ${
+              activeTab === "model_validation"
+                ? "border-[#73E6B5] text-[#E8E8DE] font-medium"
+                : "border-transparent text-[#82928B] hover:text-[#E8E8DE]"
+            }`}
+          >
+            <span>OpenSees Benchmark</span>
           </button>
           <button
             onClick={() => handleSelectTab("research_demo")}
@@ -226,7 +291,7 @@ export const App: React.FC = () => {
                 : "border-transparent text-[#82928B] hover:text-[#E8E8DE]"
             }`}
           >
-            <span>Research Defense</span>
+            <span>Multi-Story Research (Modal GNO)</span>
           </button>
           <button
             onClick={() => handleSelectTab("live_earthquake")}
@@ -236,7 +301,7 @@ export const App: React.FC = () => {
                 : "border-transparent text-[#82928B] hover:text-[#E8E8DE]"
             }`}
           >
-            <span>Live USGS</span>
+            <span>Live USGS Screening</span>
           </button>
         </div>
 
@@ -249,6 +314,35 @@ export const App: React.FC = () => {
           <span className="text-[#82928B]">ONLINE</span>
         </div>
       </header>
+
+      {/* Interactive Toast / Notification Banner */}
+      {notification && (
+        <div className="bg-[#17483A] border-b border-[#73E6B5]/30 px-4 py-2 flex items-center justify-between text-xs font-mono text-[#73E6B5] shrink-0 z-20">
+          <div className="flex items-center space-x-2">
+            <span className="w-2 h-2 rounded-full bg-[#73E6B5] animate-pulse" />
+            <span>{notification.message}</span>
+          </div>
+          <div className="flex items-center space-x-3">
+            {notification.targetTab && (
+              <button
+                onClick={() => {
+                  handleSelectTab(notification.targetTab!);
+                  setNotification(null);
+                }}
+                className="px-2.5 py-0.5 bg-[#73E6B5] text-[#07110F] font-bold rounded cursor-pointer hover:bg-[#5cd4a2] transition text-[11px]"
+              >
+                {notification.actionText || "View →"}
+              </button>
+            )}
+            <button
+              onClick={() => setNotification(null)}
+              className="text-[#82928B] hover:text-white cursor-pointer px-1"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Main Workspace Body */}
       <div className="flex-1 flex overflow-hidden">
@@ -304,6 +398,7 @@ export const App: React.FC = () => {
               peerRecords={peerRecords}
               selectedEarthquakeId={selectedEarthquakeId}
               onSelectEarthquake={handleSelectEarthquake}
+              onNavigateTab={(tab) => handleSelectTab(tab as WorkspaceTab)}
             />
           )}
 
@@ -316,6 +411,14 @@ export const App: React.FC = () => {
               prediction={prediction}
               onRunGroundTruth={handleRunGroundTruth}
               isLoading={isLoading}
+              peerRecords={peerRecords}
+              currentEarthquakeId={selectedEarthquakeId}
+              currentPgaG={pgaG}
+              currentT0={T0}
+              currentDamping={damping}
+              currentUy={uy}
+              currentAlpha={alpha}
+              currentMaterialType={materialType}
             />
           )}
 

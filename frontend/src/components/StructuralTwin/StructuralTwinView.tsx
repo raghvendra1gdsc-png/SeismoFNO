@@ -113,22 +113,33 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
     };
   }, [isPlaying, totalPoints, playbackSpeed]);
 
+  // Real-time automatic surrogate recomputation on parameter slider change
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onRunSimulation();
+    }, 180);
+    return () => clearTimeout(timer);
+  }, [T0, damping, uy, alpha, pgaG, materialType, selectedBuildingId, onRunSimulation]);
+
   return (
     <div className="p-4 md:p-6 space-y-6 font-sans text-[#E8E8DE] max-w-7xl mx-auto">
-      {/* Top Banner */}
+      {/* Top Banner with Clear Professor-Facing Academic Context */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 rounded-lg border border-white/[0.08] bg-[#0E1B17] shadow-lg">
         <div>
           <div className="flex flex-wrap items-center gap-3">
             <h1 className="text-xl font-bold font-mono tracking-tight text-[#E8E8DE] flex items-center gap-2">
               <Sparkles size={18} className="text-[#73E6B5]" />
-              3D STRUCTURAL DIGITAL TWIN & SEISMIC WORKSTATION
+              INTERACTIVE NONLINEAR STRUCTURAL SIMULATOR
             </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono bg-[#73E6B5]/10 text-[#73E6B5] border border-[#73E6B5]/30 font-bold">
-              SUB-2ms NEURAL OPERATOR
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono bg-[#73E6B5]/10 text-[#73E6B5] border border-[#73E6B5]/30 font-bold flex items-center gap-1.5">
+              <span className={`w-1.5 h-1.5 rounded-full ${isLoading ? "bg-[#D6B56D] animate-ping" : "bg-[#73E6B5]"}`} />
+              <span>{isLoading ? "SOLVING..." : "LIVE SURROGATE (< 2 ms)"}</span>
             </span>
           </div>
-          <p className="text-xs text-[#82928B] mt-1">
-            Real-time nonlinear structural dynamics under earthquake excitation: 3D volumetric sway, plastic hinge formation, and hysteretic energy dissipation.
+          <p className="text-xs text-[#82928B] mt-1 leading-relaxed">
+            <strong className="text-[#E8E8DE]">PURPOSE:</strong> Real-time simulation of nonlinear seismic structural response using continuous Fourier Neural Operators.
+            <br />
+            <strong className="text-[#73E6B5]">HOW IT WORKS:</strong> Move any slider on the left (<span className="font-mono text-[#E8E8DE]">T₁, ζ, uᵧ, α, PGA</span>). The neural operator solves the nonlinear equations of motion in &lt; 2 ms, dynamically updating the 3D building sway, plastic hinge formation, and hysteresis loops live.
           </p>
         </div>
 
@@ -139,7 +150,7 @@ export const StructuralTwinView: React.FC<StructuralTwinViewProps> = ({
             className="px-5 py-2.5 bg-[#73E6B5] hover:bg-[#5cd4a2] text-[#07110F] text-xs font-mono font-bold rounded-lg flex items-center space-x-2 cursor-pointer transition shadow-md disabled:opacity-50"
           >
             <Play size={14} className="fill-[#07110F]" />
-            <span>{isLoading ? "SOLVING SURROGATE..." : "RECOMPUTE SURROGATE (< 2 ms)"}</span>
+            <span>{isLoading ? "SOLVING SURROGATE..." : "RECOMPUTE SURROGATE"}</span>
           </button>
         </div>
       </div>

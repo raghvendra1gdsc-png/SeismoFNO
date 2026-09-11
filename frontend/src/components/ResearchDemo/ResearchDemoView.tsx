@@ -168,7 +168,7 @@ export const ResearchDemoView: React.FC = () => {
         {
           label: "PGA (g)",
           data: simResult.ag,
-          borderColor: "#0F62FE", // Carbon blue-60
+          borderColor: "#73E6B5",
           borderWidth: 1.2,
           pointRadius: 0,
           fill: false,
@@ -178,7 +178,7 @@ export const ResearchDemoView: React.FC = () => {
     };
   }, [simResult]);
 
-  // Trajectory comparison chart data: Ground truth (#D6B56D dashed) vs Prediction (cyan solid)
+  // Trajectory comparison chart data: Ground truth (#D6B56D dashed) vs Prediction (mint solid)
   const trajectoryChartData = useMemo(() => {
     if (!simResult) return null;
     const isShuffled = simResult.model.model_id.includes("shuffled");
@@ -197,7 +197,7 @@ export const ResearchDemoView: React.FC = () => {
         {
           label: `${simResult.model.display_name} (${simResult.data_provenance.prediction})`,
           data: simResult.u_pred.map((v: number) => v * 1000.0), // mm
-          borderColor: isShuffled ? "#A855F7" : "#73E6B5", // neon purple if shuffled, else electric cyan
+          borderColor: isShuffled ? "#E35D5D" : "#73E6B5", // danger crimson if shuffled, else mint green
           borderWidth: 2.2,
           pointRadius: 0,
           tension: 0.1,
@@ -215,22 +215,22 @@ export const ResearchDemoView: React.FC = () => {
         {
           label: "EXP5 Baseline GNO",
           data: oodMatrix.peak_disp_error_pct["EXP5 Baseline GNO"],
-          backgroundColor: "#DA1E28", // red-60
+          backgroundColor: "#E35D5D", // crimson
         },
         {
           label: "EXP6-B T1-GNO",
           data: oodMatrix.peak_disp_error_pct["EXP6-B T1-GNO"],
-          backgroundColor: "#B28600", // amber-60
+          backgroundColor: "#D6B56D", // amber
         },
         {
           label: "EXP6-C Multi-Modal GNO",
           data: oodMatrix.peak_disp_error_pct["EXP6-C Multi-Modal GNO"],
-          backgroundColor: "#198038", // green-60
+          backgroundColor: "#73E6B5", // mint green
         },
         {
           label: "EXP6-D Shuffled Modal (Ablation)",
           data: oodMatrix.peak_disp_error_pct["EXP6-D Shuffled Modal (Ablation)"],
-          backgroundColor: "#8A3FFA", // purple-60
+          backgroundColor: "#82928B", // muted slate
         },
       ],
     };
@@ -262,8 +262,8 @@ export const ResearchDemoView: React.FC = () => {
 
         <div className="flex flex-col items-start md:items-end gap-1.5 shrink-0 text-xs font-mono">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#10B981]"></span>
-            <span className="text-emerald-400 font-bold">RESEARCH CORE FROZEN</span>
+            <span className="w-2 h-2 rounded-full bg-[#73E6B5] shadow-[0_0_8px_#73E6B5]"></span>
+            <span className="text-[#73E6B5] font-bold">RESEARCH CORE FROZEN</span>
           </div>
           <div className="text-slate-400">
             Hardware: <span className="text-white font-semibold">Apple Silicon GPU (MPS)</span>
@@ -273,6 +273,44 @@ export const ResearchDemoView: React.FC = () => {
           </div>
         </div>
       </header>
+
+      {/* Professor-Facing Academic Research Primer Box */}
+      <div className="bg-[#0E1B17] border border-white/[0.08] rounded-xl p-5 grid grid-cols-1 md:grid-cols-2 gap-6 text-xs font-sans shadow-xl">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#73E6B5]" />
+            <span className="text-[#73E6B5] font-mono font-bold uppercase text-[11px]">
+              What This Research Investigates
+            </span>
+          </div>
+          <p className="text-[#82928B] leading-relaxed">
+            Continuous Fourier Neural Operators (FNO) perform exceptionally on Single-Degree-of-Freedom (SDOF) oscillators, but naive extension to Multi-Degree-of-Freedom (MDOF) multi-story buildings via zero-padding suffers severe dimensional collapse (<strong>99.6% error in EXP4</strong>).
+          </p>
+          <p className="text-[#82928B] leading-relaxed">
+            This research develops a <strong>Spatiotemporal Graph Neural Operator (GNO)</strong> conditioned on pre-earthquake physical modal invariants (eigenvalues ω₁, ..., ωₖ and mode shapes) via Feature-wise Linear Modulation (FiLM), ensuring continuous spatial interpolation across variable building heights.
+          </p>
+        </div>
+
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#D6B56D]" />
+            <span className="text-[#D6B56D] font-mono font-bold uppercase text-[11px]">
+              Verified Experimental Breakthrough
+            </span>
+          </div>
+          <ul className="text-[#82928B] space-y-1.5 leading-relaxed font-mono text-[11px]">
+            <li>
+              • <strong className="text-white">EXP5 (Unconditioned Baseline GNO):</strong> 22.09% overall relative error.
+            </li>
+            <li>
+              • <strong className="text-[#73E6B5]">EXP6 (Modal FiLM GNO):</strong> 8.19% relative error — yields a <strong className="text-[#73E6B5]">62.9% relative peak error reduction</strong> on unseen flexible structures.
+            </li>
+            <li>
+              • <strong className="text-[#D6B56D]">EXP6-D (Falsification Ablation):</strong> Shuffling eigenvalues degrades error by +16.2 pp, proving the network specifically exploits modal physics rather than extra parameters.
+            </li>
+          </ul>
+        </div>
+      </div>
 
       {/* ----------------------------------------------------------------- */}
       {/* SECTION I — EXPERIMENTAL PROGRESSION (THE RESEARCH STORY)          */}
@@ -364,7 +402,7 @@ export const ResearchDemoView: React.FC = () => {
                 const navBtn = document.querySelector('button[title*="00 Live Earthquake"], button:has(svg)');
                 if (navBtn) (navBtn as HTMLElement).click();
               }}
-              className="w-full py-2 bg-gradient-to-r from-[#73E6B5] to-[#0099FF] hover:opacity-95 text-[#070A11] font-mono font-bold rounded-lg text-xs flex items-center justify-center gap-1.5 transition cursor-pointer shadow-[0_0_15px_rgba(0,240,255,0.3)]"
+              className="w-full py-2 bg-[#17483A] hover:bg-[#1C5746] text-[#73E6B5] border border-[#73E6B5]/30 font-mono font-bold rounded-lg text-xs flex items-center justify-center gap-1.5 transition cursor-pointer shadow-md"
             >
               <span>OPEN LIVE EVENT WORKSPACE</span>
               <ArrowRight size={13} />
