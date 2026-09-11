@@ -5,6 +5,7 @@
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.1%2B%20(MPS%20|%20CUDA)-EE4C2C.svg?logo=pytorch&logoColor=white)](#setup)
 [![OpenSeesPy](https://img.shields.io/badge/Ground%20Truth-OpenSeesPy%20NLTHA-FF8C00.svg)](#ground-truth-generation)
 [![Forensic Audit](https://img.shields.io/badge/Forensic%20Audit-Zero%20Leakage%20Certified-7928CA.svg)](results/experiments/exp6/INDEPENDENT_FORENSIC_AUDIT.md)
+[![Live Demo](https://img.shields.io/badge/Live%20Platform-seismofno--qp21.onrender.com-047857.svg?style=flat&logo=render&logoColor=white)](https://seismofno-qp21.onrender.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ---
@@ -379,32 +380,23 @@ The canonical results table (used as the source of truth for all documents) is a
 
 ---
 
-## Interactive Research Workstation (Localhost)
+## Interactive Research Workstation
 
-A single unified command launches both the FastAPI neural surrogate backend and the React/Three.js research interface:
+The full research platform is deployed live on Render with unified FastAPI backend and React/Three.js frontend, or can be run locally:
 
-```bash
-# Unified one-command launch (Backend + Frontend)
-./run_demo.sh
-```
+- 🌐 **Live Cloud Workstation (No installation required)**: **[https://seismofno-qp21.onrender.com](https://seismofno-qp21.onrender.com)**
+- 💻 **Localhost Launch**: `./run_demo.sh` (or `python3 -m uvicorn api.main:app` + `npm --prefix frontend run dev`)
 
-Or launch individually across separate terminals:
+### Direct Research Workspace Routes:
 
-```bash
-# Terminal 1 — Backend (FastAPI on port 8000)
-PYTHONPATH=. python3 -m uvicorn api.main:app --host 127.0.0.1 --port 8000
-
-# Terminal 2 — Frontend (Vite on port 5173)
-npm --prefix frontend run dev
-```
-
-### Direct Workspace Endpoints:
-- **Structural Response Simulator**: [http://localhost:5173](http://localhost:5173)
-- **Multi-Story Research (Modal GNO)**: [http://localhost:5173/demo](http://localhost:5173/demo)
-- **Live USGS Global Seismic Screening**: [http://localhost:5173/live](http://localhost:5173/live)
-- **OpenSeesPy Physics Reference**: [http://localhost:5173/?tab=model_validation](http://localhost:5173/?tab=model_validation)
-- **Dual Twin Scenario Lab**: [http://localhost:5173/?tab=scenario_lab](http://localhost:5173/?tab=scenario_lab)
-- **Interactive OpenAPI Documentation**: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+| Workspace | Live Cloud Route | Localhost Route | Focus Area |
+|---|---|---|---|
+| **Structural Digital Twin** | [Live Platform / Twin](https://seismofno-qp21.onrender.com) | [localhost:5173](http://localhost:5173) | 3D structural vibration, nonlinear drift & surrogate latency |
+| **Multi-Story Modal GNO (EXP4–EXP6)** | [Live Platform / Multi-Story](https://seismofno-qp21.onrender.com/demo) | [localhost:5173/demo](http://localhost:5173/demo) | Mode shapes, FiLM modulation, 62.9% OOD error reduction |
+| **Live USGS Seismic Screening** | [Live Platform / USGS Live](https://seismofno-qp21.onrender.com/live) | [localhost:5173/live](http://localhost:5173/live) | Real-time global feeds, distance attenuation, 3D testbed sway |
+| **OpenSeesPy Physics Reference** | [Live Platform / Validation](https://seismofno-qp21.onrender.com/?tab=model_validation) | [localhost:5173/?tab=model_validation](http://localhost:5173/?tab=model_validation) | Real-time C++ Newmark-β integration vs. neural surrogate |
+| **Scenario Lab & Stress Testing** | [Live Platform / Scenario Lab](https://seismofno-qp21.onrender.com/?tab=scenario_lab) | [localhost:5173/?tab=scenario_lab](http://localhost:5173/?tab=scenario_lab) | Dual-twin comparative parameter sweeps & residual drift |
+| **Interactive OpenAPI Documentation** | [Live Platform / OpenAPI](https://seismofno-qp21.onrender.com/docs) | [localhost:8000/docs](http://127.0.0.1:8000/docs) | Fully interactive Swagger/OpenAPI execution docs |
 
 ---
 
