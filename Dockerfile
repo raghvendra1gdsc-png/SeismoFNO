@@ -2,12 +2,12 @@
 # SeismoFNO — Production Multi-Stage Full-Stack Docker Container for Render.com
 # ==============================================================================
 
-# --- Stage 1: Build the React 18 Frontend ---
-FROM node:20-alpine AS frontend-builder
+# --- Stage 1: Build the React 19 Frontend ---
+FROM node:20-slim AS frontend-builder
 WORKDIR /app/frontend
 
 COPY frontend/package.json frontend/package-lock.json* ./
-RUN npm ci
+RUN npm ci --prefer-offline --no-audit
 
 COPY frontend/ ./
 RUN npm run build
@@ -23,13 +23,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     git-lfs \
     libgomp1 \
+    liblapack3 \
+    libblas3 \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PyTorch CPU and Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir --root-user-action=ignore --upgrade pip && \
     pip install --no-cache-dir --root-user-action=ignore torch --index-url https://download.pytorch.org/whl/cpu && \
-    pip install --no-cache-dir --root-user-action=ignore -r requirements.txt
+    pip install --no-cache-dir --root-user-action=ignore --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.txt
 
 # Copy source code and research assets
 COPY . .
@@ -37,8 +39,8 @@ COPY . .
 # Copy pre-built frontend distribution from Stage 1 into frontend/dist
 COPY --from=frontend-builder /app/frontend/dist /app/frontend/dist
 
-# Ensure Git LFS pointers are pulled if repo was cloned shallowly
-RUN if [ -f .gitattributes ]; then git lfs install && git lfs pull || true; fi
+# Ensure Git LFS pointers are pulled if repo is a git clone
+RUN if [ -d .git ] && [ -f .gitattributes ]; then git lfs install && git lfs pull || true; fi
 
 # Production environment variables
 ENV PYTHONPATH=/app

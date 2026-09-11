@@ -3,7 +3,6 @@
 
 # Deep Learning & Neural Operators
 torch>=2.1.0
-neuraloperator>=0.3.0
 
 # Scientific Computing & Data Processing
 numpy>=1.24.0

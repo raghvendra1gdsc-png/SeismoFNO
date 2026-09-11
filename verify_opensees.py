@@ -94,9 +94,11 @@ def main():
         _ops_ver = "unknown"
     print(f"openseespy version : {_ops_ver}")
     import torch
-    print(f"torch version      : {torch.__version__}")
-    import neuralop as _no
-    _no_ver = getattr(_no, "__version__", None) or _meta.version("neuraloperator")
+    try:
+        import neuralop as _no
+        _no_ver = getattr(_no, "__version__", None) or _meta.version("neuraloperator")
+    except Exception:
+        _no_ver = "native PyTorch (src/models/fno_1d.py)"
     print(f"neuraloperator ver : {_no_ver}")
     print()
 
