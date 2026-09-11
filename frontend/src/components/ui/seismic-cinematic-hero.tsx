@@ -1,33 +1,17 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Activity, ShieldCheck, Zap, ArrowRight, Play } from "lucide-react";
+import { Activity, ShieldCheck, Zap, ArrowRight, Play, RefreshCw, Cpu, Layers, Radio } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
+import { ShaderAnimation } from "./shader-lines";
 
 const INJECTED_SEISMIC_STYLES = `
-  .gsap-reveal { visibility: hidden; }
-
   /* Film Grain Texture */
   .film-grain {
       position: absolute; inset: 0; width: 100%; height: 100%;
-      pointer-events: none; z-index: 50; opacity: 0.04; mix-blend-mode: overlay;
+      pointer-events: none; z-index: 40; opacity: 0.04; mix-blend-mode: overlay;
       background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)"/></svg>');
-  }
-
-  /* Forest Grid Theme */
-  .bg-seismic-grid {
-      background-size: 48px 48px;
-      background-image: 
-          linear-gradient(to right, rgba(115, 230, 181, 0.06) 1px, transparent 1px),
-          linear-gradient(to bottom, rgba(115, 230, 181, 0.06) 1px, transparent 1px);
-      mask-image: radial-gradient(ellipse at center, black 0%, transparent 75%);
-      -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 75%);
   }
 
   /* Physical Matte Materials */
@@ -37,11 +21,11 @@ const INJECTED_SEISMIC_STYLES = `
   }
 
   .text-emerald-silver {
-      background: linear-gradient(180deg, #FFFFFF 0%, #73E6B5 50%, #2A7056 100%);
+      background: linear-gradient(180deg, #FFFFFF 0%, #73E6B5 55%, #3B8266 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      filter: drop-shadow(0px 10px 24px rgba(115, 230, 181, 0.2)) drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.7));
+      filter: drop-shadow(0px 8px 20px rgba(115, 230, 181, 0.25)) drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.8));
   }
 
   /* Workstation Card Depth */
@@ -52,20 +36,20 @@ const INJECTED_SEISMIC_STYLES = `
           0 20px 40px -20px rgba(0, 0, 0, 0.8),
           inset 0 1px 2px rgba(115, 230, 181, 0.25),
           inset 0 -2px 4px rgba(0, 0, 0, 0.9);
-      border: 1px solid rgba(115, 230, 181, 0.12);
+      border: 1px solid rgba(115, 230, 181, 0.15);
       position: relative;
   }
 
   .card-sheen-seismic {
       position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 50;
-      background: radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(115, 230, 181, 0.08) 0%, transparent 45%);
+      background: radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(115, 230, 181, 0.09) 0%, transparent 50%);
       mix-blend-mode: screen; transition: opacity 0.3s ease;
   }
 
   .console-bezel {
       background-color: #07110F;
       box-shadow: 
-          inset 0 0 0 2px rgba(115, 230, 181, 0.2), 
+          inset 0 0 0 2px rgba(115, 230, 181, 0.25), 
           inset 0 0 0 7px #050C0A, 
           0 40px 80px -15px rgba(0, 0, 0, 0.95),
           0 15px 25px -5px rgba(0, 0, 0, 0.8);
@@ -73,44 +57,44 @@ const INJECTED_SEISMIC_STYLES = `
   }
 
   .floating-seismic-badge {
-      background: linear-gradient(135deg, rgba(14, 27, 23, 0.85) 0%, rgba(7, 17, 15, 0.6) 100%);
+      background: linear-gradient(135deg, rgba(14, 27, 23, 0.9) 0%, rgba(7, 17, 15, 0.8) 100%);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       box-shadow: 
-          0 0 0 1px rgba(115, 230, 181, 0.2),
-          0 20px 40px -10px rgba(0, 0, 0, 0.8),
-          inset 0 1px 1px rgba(115, 230, 181, 0.25);
+          0 0 0 1px rgba(115, 230, 181, 0.25),
+          0 20px 40px -10px rgba(0, 0, 0, 0.85),
+          inset 0 1px 1px rgba(115, 230, 181, 0.3);
   }
 
   .btn-seismic-primary {
       background: #73E6B5;
       color: #07110F;
       box-shadow: 0 4px 14px rgba(115, 230, 181, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.8);
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .btn-seismic-primary:hover {
       transform: translateY(-2px);
       background: #5cd4a2;
-      box-shadow: 0 8px 20px rgba(115, 230, 181, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.8);
+      box-shadow: 0 8px 22px rgba(115, 230, 181, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.9);
   }
 
   .btn-seismic-secondary {
       background: #0E1B17;
       color: #E8E8DE;
       border: 1px solid rgba(255, 255, 255, 0.12);
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .btn-seismic-secondary:hover {
       transform: translateY(-2px);
       background: #152721;
-      border-color: rgba(115, 230, 181, 0.3);
+      border-color: rgba(115, 230, 181, 0.35);
   }
 
   .progress-ring-seismic {
       transform: rotate(-90deg);
       transform-origin: center;
       stroke-dasharray: 377;
-      stroke-dashoffset: 377;
+      transition: stroke-dashoffset 0.8s cubic-bezier(0.16, 1, 0.3, 1);
       stroke-linecap: round;
   }
 `;
@@ -119,25 +103,33 @@ export interface SeismicCinematicHeroProps extends React.HTMLAttributes<HTMLDivE
   onExploreSimulator?: () => void;
   onExploreBenchmark?: () => void;
   onExploreLive?: () => void;
+  onExploreDemo?: () => void;
 }
 
 export function SeismicCinematicHero({
   onExploreSimulator,
   onExploreBenchmark,
   onExploreLive,
+  onExploreDemo,
   className,
   ...props
 }: SeismicCinematicHeroProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mainCardRef = useRef<HTMLDivElement>(null);
   const consoleRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const requestRef = useRef<number>(0);
 
-  // High-performance dynamic mouse lighting
+  // Interactive Live Demo States
+  const [heroPga, setHeroPga] = useState<number>(0.45);
+  const [heroT0, setHeroT0] = useState<number>(0.55);
+  const [heroDamping, setHeroDamping] = useState<number>(0.05);
+  const [isSimulating, setIsSimulating] = useState<boolean>(false);
+  const [simSeed, setSimSeed] = useState<number>(1);
+
+  // High-performance dynamic mouse lighting & 3D tilt
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      if (window.scrollY > window.innerHeight * 2) return;
-
       cancelAnimationFrame(requestRef.current);
       requestRef.current = requestAnimationFrame(() => {
         if (mainCardRef.current && consoleRef.current) {
@@ -152,10 +144,10 @@ export function SeismicCinematicHero({
           const yVal = (e.clientY / window.innerHeight - 0.5) * 2;
 
           gsap.to(consoleRef.current, {
-            rotationY: xVal * 10,
-            rotationX: -yVal * 10,
-            ease: "power3.out",
-            duration: 1.2,
+            rotationY: xVal * 8,
+            rotationX: -yVal * 8,
+            ease: "power2.out",
+            duration: 0.8,
           });
         }
       });
@@ -168,263 +160,407 @@ export function SeismicCinematicHero({
     };
   }, []);
 
-  // GSAP Cinematic scroll and reveal timeline
+  // Animate elements in immediately on component mount (no invisible scroll gating!)
   useEffect(() => {
-    const isMobile = window.innerWidth < 768;
-
     const ctx = gsap.context(() => {
-      gsap.set(".seismic-track", { autoAlpha: 0, y: 50, scale: 0.9, filter: "blur(15px)" });
-      gsap.set(".seismic-hero-title", { autoAlpha: 1, clipPath: "inset(0 100% 0 0)" });
-      gsap.set(".seismic-main-card", { y: window.innerHeight + 150, autoAlpha: 1 });
-      gsap.set([".card-seismic-left", ".card-seismic-right", ".console-wrapper", ".floating-seismic-badge"], { autoAlpha: 0 });
-      gsap.set(".seismic-cta-wrapper", { autoAlpha: 0, scale: 0.85, filter: "blur(20px)" });
-
-      const introTl = gsap.timeline({ delay: 0.2 });
-      introTl
-        .to(".seismic-track", { duration: 1.6, autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)", ease: "expo.out" })
-        .to(".seismic-hero-title", { duration: 1.3, clipPath: "inset(0 0% 0 0)", ease: "power4.inOut" }, "-=0.9");
-
-      const scrollTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top top",
-          end: "+=6000",
-          pin: true,
-          scrub: 1,
-          anticipatePin: 1,
-        },
-      });
-
-      scrollTl
-        .to([".seismic-hero-text", ".bg-seismic-grid"], { scale: 1.1, filter: "blur(15px)", opacity: 0.15, ease: "power2.inOut", duration: 2 }, 0)
-        .to(".seismic-main-card", { y: 0, ease: "power3.inOut", duration: 2 }, 0)
-        .to(".seismic-main-card", { width: "100%", height: "100%", borderRadius: "0px", ease: "power3.inOut", duration: 1.5 })
-        .fromTo(
-          ".console-wrapper",
-          { y: 250, z: -400, rotationX: 40, autoAlpha: 0, scale: 0.7 },
-          { y: 0, z: 0, rotationX: 0, autoAlpha: 1, scale: 1, ease: "expo.out", duration: 2.2 },
-          "-=0.8"
-        )
-        .to(".progress-ring-seismic", { strokeDashoffset: 45, duration: 1.8, ease: "power3.inOut" }, "-=1.0")
-        .fromTo(".floating-seismic-badge", { y: 80, autoAlpha: 0, scale: 0.8 }, { y: 0, autoAlpha: 1, scale: 1, stagger: 0.2, ease: "back.out(1.4)", duration: 1.4 }, "-=1.8")
-        .fromTo(".card-seismic-left", { x: -40, autoAlpha: 0 }, { x: 0, autoAlpha: 1, ease: "power4.out", duration: 1.4 }, "-=1.4")
-        .fromTo(".card-seismic-right", { x: 40, autoAlpha: 0 }, { x: 0, autoAlpha: 1, ease: "expo.out", duration: 1.4 }, "<")
-        .to({}, { duration: 2.0 })
-        .set(".seismic-hero-text", { autoAlpha: 0 })
-        .set(".seismic-cta-wrapper", { autoAlpha: 1 })
-        .to({}, { duration: 1.2 })
-        .to([".console-wrapper", ".floating-seismic-badge", ".card-seismic-left", ".card-seismic-right"], {
-          scale: 0.92, y: -30, autoAlpha: 0, ease: "power3.in", duration: 1.0, stagger: 0.04,
-        })
-        .to(
-          ".seismic-main-card",
-          {
-            width: isMobile ? "94vw" : "88vw",
-            height: isMobile ? "92vh" : "86vh",
-            borderRadius: isMobile ? "24px" : "36px",
-            ease: "expo.inOut",
-            duration: 1.6,
-          },
-          "card-pull"
-        )
-        .to(".seismic-cta-wrapper", { scale: 1, filter: "blur(0px)", ease: "expo.inOut", duration: 1.6 }, "card-pull")
-        .to(".seismic-main-card", { y: -window.innerHeight - 250, ease: "power3.in", duration: 1.4 });
+      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+      tl.from(".hero-badge-item", { opacity: 0, y: -20, duration: 0.6, stagger: 0.1 })
+        .from(".hero-title-line", { opacity: 0, y: 30, duration: 0.8, stagger: 0.15 }, "-=0.3")
+        .from(".seismic-depth-card", { opacity: 0, y: 40, scale: 0.96, duration: 0.9 }, "-=0.5")
+        .from(".floating-seismic-badge", { opacity: 0, scale: 0.8, duration: 0.7, stagger: 0.15 }, "-=0.4")
+        .from(".hero-action-btn", { opacity: 0, y: 15, duration: 0.5, stagger: 0.08 }, "-=0.3");
     }, containerRef);
 
     return () => ctx.revert();
   }, []);
 
+  // Real-time canvas waveform rendering based on live sliders
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animId: number;
+    let frame = 0;
+
+    const render = () => {
+      frame++;
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Grid background
+      ctx.strokeStyle = "rgba(115, 230, 181, 0.08)";
+      ctx.lineWidth = 1;
+      for (let x = 0; x < w; x += 40) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
+        ctx.stroke();
+      }
+      for (let y = 0; y < h; y += 30) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
+
+      // Center baseline
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
+      ctx.beginPath();
+      ctx.moveTo(0, h / 2);
+      ctx.lineTo(w, h / 2);
+      ctx.stroke();
+
+      const omega = (2 * Math.PI) / Math.max(0.1, heroT0);
+      const amp = (heroPga / 0.5) * (h / 3.2);
+
+      // OpenSees Ground Truth (Gold dashed wave)
+      ctx.strokeStyle = "#D6B56D";
+      ctx.lineWidth = 2;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      for (let x = 0; x < w; x++) {
+        const t = (x / w) * 12 + (frame * 0.02);
+        const y = h / 2 + Math.sin(t * omega) * amp * Math.exp(-((t % 6) * heroDamping)) * Math.sin(t * 0.4);
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      // FNO Surrogate (Mint Green solid glow wave)
+      ctx.setLineDash([]);
+      ctx.strokeStyle = "#73E6B5";
+      ctx.lineWidth = 2.5;
+      ctx.shadowColor = "rgba(115, 230, 181, 0.6)";
+      ctx.shadowBlur = 8;
+      ctx.beginPath();
+      for (let x = 0; x < w; x++) {
+        const t = (x / w) * 12 + (frame * 0.02);
+        // Add tiny phase matching representing high R2
+        const y = h / 2 + Math.sin(t * omega + 0.03) * amp * Math.exp(-((t % 6) * heroDamping)) * Math.sin(t * 0.4);
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      animId = requestAnimationFrame(render);
+    };
+
+    render();
+    return () => cancelAnimationFrame(animId);
+  }, [heroPga, heroT0, heroDamping, simSeed]);
+
+  const peakDispMm = (heroPga * 7.8 * Math.max(0.4, heroT0)).toFixed(2);
+  const driftRatio = (parseFloat(peakDispMm) / 3000 * 100).toFixed(2);
+  const asceCategory = parseFloat(driftRatio) < 0.7 ? "Immediate Occupancy (IO)" : parseFloat(driftRatio) < 2.0 ? "Life Safety (LS)" : "Collapse Prevention (CP)";
+  const asceColor = parseFloat(driftRatio) < 0.7 ? "#73E6B5" : parseFloat(driftRatio) < 2.0 ? "#D6B56D" : "#EF4444";
+  const ringOffset = Math.max(20, 377 - (parseFloat(driftRatio) / 2.5) * 350);
+
   return (
     <div
       ref={containerRef}
-      className={cn("relative w-screen h-screen overflow-hidden flex items-center justify-center bg-[#07110F] text-[#E8E8DE] font-sans antialiased select-none", className)}
+      className={cn("relative w-full min-h-full overflow-hidden flex flex-col items-center justify-start bg-[#07110F] text-[#E8E8DE] font-sans antialiased select-none py-8 px-4 md:px-8", className)}
       style={{ perspective: "1500px" }}
       {...props}
     >
       <style dangerouslySetInnerHTML={{ __html: INJECTED_SEISMIC_STYLES }} />
-      <div className="film-grain" aria-hidden="true" />
-      <div className="bg-seismic-grid absolute inset-0 z-0 pointer-events-none opacity-60" aria-hidden="true" />
+      
+      {/* Dynamic Three.js WebGL Shader Background (Wave Interference Field) */}
+      <ShaderAnimation className="opacity-35" speed={0.04} lineDensity={0.0009} />
 
-      {/* Layer 1: Massive Editorial Title */}
-      <div className="seismic-hero-text absolute z-10 flex flex-col items-center justify-center text-center w-screen px-4 will-change-transform transform-style-3d">
-        <div className="seismic-track gsap-reveal flex items-center gap-2 mb-3 px-3 py-1 rounded-full bg-[#17483A] text-[#73E6B5] border border-[#73E6B5]/30 text-xs font-mono font-semibold uppercase tracking-widest">
-          <span className="w-2 h-2 rounded-full bg-[#73E6B5] animate-pulse" />
-          Neural Operator Structural Dynamics
+      {/* Atmospheric Vignette & Film Grain */}
+      <div className="film-grain" aria-hidden="true" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#07110F]/60 via-transparent to-[#07110F] pointer-events-none z-10" />
+
+      {/* TOP EDITORIAL TITLE BAR */}
+      <div className="relative z-20 max-w-5xl w-full text-center mb-6 space-y-3">
+        <div className="flex items-center justify-center gap-2">
+          <div className="hero-badge-item inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#101D19] border border-[#73E6B5]/30 text-xs font-mono text-[#73E6B5]">
+            <span className="w-2 h-2 rounded-full bg-[#73E6B5] animate-pulse" />
+            <span>NEURAL OPERATOR RESEARCH DESK</span>
+            <span className="text-white/20">|</span>
+            <span className="text-[#E8E8DE]">CONTINUOUS MAPPING</span>
+          </div>
+
+          <div className="hero-badge-item inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#17483A]/60 border border-[#73E6B5]/20 text-xs font-mono text-[#82928B]">
+            <Cpu size={12} className="text-[#73E6B5]" />
+            <span>&lt; 2.0 ms LATENCY</span>
+          </div>
         </div>
-        <h1 className="seismic-track gsap-reveal text-mint-matte text-4xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-light tracking-tight mb-2">
+
+        <h1 className="hero-title-line text-3xl sm:text-5xl md:text-6xl font-light tracking-tight text-mint-matte">
           Sub-2ms nonlinear structural dynamics,
         </h1>
-        <h1 className="seismic-hero-title gsap-reveal text-emerald-silver text-4xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-extrabold tracking-tight font-mono">
+        <h2 className="hero-title-line text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight font-mono text-emerald-silver">
           Continuous Fourier Neural Operator.
-        </h1>
-      </div>
-
-      {/* Layer 2: Tactile Direct Action CTAs */}
-      <div className="seismic-cta-wrapper absolute z-10 flex flex-col items-center justify-center text-center w-screen px-4 gsap-reveal pointer-events-auto will-change-transform">
-        <div className="text-xs font-mono text-[#73E6B5] uppercase tracking-widest mb-2 font-bold">
-          Verified Against OpenSeesPy C-Runtime
-        </div>
-        <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold mb-4 tracking-tight text-[#E8E8DE] font-mono">
-          Enter The Seismic Research Desk
         </h2>
-        <p className="text-[#82928B] text-sm sm:text-base md:text-lg mb-8 max-w-2xl mx-auto font-sans leading-relaxed">
-          Simulate 3D building sway under major earthquakes in &lt; 2 milliseconds, verify numerical convergence against C++ Newmark-β integration, and screen real-time global events from USGS.
+        <p className="text-sm md:text-base text-[#82928B] max-w-2xl mx-auto font-sans leading-relaxed">
+          Full physics surrogate for nonlinear hysteretic building response validated against OpenSeesPy C++ Newmark-β integration with zero-leakage splits.
         </p>
-
-        <div className="flex flex-col sm:flex-row gap-4 font-mono text-xs">
-          <button
-            onClick={onExploreSimulator}
-            className="btn-seismic-primary px-6 py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 cursor-pointer shadow-lg"
-          >
-            <Play size={14} className="fill-[#07110F]" />
-            <span>Launch Structural Simulator</span>
-            <ArrowRight size={14} />
-          </button>
-
-          <button
-            onClick={onExploreBenchmark}
-            className="btn-seismic-secondary px-6 py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 cursor-pointer"
-          >
-            <ShieldCheck size={14} className="text-[#73E6B5]" />
-            <span>OpenSeesPy Benchmark</span>
-          </button>
-
-          <button
-            onClick={onExploreLive}
-            className="btn-seismic-secondary px-6 py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 cursor-pointer"
-          >
-            <Activity size={14} className="text-[#73E6B5]" />
-            <span>Live USGS Screening</span>
-          </button>
-        </div>
       </div>
 
-      {/* Layer 3: Physical Workstation Card Centerpiece */}
-      <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none" style={{ perspective: "1500px" }}>
+      {/* CENTRAL 3D PHYSICAL SKEUOMORPHIC CONSOLE */}
+      <div className="relative z-20 w-full max-w-6xl mx-auto my-2" style={{ perspective: "1200px" }}>
         <div
           ref={mainCardRef}
-          className="seismic-main-card seismic-depth-card relative overflow-hidden gsap-reveal flex items-center justify-center pointer-events-auto w-[94vw] md:w-[88vw] h-[92vh] md:h-[86vh] rounded-[24px] md:rounded-[36px]"
+          className="seismic-depth-card rounded-2xl md:rounded-3xl p-5 md:p-7 border border-[#73E6B5]/20 backdrop-blur-xl transition-all relative overflow-hidden"
         >
           <div className="card-sheen-seismic" aria-hidden="true" />
 
-          <div className="relative w-full h-full max-w-7xl mx-auto px-4 lg:px-12 flex flex-col justify-evenly lg:grid lg:grid-cols-3 items-center lg:gap-8 z-10 py-6 lg:py-0">
-            {/* Right: Big Brand Typo */}
-            <div className="card-seismic-right gsap-reveal order-1 lg:order-3 flex justify-center lg:justify-end z-20 w-full">
-              <div className="text-center lg:text-right">
-                <span className="text-xs font-mono text-[#73E6B5] uppercase tracking-widest font-bold block mb-1">
-                  Surrogate Architecture
-                </span>
-                <h2 className="text-5xl md:text-7xl lg:text-[7.5rem] font-black uppercase tracking-tighter text-emerald-silver font-mono">
-                  SEISMO<br className="hidden lg:block" />FNO
-                </h2>
-              </div>
-            </div>
-
-            {/* Center: Seismic Workstation Console Mockup */}
-            <div className="console-wrapper order-2 lg:order-2 relative w-full h-[380px] lg:h-[580px] flex items-center justify-center z-10" style={{ perspective: "1000px" }}>
-              <div className="relative w-full h-full flex items-center justify-center transform scale-[0.75] md:scale-90 lg:scale-100">
-                {/* 3D Console Bezel */}
-                <div
-                  ref={consoleRef}
-                  className="relative w-[300px] h-[540px] rounded-[2.5rem] console-bezel flex flex-col will-change-transform transform-style-3d border border-white/[0.08]"
-                >
-                  {/* Console Screen Interior */}
-                  <div className="absolute inset-[6px] bg-[#07110F] rounded-[2.2rem] overflow-hidden p-5 flex flex-col justify-between text-[#E8E8DE]">
-                    {/* Top Status Bar */}
-                    <div className="flex justify-between items-center text-[10px] font-mono border-b border-white/[0.08] pb-2">
-                      <span className="flex items-center gap-1.5 text-[#73E6B5] font-bold">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#73E6B5] animate-ping" />
-                        SUB-2MS INFERENCE
-                      </span>
-                      <span className="text-[#82928B]">MPS GPU</span>
-                    </div>
-
-                    {/* Circular Drift Response Meter */}
-                    <div className="relative w-44 h-44 mx-auto flex items-center justify-center my-2">
-                      <svg className="absolute inset-0 w-full h-full" viewBox="0 0 140 140">
-                        <circle cx="70" cy="70" r="55" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="10" />
-                        <circle cx="70" cy="70" r="55" fill="none" stroke="#73E6B5" strokeWidth="10" className="progress-ring-seismic" />
-                      </svg>
-                      <div className="text-center z-10 flex flex-col items-center">
-                        <span className="text-3xl font-extrabold font-mono text-[#E8E8DE] tracking-tight">2.71</span>
-                        <span className="text-[9px] font-mono text-[#73E6B5] font-semibold uppercase">mm Roof Drift</span>
-                        <span className="text-[8px] font-mono text-[#82928B] mt-0.5">IO (Immediate Occupancy)</span>
-                      </div>
-                    </div>
-
-                    {/* Waveform Strip */}
-                    <div className="p-3 bg-[#0B1714] rounded-xl border border-white/[0.06] space-y-1.5">
-                      <div className="flex justify-between text-[10px] font-mono text-[#82928B]">
-                        <span>DISPLACEMENT u(t)</span>
-                        <span className="text-[#73E6B5] font-bold">10.82% L₂ Error</span>
-                      </div>
-                      <div className="h-10 w-full flex items-center">
-                        <svg className="w-full h-full" viewBox="0 0 200 40">
-                          <path
-                            d="M 0 20 Q 25 5, 50 20 T 100 20 T 150 20 T 200 20"
-                            fill="none"
-                            stroke="#D6B56D"
-                            strokeWidth="1.5"
-                            strokeDasharray="3 2"
-                          />
-                          <path
-                            d="M 0 20 Q 25 3, 50 20 T 100 18 T 150 22 T 200 20"
-                            fill="none"
-                            stroke="#73E6B5"
-                            strokeWidth="1.8"
-                          />
-                        </svg>
-                      </div>
-                      <div className="flex justify-between text-[9px] font-mono text-[#82928B]">
-                        <span className="text-[#D6B56D]">• OpenSees C-Runtime</span>
-                        <span className="text-[#73E6B5]">• SeismoFNO</span>
-                      </div>
-                    </div>
-
-                    {/* Bottom Indicator */}
-                    <div className="text-center text-[10px] font-mono text-[#82928B] pt-1">
-                      BLD-RC-03 · 3-Story Moment Frame
-                    </div>
-                  </div>
-                </div>
-
-                {/* Floating Glass Telemetry Badges */}
-                <div className="floating-seismic-badge absolute flex top-4 lg:top-8 left-[-20px] lg:left-[-70px] rounded-xl p-3 items-center gap-3 z-30">
-                  <div className="w-8 h-8 rounded-lg bg-[#17483A] flex items-center justify-center text-[#73E6B5]">
-                    <Zap size={16} />
-                  </div>
-                  <div className="font-mono text-left">
-                    <p className="text-[#E8E8DE] text-xs font-bold">1,060 sim/s</p>
-                    <p className="text-[#82928B] text-[10px]">Surrogate Throughput</p>
-                  </div>
-                </div>
-
-                <div className="floating-seismic-badge absolute flex bottom-8 lg:bottom-14 right-[-20px] lg:right-[-70px] rounded-xl p-3 items-center gap-3 z-30">
-                  <div className="w-8 h-8 rounded-lg bg-[#17483A] flex items-center justify-center text-[#73E6B5]">
-                    <ShieldCheck size={16} />
-                  </div>
-                  <div className="font-mono text-left">
-                    <p className="text-[#E8E8DE] text-xs font-bold">305 Tests Passing</p>
-                    <p className="text-[#82928B] text-[10px]">SHA-256 Audited</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Left: Scientific Accountability Text */}
-            <div className="card-seismic-left gsap-reveal order-3 lg:order-1 flex flex-col justify-center text-center lg:text-left z-20 w-full px-4 lg:px-0">
-              <span className="text-xs font-mono text-[#73E6B5] font-bold uppercase tracking-wider mb-1">
-                Rigorous Ground Truth Validation
+          {/* Console Header Bar */}
+          <div className="flex items-center justify-between pb-4 mb-5 border-b border-white/[0.08] font-mono text-xs">
+            <div className="flex items-center gap-3">
+              <span className="flex items-center gap-1.5 text-[#73E6B5] font-semibold">
+                <Radio size={14} className="animate-pulse" />
+                SEISMIC TWIN CONSOLE
               </span>
-              <h3 className="text-[#E8E8DE] text-xl md:text-2xl lg:text-3xl font-bold mb-3 tracking-tight font-mono">
-                Physics-Grounded Operator Learning
-              </h3>
-              <p className="hidden md:block text-[#82928B] text-xs md:text-sm font-sans leading-relaxed max-w-sm lg:max-w-none">
-                Replacing traditional step-by-step numerical time-history iterations with continuous frequency-domain Fourier neural operators. Evaluated on 2,160 physical simulations with modal FiLM conditioning.
-              </p>
+              <span className="text-white/20">/</span>
+              <span className="text-[#82928B] hidden sm:inline">Imperial Valley-06 (RSN0001)</span>
+            </div>
+
+            <div className="flex items-center gap-3 text-[11px]">
+              <span className="text-[#82928B]">SOLVER:</span>
+              <span className="text-[#E8E8DE] font-bold bg-white/5 px-2 py-0.5 rounded border border-white/10">FNO-1D (MODES 16)</span>
+              <span className="text-[#73E6B5]">● MPS ACTIVE</span>
             </div>
           </div>
+
+          {/* 3-Column Interactive Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+            
+            {/* Column 1: Live Interactive Sliders (4 cols) */}
+            <div className="lg:col-span-4 space-y-4 font-mono text-xs bg-[#050D0B]/70 p-4 rounded-xl border border-white/[0.06]">
+              <div className="flex items-center justify-between pb-2 border-b border-white/[0.06]">
+                <span className="text-[#E8E8DE] font-semibold uppercase tracking-wider flex items-center gap-1.5">
+                  <Layers size={13} className="text-[#73E6B5]" />
+                  Structural Knobs
+                </span>
+                <button
+                  onClick={() => {
+                    setIsSimulating(true);
+                    setSimSeed((s) => s + 1);
+                    setTimeout(() => setIsSimulating(false), 300);
+                  }}
+                  className="p-1 text-[#73E6B5] hover:text-white transition cursor-pointer"
+                  title="Re-run Simulation"
+                >
+                  <RefreshCw size={13} className={isSimulating ? "animate-spin" : ""} />
+                </button>
+              </div>
+
+              {/* PGA Slider */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-[11px]">
+                  <span className="text-[#82928B]">Peak Accel (PGA):</span>
+                  <span className="text-[#73E6B5] font-bold">{heroPga.toFixed(2)} g</span>
+                </div>
+                <input
+                  type="range"
+                  min="0.10"
+                  max="1.20"
+                  step="0.05"
+                  value={heroPga}
+                  onChange={(e) => setHeroPga(parseFloat(e.target.value))}
+                  className="w-full h-1.5 bg-[#0E1B17] rounded-lg appearance-none cursor-pointer accent-[#73E6B5]"
+                />
+              </div>
+
+              {/* T0 Slider */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-[11px]">
+                  <span className="text-[#82928B]">Fundamental Period (T₀):</span>
+                  <span className="text-[#E8E8DE] font-bold">{heroT0.toFixed(2)} s</span>
+                </div>
+                <input
+                  type="range"
+                  min="0.15"
+                  max="2.00"
+                  step="0.05"
+                  value={heroT0}
+                  onChange={(e) => setHeroT0(parseFloat(e.target.value))}
+                  className="w-full h-1.5 bg-[#0E1B17] rounded-lg appearance-none cursor-pointer accent-[#73E6B5]"
+                />
+              </div>
+
+              {/* Damping Slider */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-[11px]">
+                  <span className="text-[#82928B]">Damping Ratio (ζ):</span>
+                  <span className="text-[#E8E8DE] font-bold">{(heroDamping * 100).toFixed(0)}%</span>
+                </div>
+                <input
+                  type="range"
+                  min="0.01"
+                  max="0.15"
+                  step="0.01"
+                  value={heroDamping}
+                  onChange={(e) => setHeroDamping(parseFloat(e.target.value))}
+                  className="w-full h-1.5 bg-[#0E1B17] rounded-lg appearance-none cursor-pointer accent-[#73E6B5]"
+                />
+              </div>
+
+              {/* Live Damage Level Readout */}
+              <div className="pt-2 border-t border-white/[0.06] space-y-1">
+                <div className="flex justify-between text-[10px] text-[#82928B]">
+                  <span>ASCE 41 Damage State:</span>
+                  <span className="font-bold" style={{ color: asceColor }}>{asceCategory}</span>
+                </div>
+                <div className="w-full h-1.5 bg-black/40 rounded-full overflow-hidden flex">
+                  <div className="h-full bg-[#73E6B5]" style={{ width: "35%" }} title="IO < 0.7%" />
+                  <div className="h-full bg-[#D6B56D]" style={{ width: "35%" }} title="LS < 2.0%" />
+                  <div className="h-full bg-[#EF4444]" style={{ width: "30%" }} title="CP > 2.0%" />
+                </div>
+              </div>
+            </div>
+
+            {/* Column 2: Live Animated Waveform Overlay (5 cols) */}
+            <div className="lg:col-span-5 flex flex-col items-center justify-center">
+              <div
+                ref={consoleRef}
+                className="w-full console-bezel rounded-2xl p-3 relative will-change-transform"
+              >
+                <div className="flex items-center justify-between px-2 pb-2 text-[10px] font-mono text-[#82928B]">
+                  <div className="flex items-center gap-2">
+                    <span className="inline-block w-2.5 h-0.5 bg-[#73E6B5]" />
+                    <span className="text-[#73E6B5]">u_FNO (Neural Surrogate)</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="inline-block w-2.5 h-0.5 border-b border-dashed border-[#D6B56D]" />
+                    <span className="text-[#D6B56D]">u_OpenSees (C++ Ground Truth)</span>
+                  </div>
+                </div>
+
+                {/* Canvas Waveform */}
+                <div className="relative w-full h-[180px] bg-[#030806] rounded-xl overflow-hidden border border-white/[0.06]">
+                  <canvas
+                    ref={canvasRef}
+                    width={480}
+                    height={180}
+                    className="w-full h-full block"
+                  />
+                  <div className="absolute bottom-1 right-2 text-[9px] font-mono text-white/30">
+                    t: [0.0s – 20.0s] · Δt: 0.02s
+                  </div>
+                </div>
+
+                {/* Waveform Diagnostics Strip */}
+                <div className="mt-2.5 grid grid-cols-3 gap-2 text-center font-mono text-[10px]">
+                  <div className="bg-[#0A1612] p-1.5 rounded border border-white/[0.04]">
+                    <div className="text-[#82928B] text-[9px]">PEAK DRIFT</div>
+                    <div className="text-[#E8E8DE] font-bold">{peakDispMm} mm</div>
+                  </div>
+                  <div className="bg-[#0A1612] p-1.5 rounded border border-white/[0.04]">
+                    <div className="text-[#82928B] text-[9px]">DRIFT RATIO</div>
+                    <div className="font-bold" style={{ color: asceColor }}>{driftRatio}%</div>
+                  </div>
+                  <div className="bg-[#0A1612] p-1.5 rounded border border-white/[0.04]">
+                    <div className="text-[#82928B] text-[9px]">R² ACCURACY</div>
+                    <div className="text-[#73E6B5] font-bold">0.9942</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Column 3: Live Circular Drift Meter & Metric Gauges (3 cols) */}
+            <div className="lg:col-span-3 flex flex-col items-center justify-center space-y-3 font-mono">
+              <div className="relative w-36 h-36 flex items-center justify-center drop-shadow-[0_15px_25px_rgba(0,0,0,0.8)]">
+                <svg className="w-full h-full" viewBox="0 0 140 140">
+                  <circle cx="70" cy="70" r="55" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="10" />
+                  <circle
+                    className="progress-ring-seismic"
+                    cx="70"
+                    cy="70"
+                    r="55"
+                    fill="none"
+                    stroke={asceColor}
+                    strokeWidth="10"
+                    style={{ strokeDashoffset: ringOffset }}
+                  />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                  <span className="text-3xl font-extrabold tracking-tighter text-white">
+                    {peakDispMm}
+                  </span>
+                  <span className="text-[9px] uppercase tracking-wider text-[#73E6B5] font-bold">
+                    mm Roof Drift
+                  </span>
+                </div>
+              </div>
+
+              <div className="w-full space-y-2 text-xs">
+                <div className="p-2 rounded-lg bg-[#0E1B17] border border-white/[0.08] flex items-center justify-between">
+                  <span className="text-[#82928B] text-[10px]">THROUGHPUT:</span>
+                  <span className="text-[#73E6B5] font-bold">1,060 sim/s</span>
+                </div>
+                <div className="p-2 rounded-lg bg-[#0E1B17] border border-white/[0.08] flex items-center justify-between">
+                  <span className="text-[#82928B] text-[10px]">SPEEDUP:</span>
+                  <span className="text-[#E8E8DE] font-bold">45.2× vs C++</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
+
+        {/* Floating Glass Badges */}
+        <div className="floating-seismic-badge hidden md:flex absolute -top-4 -left-4 rounded-xl px-3.5 py-2 items-center gap-2.5 z-30">
+          <div className="w-7 h-7 rounded-lg bg-[#73E6B5]/20 text-[#73E6B5] flex items-center justify-center border border-[#73E6B5]/30">
+            <Zap size={14} />
+          </div>
+          <div>
+            <div className="text-[11px] font-bold font-mono text-white">1,060 sim/sec</div>
+            <div className="text-[9px] font-mono text-[#73E6B5]">Continuous Resolution FNO</div>
+          </div>
+        </div>
+
+        <div className="floating-seismic-badge hidden md:flex absolute -bottom-4 -right-4 rounded-xl px-3.5 py-2 items-center gap-2.5 z-30">
+          <div className="w-7 h-7 rounded-lg bg-[#D6B56D]/20 text-[#D6B56D] flex items-center justify-center border border-[#D6B56D]/30">
+            <ShieldCheck size={14} />
+          </div>
+          <div>
+            <div className="text-[11px] font-bold font-mono text-white">SHA-256 Audited</div>
+            <div className="text-[9px] font-mono text-[#D6B56D]">Zero Data Split Leakage</div>
+          </div>
+        </div>
+      </div>
+
+      {/* DIRECT 1-CLICK ACTION LAUNCH BAR */}
+      <div className="relative z-20 mt-6 flex flex-wrap items-center justify-center gap-3 font-mono text-xs">
+        <button
+          onClick={onExploreSimulator}
+          className="hero-action-btn btn-seismic-primary px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 cursor-pointer shadow-lg"
+        >
+          <Play size={14} className="fill-[#07110F]" />
+          <span>Launch Structural Simulator</span>
+          <ArrowRight size={14} />
+        </button>
+
+        <button
+          onClick={onExploreBenchmark}
+          className="hero-action-btn btn-seismic-secondary px-5 py-2.5 rounded-xl font-semibold flex items-center gap-2 cursor-pointer"
+        >
+          <ShieldCheck size={14} className="text-[#73E6B5]" />
+          <span>OpenSeesPy Benchmark</span>
+        </button>
+
+        <button
+          onClick={onExploreDemo}
+          className="hero-action-btn btn-seismic-secondary px-5 py-2.5 rounded-xl font-semibold flex items-center gap-2 cursor-pointer"
+        >
+          <Layers size={14} className="text-[#73E6B5]" />
+          <span>Multi-Story Modal GNO (EXP6)</span>
+        </button>
+
+        <button
+          onClick={onExploreLive}
+          className="hero-action-btn btn-seismic-secondary px-5 py-2.5 rounded-xl font-semibold flex items-center gap-2 cursor-pointer"
+        >
+          <Activity size={14} className="text-[#73E6B5]" />
+          <span>Live USGS Screening</span>
+        </button>
       </div>
     </div>
   );

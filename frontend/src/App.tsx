@@ -24,6 +24,7 @@ import {
 
 import { SeismicCinematicHero } from "./components/ui/seismic-cinematic-hero";
 import { CinematicHero } from "./components/ui/cinematic-landing-hero";
+import ShaderLinesDemo from "./components/ui/shader-lines-demo";
 
 export const App: React.FC = () => {
   // Navigation & Workspace State - check if /hero, /demo, /live, or ?tab= is requested
@@ -44,7 +45,7 @@ export const App: React.FC = () => {
     return "structural_twin";
   });
 
-  const [heroVariant, setHeroVariant] = useState<"seismic" | "generic">("seismic");
+  const [heroVariant, setHeroVariant] = useState<"seismic" | "generic" | "shader">("seismic");
 
   const handleSelectTab = useCallback((tab: WorkspaceTab) => {
     setActiveTab(tab);
@@ -389,6 +390,16 @@ export const App: React.FC = () => {
                   Seismic FNO Hero
                 </button>
                 <button
+                  onClick={() => setHeroVariant("shader")}
+                  className={`px-3 py-1 rounded-full transition cursor-pointer ${
+                    heroVariant === "shader"
+                      ? "bg-[#73E6B5] text-[#07110F] font-bold shadow"
+                      : "text-[#82928B] hover:text-[#E8E8DE]"
+                  }`}
+                >
+                  Shader Lines (WebGL)
+                </button>
+                <button
                   onClick={() => setHeroVariant("generic")}
                   className={`px-3 py-1 rounded-full transition cursor-pointer ${
                     heroVariant === "generic"
@@ -407,13 +418,22 @@ export const App: React.FC = () => {
                 </button>
               </div>
 
-              {heroVariant === "seismic" ? (
+              {heroVariant === "seismic" && (
                 <SeismicCinematicHero
                   onExploreSimulator={() => handleSelectTab("structural_twin")}
                   onExploreBenchmark={() => handleSelectTab("model_validation")}
                   onExploreLive={() => handleSelectTab("live_earthquake")}
+                  onExploreDemo={() => handleSelectTab("research_demo")}
                 />
-              ) : (
+              )}
+
+              {heroVariant === "shader" && (
+                <div className="p-8 w-full max-w-5xl mx-auto flex flex-col items-center justify-center min-h-[85vh]">
+                  <ShaderLinesDemo />
+                </div>
+              )}
+
+              {heroVariant === "generic" && (
                 <div className="overflow-x-hidden w-full min-h-screen">
                   <CinematicHero />
                 </div>
