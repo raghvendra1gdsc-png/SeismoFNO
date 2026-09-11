@@ -100,6 +100,7 @@ const INJECTED_SEISMIC_STYLES = `
 `;
 
 export interface SeismicCinematicHeroProps extends React.HTMLAttributes<HTMLDivElement> {
+  onEnterWorkstation?: () => void;
   onExploreSimulator?: () => void;
   onExploreBenchmark?: () => void;
   onExploreLive?: () => void;
@@ -107,6 +108,7 @@ export interface SeismicCinematicHeroProps extends React.HTMLAttributes<HTMLDivE
 }
 
 export function SeismicCinematicHero({
+  onEnterWorkstation,
   onExploreSimulator,
   onExploreBenchmark,
   onExploreLive,
@@ -527,15 +529,29 @@ export function SeismicCinematicHero({
         </div>
       </div>
 
+      {/* Top Right Exit / Enter Workstation Pill */}
+      {onEnterWorkstation && (
+        <div className="absolute top-5 right-6 z-40">
+          <button
+            onClick={onEnterWorkstation}
+            className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#101D19]/90 hover:bg-[#17483A] border border-[#73E6B5]/40 text-xs font-mono text-[#73E6B5] transition-all cursor-pointer shadow-xl hover:scale-105"
+            title="Proceed directly to structural engineering workstation"
+          >
+            <span className="font-semibold">Enter Workstation</span>
+            <ArrowRight size={13} />
+          </button>
+        </div>
+      )}
+
       {/* DIRECT 1-CLICK ACTION LAUNCH BAR */}
       <div className="relative z-20 mt-6 flex flex-wrap items-center justify-center gap-3 font-mono text-xs">
         <button
-          onClick={onExploreSimulator}
-          className="hero-action-btn btn-seismic-primary px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 cursor-pointer shadow-lg"
+          onClick={onEnterWorkstation || onExploreSimulator}
+          className="hero-action-btn btn-seismic-primary px-6 py-3 rounded-xl font-bold flex items-center gap-2.5 cursor-pointer shadow-2xl text-xs sm:text-sm hover:scale-105 transition-transform"
         >
-          <Play size={14} className="fill-[#07110F]" />
-          <span>Launch Structural Simulator</span>
-          <ArrowRight size={14} />
+          <Play size={15} className="fill-[#07110F]" />
+          <span>Enter Seismic Workstation</span>
+          <ArrowRight size={15} />
         </button>
 
         <button

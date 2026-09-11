@@ -23,16 +23,14 @@ import {
 } from "./api/digitalTwinApi";
 
 import { SeismicCinematicHero } from "./components/ui/seismic-cinematic-hero";
-import { CinematicHero } from "./components/ui/cinematic-landing-hero";
-import ShaderLinesDemo from "./components/ui/shader-lines-demo";
+import { ShaderAnimation } from "./components/ui/shader-lines";
 
 export const App: React.FC = () => {
-  // Navigation & Workspace State - check if /hero, /demo, /live, or ?tab= is requested
+  // Navigation & Workspace State - check if /demo, /live, or ?tab= is requested
   const [activeTab, setActiveTab] = useState<WorkspaceTab>(() => {
     if (typeof window !== "undefined") {
       const path = window.location.pathname.toLowerCase();
       const search = window.location.search.toLowerCase();
-      if (path.includes("hero") || search.includes("hero")) return "hero";
       if (path.includes("live") || search.includes("live")) return "live_earthquake";
       if (path.includes("demo") || search.includes("demo")) return "research_demo";
       if (path.includes("command") || search.includes("command")) return "command_center";
@@ -45,14 +43,41 @@ export const App: React.FC = () => {
     return "structural_twin";
   });
 
-  const [heroVariant, setHeroVariant] = useState<"seismic" | "generic" | "shader">("seismic");
+  // Welcome Greeting Overlay - greets on initial open, dismissed on click
+  const [showGreeting, setShowGreeting] = useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      const path = window.location.pathname.toLowerCase();
+      const search = window.location.search.toLowerCase();
+      // If user navigated directly to /live or /demo or tab param, skip splash
+      if (path.includes("live") || path.includes("demo") || search.includes("tab")) {
+        return false;
+      }
+      return !sessionStorage.getItem("seismo_greeted");
+    }
+    return true;
+  });
+
+  const handleEnterWorkstation = useCallback((targetTab: WorkspaceTab = "structural_twin") => {
+    setShowGreeting(false);
+    setActiveTab(targetTab);
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("seismo_greeted", "true");
+      if (targetTab === "structural_twin") {
+        window.history.pushState(null, "", "/");
+      } else if (targetTab === "live_earthquake") {
+        window.history.pushState(null, "", "/live");
+      } else if (targetTab === "research_demo") {
+        window.history.pushState(null, "", "/demo");
+      } else {
+        window.history.pushState(null, "", `/?tab=${targetTab}`);
+      }
+    }
+  }, []);
 
   const handleSelectTab = useCallback((tab: WorkspaceTab) => {
     setActiveTab(tab);
     if (typeof window !== "undefined") {
-      if (tab === "hero") {
-        window.history.pushState(null, "", "/hero");
-      } else if (tab === "research_demo") {
+      if (tab === "research_demo") {
         window.history.pushState(null, "", "/demo");
       } else if (tab === "live_earthquake") {
         window.history.pushState(null, "", "/live");
@@ -253,36 +278,51 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-[#07110F] text-[#E8E8DE] overflow-hidden font-sans select-none">
+    <div className="h-screen w-screen flex flex-col bg-[#07110F] text-[#E8E8DE] overflow-hidden font-sans select-none relative">
+      {/* GLOBAL BACKGROUND: Three.js Waveform Shader Lines on all pages */}
+      <ShaderAnimation
+        className="fixed inset-0 pointer-events-none z-0 opacity-20"
+        speed={0.03}
+        lineDensity={0.0008}
+      />
+      {/* Ambient Forest Gradient Overlay */}
+      <div className="fixed inset-0 pointer-events-none z-0 bg-radial from-transparent via-[#07110F]/60 to-[#07110F] opacity-90" />
+
+      {/* WELCOME / GREETING SPLASH (Appears on initial open, dismissed on click) */}
+      {showGreeting && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#07110F] animate-in fade-in duration-300">
+          <SeismicCinematicHero
+            onEnterWorkstation={() => handleEnterWorkstation("structural_twin")}
+            onExploreSimulator={() => handleEnterWorkstation("structural_twin")}
+            onExploreBenchmark={() => handleEnterWorkstation("model_validation")}
+            onExploreLive={() => handleEnterWorkstation("live_earthquake")}
+            onExploreDemo={() => handleEnterWorkstation("research_demo")}
+          />
+        </div>
+      )}
+
       {/* Top Application Header - Clean Academic Chrome */}
-      <header className="h-10 bg-[#07110F] border-b border-white/[0.06] px-4 flex items-center justify-between z-30 shrink-0 select-none">
+      <header className="h-10 bg-[#07110F]/90 backdrop-blur-md border-b border-white/[0.06] px-4 flex items-center justify-between z-30 shrink-0 select-none">
         {/* Left: Minimal Branding */}
         <div className="flex items-center space-x-3">
-          <div className="flex items-center space-x-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#73E6B5]" />
-            <span className="text-xs font-semibold tracking-wider text-[#E8E8DE] uppercase">
+          <button
+            onClick={() => setShowGreeting(true)}
+            className="flex items-center space-x-2 text-left cursor-pointer group"
+            title="Click to view Welcome Overview"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-[#73E6B5] group-hover:scale-125 transition-transform" />
+            <span className="text-xs font-semibold tracking-wider text-[#E8E8DE] uppercase group-hover:text-[#73E6B5] transition-colors font-mono">
               SEISMOFNO
             </span>
-          </div>
+          </button>
           <span className="text-white/[0.1] hidden sm:inline">/</span>
-          <div className="text-[11px] text-[#82928B] hidden sm:inline">
+          <div className="text-[11px] text-[#82928B] hidden sm:inline font-mono">
             Neural Operator Research Desk
           </div>
         </div>
 
         {/* Center: Core Research Workspaces */}
         <div className="hidden md:flex items-center h-full space-x-1 font-sans text-xs">
-          <button
-            onClick={() => handleSelectTab("hero")}
-            className={`h-full px-3 flex items-center space-x-1.5 transition cursor-pointer border-b-2 ${
-              activeTab === "hero"
-                ? "border-[#73E6B5] text-[#E8E8DE] font-medium"
-                : "border-transparent text-[#82928B] hover:text-[#E8E8DE]"
-            }`}
-          >
-            <span className="text-[#73E6B5]">✦</span>
-            <span>Cinematic Showcase</span>
-          </button>
           <button
             onClick={() => handleSelectTab("structural_twin")}
             className={`h-full px-3 flex items-center space-x-1.5 transition cursor-pointer border-b-2 ${
@@ -325,8 +365,15 @@ export const App: React.FC = () => {
           </button>
         </div>
 
-        {/* Right: Instrument Readouts */}
+        {/* Right: Intro Desk Button & Instrument Readouts */}
         <div className="flex items-center space-x-3 text-[10px] font-mono text-[#82928B]">
+          <button
+            onClick={() => setShowGreeting(true)}
+            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#101D19] border border-[#73E6B5]/30 text-[10px] font-mono text-[#73E6B5] hover:bg-[#17483A] transition cursor-pointer"
+            title="Open Welcome Overview"
+          >
+            <span>✦ INTRO DESK</span>
+          </button>
           <span>{systemInfo?.device ? systemInfo.device.toUpperCase() : "MPS"}</span>
           <span>·</span>
           <span className="text-[#73E6B5]">305 TESTS</span>
@@ -365,82 +412,17 @@ export const App: React.FC = () => {
       )}
 
       {/* Main Workspace Body */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Navigation Sidebar */}
+      <div className="flex-1 flex overflow-hidden relative z-10">
+        {/* Navigation Sidebar (Kinetic Team Hybrid Inspired) */}
         <WorkspaceNav
           activeTab={activeTab}
           onSelectTab={handleSelectTab}
           latencyMs={prediction?.inference_time_ms}
+          onOpenGreeting={() => setShowGreeting(true)}
         />
 
         {/* Content Workspace Area */}
-        <main className="flex-1 overflow-y-auto bg-research-desk">
-          {activeTab === "hero" && (
-            <div className="relative w-full h-full overflow-y-auto">
-              {/* Floating Pill Switcher for Showcase Variants */}
-              <div className="fixed top-12 right-6 z-50 flex items-center gap-1.5 bg-[#0E1B17]/95 border border-[#73E6B5]/30 rounded-full p-1.5 backdrop-blur-md text-[11px] font-mono shadow-2xl">
-                <button
-                  onClick={() => setHeroVariant("seismic")}
-                  className={`px-3 py-1 rounded-full transition cursor-pointer ${
-                    heroVariant === "seismic"
-                      ? "bg-[#73E6B5] text-[#07110F] font-bold shadow"
-                      : "text-[#82928B] hover:text-[#E8E8DE]"
-                  }`}
-                >
-                  Seismic FNO Hero
-                </button>
-                <button
-                  onClick={() => setHeroVariant("shader")}
-                  className={`px-3 py-1 rounded-full transition cursor-pointer ${
-                    heroVariant === "shader"
-                      ? "bg-[#73E6B5] text-[#07110F] font-bold shadow"
-                      : "text-[#82928B] hover:text-[#E8E8DE]"
-                  }`}
-                >
-                  Shader Lines (WebGL)
-                </button>
-                <button
-                  onClick={() => setHeroVariant("generic")}
-                  className={`px-3 py-1 rounded-full transition cursor-pointer ${
-                    heroVariant === "generic"
-                      ? "bg-[#73E6B5] text-[#07110F] font-bold shadow"
-                      : "text-[#82928B] hover:text-[#E8E8DE]"
-                  }`}
-                >
-                  Generic Template
-                </button>
-                <button
-                  onClick={() => handleSelectTab("structural_twin")}
-                  className="px-2.5 py-1 text-[#82928B] hover:text-[#73E6B5] transition cursor-pointer border-l border-white/10 ml-1"
-                  title="Open Structural Simulator"
-                >
-                  Workstation ↗
-                </button>
-              </div>
-
-              {heroVariant === "seismic" && (
-                <SeismicCinematicHero
-                  onExploreSimulator={() => handleSelectTab("structural_twin")}
-                  onExploreBenchmark={() => handleSelectTab("model_validation")}
-                  onExploreLive={() => handleSelectTab("live_earthquake")}
-                  onExploreDemo={() => handleSelectTab("research_demo")}
-                />
-              )}
-
-              {heroVariant === "shader" && (
-                <div className="p-8 w-full max-w-5xl mx-auto flex flex-col items-center justify-center min-h-[85vh]">
-                  <ShaderLinesDemo />
-                </div>
-              )}
-
-              {heroVariant === "generic" && (
-                <div className="overflow-x-hidden w-full min-h-screen">
-                  <CinematicHero />
-                </div>
-              )}
-            </div>
-          )}
-
+        <main className="flex-1 overflow-y-auto bg-transparent relative z-10">
           {activeTab === "structural_twin" && (
             <StructuralTwinView
               prediction={prediction}
@@ -513,7 +495,7 @@ export const App: React.FC = () => {
       </div>
 
       {/* Bottom Status Bar - Professional Status Strip */}
-      <footer className="h-6 bg-[#07110F] border-t border-white/[0.06] px-4 flex items-center justify-between text-[10px] font-mono text-[#82928B] select-none z-20">
+      <footer className="h-6 bg-[#07110F]/90 backdrop-blur-md border-t border-white/[0.06] px-4 flex items-center justify-between text-[10px] font-mono text-[#82928B] select-none z-20">
         <div className="flex items-center space-x-3">
           <div className="flex items-center space-x-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-[#73E6B5]" />
