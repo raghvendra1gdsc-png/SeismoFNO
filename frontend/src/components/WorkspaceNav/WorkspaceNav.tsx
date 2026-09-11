@@ -1,6 +1,7 @@
 import React from "react";
 
 export type WorkspaceTab =
+  | "hero"
   | "structural_twin"
   | "research_demo"
   | "live_earthquake"
@@ -22,6 +23,7 @@ export const WorkspaceNav: React.FC<WorkspaceNavProps> = ({
   latencyMs,
 }) => {
   const navItems: { id: WorkspaceTab; code: string; label: string; desc: string }[] = [
+    { id: "hero", code: "00", label: "Cinematic Showcase", desc: "GSAP 3D Research Hero" },
     { id: "structural_twin", code: "01", label: "Structural Simulator", desc: "Nonlinear SDOF/MDOF" },
     { id: "model_validation", code: "02", label: "OpenSees Benchmark", desc: "True NLTHA Verification" },
     { id: "earthquake_intel", code: "03", label: "Seismic Hazard & Map", desc: "India IS 1893 & PEER" },

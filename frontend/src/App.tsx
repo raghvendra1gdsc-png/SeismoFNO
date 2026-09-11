@@ -22,12 +22,16 @@ import {
   type ScenarioPredictionResponse,
 } from "./api/digitalTwinApi";
 
+import { SeismicCinematicHero } from "./components/ui/seismic-cinematic-hero";
+import { CinematicHero } from "./components/ui/cinematic-landing-hero";
+
 export const App: React.FC = () => {
-  // Navigation & Workspace State - check if /demo, /live, or ?tab= is requested
+  // Navigation & Workspace State - check if /hero, /demo, /live, or ?tab= is requested
   const [activeTab, setActiveTab] = useState<WorkspaceTab>(() => {
     if (typeof window !== "undefined") {
       const path = window.location.pathname.toLowerCase();
       const search = window.location.search.toLowerCase();
+      if (path.includes("hero") || search.includes("hero")) return "hero";
       if (path.includes("live") || search.includes("live")) return "live_earthquake";
       if (path.includes("demo") || search.includes("demo")) return "research_demo";
       if (path.includes("command") || search.includes("command")) return "command_center";
@@ -40,10 +44,14 @@ export const App: React.FC = () => {
     return "structural_twin";
   });
 
+  const [heroVariant, setHeroVariant] = useState<"seismic" | "generic">("seismic");
+
   const handleSelectTab = useCallback((tab: WorkspaceTab) => {
     setActiveTab(tab);
     if (typeof window !== "undefined") {
-      if (tab === "research_demo") {
+      if (tab === "hero") {
+        window.history.pushState(null, "", "/hero");
+      } else if (tab === "research_demo") {
         window.history.pushState(null, "", "/demo");
       } else if (tab === "live_earthquake") {
         window.history.pushState(null, "", "/live");
@@ -264,6 +272,17 @@ export const App: React.FC = () => {
         {/* Center: Core Research Workspaces */}
         <div className="hidden md:flex items-center h-full space-x-1 font-sans text-xs">
           <button
+            onClick={() => handleSelectTab("hero")}
+            className={`h-full px-3 flex items-center space-x-1.5 transition cursor-pointer border-b-2 ${
+              activeTab === "hero"
+                ? "border-[#73E6B5] text-[#E8E8DE] font-medium"
+                : "border-transparent text-[#82928B] hover:text-[#E8E8DE]"
+            }`}
+          >
+            <span className="text-[#73E6B5]">✦</span>
+            <span>Cinematic Showcase</span>
+          </button>
+          <button
             onClick={() => handleSelectTab("structural_twin")}
             className={`h-full px-3 flex items-center space-x-1.5 transition cursor-pointer border-b-2 ${
               activeTab === "structural_twin"
@@ -355,6 +374,53 @@ export const App: React.FC = () => {
 
         {/* Content Workspace Area */}
         <main className="flex-1 overflow-y-auto bg-research-desk">
+          {activeTab === "hero" && (
+            <div className="relative w-full h-full overflow-y-auto">
+              {/* Floating Pill Switcher for Showcase Variants */}
+              <div className="fixed top-12 right-6 z-50 flex items-center gap-1.5 bg-[#0E1B17]/95 border border-[#73E6B5]/30 rounded-full p-1.5 backdrop-blur-md text-[11px] font-mono shadow-2xl">
+                <button
+                  onClick={() => setHeroVariant("seismic")}
+                  className={`px-3 py-1 rounded-full transition cursor-pointer ${
+                    heroVariant === "seismic"
+                      ? "bg-[#73E6B5] text-[#07110F] font-bold shadow"
+                      : "text-[#82928B] hover:text-[#E8E8DE]"
+                  }`}
+                >
+                  Seismic FNO Hero
+                </button>
+                <button
+                  onClick={() => setHeroVariant("generic")}
+                  className={`px-3 py-1 rounded-full transition cursor-pointer ${
+                    heroVariant === "generic"
+                      ? "bg-[#73E6B5] text-[#07110F] font-bold shadow"
+                      : "text-[#82928B] hover:text-[#E8E8DE]"
+                  }`}
+                >
+                  Generic Template
+                </button>
+                <button
+                  onClick={() => handleSelectTab("structural_twin")}
+                  className="px-2.5 py-1 text-[#82928B] hover:text-[#73E6B5] transition cursor-pointer border-l border-white/10 ml-1"
+                  title="Open Structural Simulator"
+                >
+                  Workstation ↗
+                </button>
+              </div>
+
+              {heroVariant === "seismic" ? (
+                <SeismicCinematicHero
+                  onExploreSimulator={() => handleSelectTab("structural_twin")}
+                  onExploreBenchmark={() => handleSelectTab("model_validation")}
+                  onExploreLive={() => handleSelectTab("live_earthquake")}
+                />
+              ) : (
+                <div className="overflow-x-hidden w-full min-h-screen">
+                  <CinematicHero />
+                </div>
+              )}
+            </div>
+          )}
+
           {activeTab === "structural_twin" && (
             <StructuralTwinView
               prediction={prediction}
