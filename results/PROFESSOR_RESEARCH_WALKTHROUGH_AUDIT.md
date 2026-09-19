@@ -10,8 +10,8 @@
 
 | Document Target | Path | Format | Page Count | Target Range | Status | File Size |
 |---|---|---|---|---|---|---|
-| **Professor Walkthrough** | [`docs/SEISMOFNO_PROFESSOR_RESEARCH_WALKTHROUGH.pdf`](file:///Users/rahul/seismoFNO/docs/SEISMOFNO_PROFESSOR_RESEARCH_WALKTHROUGH.pdf) | Vector PDF | **12** | 8–12 pages | **PASSED** | 1,896,540 bytes |
-| **Professor Quick View** | [`docs/SEISMOFNO_PROFESSOR_QUICK_VIEW.pdf`](file:///Users/rahul/seismoFNO/docs/SEISMOFNO_PROFESSOR_QUICK_VIEW.pdf) | Vector PDF | **1** | Exactly 1 page | **PASSED** | 405,514 bytes |
+| **Professor Walkthrough** | [`docs/SEISMOFNO_PROFESSOR_RESEARCH_WALKTHROUGH.pdf`](file:///Users/rahul/seismoFNO/docs/SEISMOFNO_PROFESSOR_RESEARCH_WALKTHROUGH.pdf) | Vector PDF | **12** | 8–12 pages | **PASSED** | 1,707,133 bytes |
+| **Professor Quick View** | [`docs/SEISMOFNO_PROFESSOR_QUICK_VIEW.pdf`](file:///Users/rahul/seismoFNO/docs/SEISMOFNO_PROFESSOR_QUICK_VIEW.pdf) | Vector PDF | **1** | Exactly 1 page | **PASSED** | 441,044 bytes |
 
 ---
 

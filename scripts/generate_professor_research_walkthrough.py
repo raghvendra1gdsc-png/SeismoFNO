@@ -48,8 +48,8 @@ def get_shared_css() -> str:
         padding: 0;
     }
     body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        color: #0f172a;
+        font-family: 'Times New Roman', 'Liberation Serif', 'Nimbus Roman No9 L', Georgia, serif;
+        color: #000000;
         background-color: #ffffff;
         font-size: 8.5pt;
         line-height: 1.34;
@@ -78,18 +78,17 @@ def get_shared_css() -> str:
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border-bottom: 1px solid #cbd5e1;
+        border-bottom: 0.5pt solid #888888;
         padding-bottom: 3.5px;
         margin-bottom: 8px;
-        font-size: 7.2pt;
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-        color: #64748b;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
+        font-size: 7.5pt;
+        font-family: 'Times New Roman', 'Liberation Serif', serif;
+        color: #444444;
+        letter-spacing: 0.01em;
     }
     .running-header-title {
-        font-weight: 700;
-        color: #1e293b;
+        font-weight: bold;
+        color: #000000;
     }
     .running-footer {
         position: absolute;
@@ -99,51 +98,52 @@ def get_shared_css() -> str:
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border-top: 1px solid #e2e8f0;
+        border-top: 0.5pt solid #888888;
         padding-top: 3.5px;
-        font-size: 7pt;
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-        color: #64748b;
+        font-size: 7.2pt;
+        font-family: 'Times New Roman', 'Liberation Serif', serif;
+        color: #444444;
     }
     .running-footer strong {
-        color: #0f62fe;
+        color: #000000;
     }
 
     /* Typography & Hierarchy */
     h1.page-title {
         font-size: 15pt;
-        font-weight: 800;
-        color: #0f172a;
-        letter-spacing: -0.02em;
+        font-weight: bold;
+        color: #000000;
         line-height: 1.15;
         margin-bottom: 3px;
+        font-family: 'Times New Roman', 'Liberation Serif', serif;
     }
     .page-subtitle {
         font-size: 8.5pt;
-        color: #475569;
+        color: #333333;
         margin-bottom: 8px;
         line-height: 1.3;
+        font-style: italic;
     }
     h2.section-heading {
         font-size: 9.5pt;
-        font-weight: 750;
-        color: #1e3a8a;
-        border-bottom: 1.5px solid #1e3a8a;
+        font-weight: bold;
+        color: #000000;
+        border-bottom: 0.5pt solid #888888;
         padding-bottom: 2px;
         margin-top: 6px;
         margin-bottom: 5px;
-        text-transform: uppercase;
-        letter-spacing: 0.03em;
+        font-family: 'Times New Roman', 'Liberation Serif', serif;
         display: flex;
         justify-content: space-between;
         align-items: baseline;
     }
     h3.subsection-title {
         font-size: 8.5pt;
-        font-weight: 700;
-        color: #0f172a;
+        font-weight: bold;
+        color: #000000;
         margin-top: 5px;
         margin-bottom: 3px;
+        font-family: 'Times New Roman', 'Liberation Serif', serif;
     }
     p {
         margin-bottom: 5px;
@@ -152,27 +152,27 @@ def get_shared_css() -> str:
     
     /* Callout & Card Containers */
     .card {
-        background-color: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 4px;
+        background-color: #fafafa;
+        border: 0.5pt solid #aaaaaa;
+        border-radius: 2px;
         padding: 6px 8px;
         margin-bottom: 6px;
     }
     .card-accent-blue {
-        border-left: 3.5px solid #0f62fe;
-        background-color: #f0f7ff;
+        border-left: 2.5pt solid #333333;
+        background-color: #f9f9f9;
     }
     .card-accent-green {
-        border-left: 3.5px solid #198038;
-        background-color: #f2fbf5;
+        border-left: 2.5pt solid #333333;
+        background-color: #f9f9f9;
     }
     .card-accent-amber {
-        border-left: 3.5px solid #b28600;
-        background-color: #fefdf0;
+        border-left: 2.5pt solid #333333;
+        background-color: #f9f9f9;
     }
     .card-accent-red {
-        border-left: 3.5px solid #da1e28;
-        background-color: #fff1f1;
+        border-left: 2.5pt solid #333333;
+        background-color: #f9f9f9;
     }
     
     /* Tables */
@@ -183,66 +183,67 @@ def get_shared_css() -> str:
         margin: 5px 0 7px 0;
     }
     table.data-table th {
-        background-color: #f1f5f9;
-        color: #1e293b;
-        font-weight: 700;
+        background-color: #f2f2f2;
+        color: #000000;
+        font-weight: bold;
         text-align: left;
-        padding: 4px 6px;
-        border-top: 1px solid #cbd5e1;
-        border-bottom: 1.5px solid #94a3b8;
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        padding: 3.5px 6px;
+        border-top: 1pt solid #333333;
+        border-bottom: 1pt solid #333333;
+        font-family: 'Times New Roman', 'Liberation Serif', serif;
     }
     table.data-table td {
-        padding: 3.5px 6px;
-        border-bottom: 1px solid #e2e8f0;
-        color: #334155;
+        padding: 3px 6px;
+        border-bottom: 0.5pt solid #e0e0e0;
+        color: #111111;
     }
     table.data-table tr:nth-child(even) td {
-        background-color: #f8fafc;
+        background-color: #ffffff;
     }
     table.data-table tr.highlight td {
-        background-color: #eff6ff;
-        font-weight: 700;
-        color: #1e3a8a;
+        background-color: #f5f5f5;
+        font-weight: bold;
+        color: #000000;
     }
     
     /* Code & Mono */
     .mono {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-        font-size: 0.92em;
+        font-family: 'Times New Roman', 'Liberation Serif', serif;
+        font-size: 0.95em;
     }
     .badge {
         display: inline-block;
         padding: 1px 4px;
-        border-radius: 3px;
+        border-radius: 2px;
         font-size: 6.8pt;
-        font-weight: 700;
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-        text-transform: uppercase;
+        font-weight: bold;
+        font-family: 'Times New Roman', 'Liberation Serif', serif;
+        background: #eeeeee;
+        color: #000000;
+        border: 0.5pt solid #888888;
     }
-    .badge-green { background: #defbe6; color: #198038; border: 1px solid #6fdc8c; }
-    .badge-amber { background: #fff8e1; color: #b28600; border: 1px solid #f1c21b; }
-    .badge-red { background: #ffd7d9; color: #da1e28; border: 1px solid #ff8389; }
-    .badge-blue { background: #edf5ff; color: #0f62fe; border: 1px solid #a6c8ff; }
-    .badge-gray { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+    .badge-green { background: #eeeeee; color: #000000; border: 0.5pt solid #888888; }
+    .badge-amber { background: #eeeeee; color: #000000; border: 0.5pt solid #888888; }
+    .badge-red { background: #eeeeee; color: #000000; border: 0.5pt solid #888888; }
+    .badge-blue { background: #eeeeee; color: #000000; border: 0.5pt solid #888888; }
+    .badge-gray { background: #eeeeee; color: #000000; border: 0.5pt solid #888888; }
 
     /* Equations */
     .equation-box {
-        background-color: #ffffff;
-        border: 1px solid #cbd5e1;
-        border-radius: 3px;
-        padding: 6px 10px;
-        margin: 5px 0;
+        background-color: transparent;
+        border: none;
+        padding: 4px 10px;
+        margin: 4px 0;
         text-align: center;
-        font-family: "Cambria Math", "Times New Roman", Times, serif;
-        font-size: 10pt;
-        color: #0f172a;
+        font-family: 'Times New Roman', 'Liberation Serif', serif;
+        font-size: 9.8pt;
+        color: #000000;
     }
     .equation-subtext {
         font-size: 7.2pt;
-        color: #64748b;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        margin-top: 3px;
+        color: #555555;
+        font-family: 'Times New Roman', 'Liberation Serif', serif;
+        margin-top: 2px;
     }
     
     /* Grid Columns */
@@ -317,7 +318,7 @@ def generate_walkthrough_html() -> str:
                     Raghvendra Singh Gahlot • B.E. Building & Construction Technology (Structural Engineering)
                 </div>
                 <div style="font-size: 7.5pt; color: #64748b; font-family: ui-monospace, monospace;">
-                    IIT Delhi CSE Research Internship Application • Computational Structural Mechanics Track
+                    Research Application • Computational Structural Mechanics Track
                 </div>
             </div>
             <div style="text-align: right;">
@@ -1606,7 +1607,7 @@ def generate_quick_view_html() -> str:
                     Raghvendra Singh Gahlot • B.E. Building & Construction Technology (Structural Engineering)
                 </div>
                 <div style="font-size: 7.2pt; color: #64748b; font-family: ui-monospace, monospace;">
-                    IIT Delhi CSE Research Internship Application • Computational Structural Mechanics
+                    Research Application • Computational Structural Mechanics
                 </div>
             </div>
             <div style="text-align: right;">
@@ -1894,7 +1895,7 @@ def main():
         WALKTHROUGH_PDF,
         title="SeismoFNO — Physics-Informed Neural Operators for Seismic Structural-Response Prediction",
         author="Raghvendra Singh Gahlot",
-        subject="Scientific ML & Computational Structural Dynamics — IIT Delhi CSE Review Dossier",
+        subject="Scientific ML & Computational Structural Dynamics — Academic Review Dossier",
         keywords="Neural Operators, Structural Dynamics, OpenSeesPy, Graph Neural Operators, OOD Generalization, FiLM",
     )
     walkthrough_pages = get_pdf_page_count(WALKTHROUGH_PDF)
@@ -1917,7 +1918,7 @@ def main():
         title="SeismoFNO — Professor Quick View (60-Second Scientific Summary)",
         author="Raghvendra Singh Gahlot",
         subject="One-Page Executive Scientific Summary for Professor Review",
-        keywords="SeismoFNO, Neural Operators, Quick View, IIT Delhi CSE",
+        keywords="SeismoFNO, Neural Operators, Quick View, Academic",
     )
     quick_view_pages = get_pdf_page_count(QUICK_VIEW_PDF)
     quick_view_size = QUICK_VIEW_PDF.stat().st_size

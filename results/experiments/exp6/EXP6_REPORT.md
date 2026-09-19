@@ -3,7 +3,7 @@
 
 **Author:** SeismoFNO Research Software Engineering Layer  
 **Affiliation:** Advanced Computational Mechanics & Scientific Machine Learning  
-**Target Evaluation:** IIT Delhi CSE Research Internship Layer  
+**Target Evaluation:** Academic Research Layer  
 **Date:** September 7, 2026  
 **Status:** Completed & Validated  
 

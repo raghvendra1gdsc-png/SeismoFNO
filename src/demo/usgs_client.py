@@ -206,7 +206,7 @@ class USGSClient:
         try:
             req = urllib.request.Request(
                 feed_url,
-                headers={"User-Agent": "SeismoFNO-ResearchDemo/1.0 (IIT Delhi CSE Research)"},
+                headers={"User-Agent": "SeismoFNO-ResearchDemo/1.0 (Academic Research)"},
             )
             with urllib.request.urlopen(req, timeout=self.timeout) as resp:
                 if resp.status == 200:

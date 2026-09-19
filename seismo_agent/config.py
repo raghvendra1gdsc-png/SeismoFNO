@@ -30,9 +30,24 @@ DEFAULT_REPORTS_DIR: Path = REPO_ROOT / "seismo_agent" / "reports"
 # Nebius & NVIDIA Nemotron Configuration
 import os
 
-NEBIUS_API_KEY: str = os.environ.get("NEBIUS_API_KEY", "")
-NEBIUS_BASE_URL: str = os.environ.get("NEBIUS_BASE_URL", "https://api.tokenfactory.nebius.com/v1").rstrip("/")
-NEBIUS_MODEL: str = os.environ.get("NEBIUS_MODEL", "nvidia/nemotron-4-340b-instruct")
+# Load .env if present
+_env_file = REPO_ROOT / ".env"
+if _env_file.exists():
+    try:
+        from dotenv import load_dotenv
+        load_dotenv(dotenv_path=_env_file)
+    except ImportError:
+        pass
+
+NEBIUS_API_KEY: str = os.environ.get("NVIDIA_API_KEY") or os.environ.get("NEBIUS_API_KEY", "")
+NEBIUS_BASE_URL: str = (
+    os.environ.get("NVIDIA_BASE_URL")
+    or os.environ.get("NEBIUS_BASE_URL", "https://integrate.api.nvidia.com/v1")
+).rstrip("/")
+NEBIUS_MODEL: str = (
+    os.environ.get("NVIDIA_MODEL")
+    or os.environ.get("NEBIUS_MODEL", "nvidia/nemotron-3-super-120b-a12b")
+)
 
 # Orchestration safety limits
 MAX_TOOL_CALLS: int = int(os.environ.get("SEISMO_MAX_TOOL_CALLS", "10"))

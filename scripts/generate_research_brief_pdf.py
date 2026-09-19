@@ -3,7 +3,7 @@
 generate_research_brief_pdf.py
 ==============================
 Reproducible generation script for the SeismoFNO Research Brief PDF:
-  docs/IIT_DELHI_CSE_RESEARCH_BRIEF.pdf
+  docs/RESEARCH_BRIEF.pdf
 
 This script builds a publication-grade, 2-page academic engineering research brief
 using vector typography, embedded SVG diagrams, typeset mathematical equations,
@@ -23,7 +23,7 @@ import subprocess
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-OUTPUT_PDF = PROJECT_ROOT / "docs" / "IIT_DELHI_CSE_RESEARCH_BRIEF.pdf"
+OUTPUT_PDF = PROJECT_ROOT / "docs" / "RESEARCH_BRIEF.pdf"
 TEMP_HTML = PROJECT_ROOT / "docs" / "_temp_research_brief.html"
 CHROME_PATH = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 
@@ -52,8 +52,8 @@ def generate_html_content() -> str:
   }
   
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    color: #0f172a;
+    font-family: 'Times New Roman', 'Liberation Serif', 'Nimbus Roman No9 L', Georgia, serif;
+    color: #000000;
     background-color: #ffffff;
     font-size: 8.5pt;
     line-height: 1.32;
@@ -76,7 +76,7 @@ def generate_html_content() -> str:
 
   /* Header Section */
   .header {
-    border-bottom: 2px solid #1e3a8a;
+    border-bottom: 1pt solid #333333;
     padding-bottom: 5px;
     margin-bottom: 6px;
   }
@@ -88,53 +88,52 @@ def generate_html_content() -> str:
   }
 
   .title-group h1 {
-    font-size: 16pt;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    color: #0f172a;
-    line-height: 1.1;
+    font-size: 15pt;
+    font-weight: bold;
+    color: #000000;
+    line-height: 1.15;
   }
 
   .title-group .subtitle {
-    font-size: 9.5pt;
-    font-weight: 600;
-    color: #1e3a8a;
+    font-size: 9.2pt;
+    font-weight: normal;
+    font-style: italic;
+    color: #222222;
     margin-top: 1px;
   }
 
   .title-group .descriptor {
     font-size: 8pt;
-    font-weight: 500;
-    color: #475569;
+    font-weight: normal;
+    color: #444444;
     font-style: italic;
   }
 
   .meta-badges {
     text-align: right;
     font-size: 7pt;
-    color: #334155;
+    color: #333333;
   }
 
   .badge {
     display: inline-block;
     padding: 1.5px 5px;
-    font-weight: 700;
-    border-radius: 3px;
+    font-weight: bold;
+    border-radius: 2px;
     font-size: 6.5pt;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
+    letter-spacing: 0.01em;
   }
 
   .badge-frozen {
-    background-color: #f1f5f9;
-    color: #0f172a;
-    border: 1px solid #94a3b8;
+    background-color: #f2f2f2;
+    color: #000000;
+    border: 0.5pt solid #888888;
   }
 
   .badge-audit {
-    background-color: #eff6ff;
-    color: #1e40af;
-    border: 1px solid #bfdbfe;
+    background-color: #f2f2f2;
+    color: #000000;
+    border: 0.5pt solid #888888;
   }
 
   .header-authors {
@@ -143,7 +142,7 @@ def generate_html_content() -> str:
     align-items: center;
     margin-top: 4px;
     padding-top: 3px;
-    border-top: 1px solid #e2e8f0;
+    border-top: 0.5pt solid #cccccc;
     font-size: 7.5pt;
   }
 
@@ -167,12 +166,11 @@ def generate_html_content() -> str:
   }
 
   .section-title {
-    font-size: 8.5pt;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: #1e3a8a;
-    border-bottom: 1px solid #cbd5e1;
+    font-family: 'Times New Roman', 'Liberation Serif', serif;
+    font-size: 8.8pt;
+    font-weight: bold;
+    color: #000000;
+    border-bottom: 0.5pt solid #888888;
     padding-bottom: 1.5px;
     margin-bottom: 3.5px;
     display: flex;
@@ -181,8 +179,8 @@ def generate_html_content() -> str:
   }
 
   .section-title span.sec-num {
-    color: #64748b;
-    font-weight: 700;
+    color: #000000;
+    font-weight: bold;
     margin-right: 3px;
   }
 
@@ -197,11 +195,11 @@ def generate_html_content() -> str:
 
   /* Math Block */
   .math-block {
-    background-color: #f8fafc;
-    border-left: 3px solid #1e3a8a;
-    padding: 3.5px 8px;
-    margin: 3.5px 0;
-    font-family: "Cambria Math", "Sitka Text", "Times New Roman", serif;
+    background-color: transparent;
+    border-left: none;
+    padding: 3px 5px;
+    margin: 3px 0;
+    font-family: 'Times New Roman', 'Liberation Serif', serif;
     font-size: 9.5pt;
     display: flex;
     justify-content: space-between;
@@ -210,14 +208,15 @@ def generate_html_content() -> str:
 
   .equation {
     font-style: normal;
-    color: #0f172a;
-    letter-spacing: 0.02em;
+    color: #000000;
+    flex-grow: 1;
+    text-align: center;
   }
 
   .equation-num {
-    font-size: 7.5pt;
-    color: #64748b;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 8pt;
+    color: #333333;
+    font-family: 'Times New Roman', 'Liberation Serif', serif;
   }
 
   /* Pipeline Flow */
@@ -343,33 +342,32 @@ def generate_html_content() -> str:
   table.results-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 7.2pt;
+    font-size: 7.5pt;
     margin: 4px 0;
   }
 
   table.results-table th, table.results-table td {
-    padding: 3px 5px;
+    padding: 2.5pt 4.5pt;
     text-align: left;
-    border: 1px solid #cbd5e1;
+    border: 0.5pt solid #888888;
   }
 
   table.results-table th {
-    background-color: #f1f5f9;
-    color: #0f172a;
-    font-weight: 700;
-    font-size: 6.8pt;
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
+    background-color: #f2f2f2;
+    color: #000000;
+    font-weight: bold;
+    font-size: 7.2pt;
+    font-family: 'Times New Roman', 'Liberation Serif', serif;
   }
 
   table.results-table tr:nth-child(even) td {
-    background-color: #f8fafc;
+    background-color: #ffffff;
   }
 
-  .fw-700 { font-weight: 700; }
-  .val-danger { color: #b91c1c; font-weight: 700; }
-  .val-success { color: #15803d; font-weight: 700; }
-  .val-highlight { color: #1e3a8a; font-weight: 700; }
+  .fw-700 { font-weight: bold; }
+  .val-danger { color: #000000; font-weight: bold; }
+  .val-success { color: #000000; font-weight: bold; }
+  .val-highlight { color: #000000; font-weight: bold; }
 
   /* Two Column Layout */
   .two-col {
@@ -381,16 +379,16 @@ def generate_html_content() -> str:
 
   .col-box {
     background: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-radius: 4px;
+    border: 0.5pt solid #888888;
+    border-radius: 2px;
     padding: 5px 7px;
   }
 
   /* OOD Box */
   .ood-box {
-    background-color: #f8fafc;
-    border: 1.5px solid #2563eb;
-    border-radius: 4px;
+    background-color: #fafafa;
+    border: 0.75pt solid #666666;
+    border-radius: 2px;
     padding: 5px 8px;
     margin-bottom: 6px;
   }
@@ -400,22 +398,24 @@ def generate_html_content() -> str:
     justify-content: space-between;
     align-items: center;
     margin-bottom: 3px;
-    border-bottom: 1px solid #bfdbfe;
+    border-bottom: 0.5pt solid #888888;
     padding-bottom: 2px;
   }
 
   .ood-title {
-    font-weight: 800;
+    font-weight: bold;
     font-size: 8pt;
-    color: #1e3a8a;
+    color: #000000;
+    font-family: 'Times New Roman', 'Liberation Serif', serif;
   }
 
   .ood-badge {
-    background: #dbeafe;
-    color: #1e40af;
-    font-weight: 700;
+    background: #eeeeee;
+    color: #000000;
+    font-weight: bold;
     font-size: 6.8pt;
     padding: 1px 4px;
+    border: 0.5pt solid #888888;
     border-radius: 2px;
   }
 
@@ -429,20 +429,20 @@ def generate_html_content() -> str:
 
   .ood-card {
     background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 3px;
+    border: 0.5pt solid #aaaaaa;
+    border-radius: 2px;
     padding: 3px;
   }
 
   .ood-card.highlight {
-    background: #f0fdf4;
-    border-color: #86efac;
+    background: #f9f9f9;
+    border-color: #666666;
   }
 
   .ood-label {
     font-size: 6.3pt;
-    color: #64748b;
-    font-weight: 600;
+    color: #444444;
+    font-weight: bold;
     text-transform: uppercase;
   }
 
@@ -599,7 +599,7 @@ def generate_html_content() -> str:
         <span class="author-meta">B.E. Building and Construction Technology (Structural Engineering)</span>
       </div>
       <div class="app-context">
-        Research Brief — IIT Delhi CSE Research Internship Application
+        Research Brief — Research Application
       </div>
     </div>
   </header>
@@ -787,7 +787,7 @@ def generate_html_content() -> str:
 
   <!-- Footer Page 1 -->
   <footer class="page-footer">
-    <div>SeismoFNO Research Brief • Department of Computer Science & Engineering, IIT Delhi Application</div>
+    <div>SeismoFNO Research Brief • Department of Computer Science & Engineering, Academic Application</div>
     <div>Page 1 of 2</div>
   </footer>
 </div>

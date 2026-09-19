@@ -324,8 +324,8 @@ def test_opensees_concurrent_simulations_lock_scope():
 # ==============================================================================
 
 @pytest.mark.skipif(
-    not os.environ.get("NEBIUS_API_KEY"),
-    reason="SKIPPED — NEBIUS_API_KEY not configured in environment.",
+    not os.environ.get("RUN_LIVE_NEBIUS"),
+    reason="SKIPPED — Live remote tests require RUN_LIVE_NEBIUS=1.",
 )
 def test_live_nebius_gateway_integration():
     """

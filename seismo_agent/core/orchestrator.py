@@ -186,6 +186,14 @@ class SeismoOrchestrator:
                 # Parse arguments JSON
                 try:
                     args_dict = json.loads(raw_args_str) if isinstance(raw_args_str, str) else raw_args_str
+                    # Auto-deserialize stringified nested objects for Pydantic models
+                    if isinstance(args_dict, dict):
+                        for k, v in list(args_dict.items()):
+                            if isinstance(v, str) and v.strip().startswith("{") and v.strip().endswith("}"):
+                                try:
+                                    args_dict[k] = json.loads(v)
+                                except Exception:
+                                    pass
                 except Exception as e:
                     err_msg = f"Invalid JSON arguments supplied for tool '{tool_name}': {e}"
                     errors.append(err_msg)
@@ -325,6 +333,7 @@ class SeismoOrchestrator:
             "event": "completed",
             "status": status,
             "steps_used": step,
+            "final_response": final_response,
             "total_latency_ms": round(total_latency_ms, 2),
         })
 

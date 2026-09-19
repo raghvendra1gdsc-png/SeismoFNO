@@ -6,10 +6,10 @@
 ## 1. PURPOSE & RESEARCH TARGET
 
 The **Professor-Facing Interactive Research Demonstration Layer** provides an academically rigorous, live computational interface designed specifically for:
-- IIT Delhi Computer Science & Engineering / AI faculty
+- Academic Computer Science & Engineering / AI faculty
 - Scientific Machine Learning and Neural Operator researchers
 - Computational mechanics and non-linear structural dynamics professors
-- Advanced technical research presentations and internship defense
+- Advanced technical research presentations and research defense
 
 ### Core Research Thesis
 Can continuous neural operators generalize non-linear dynamic structural responses across both **discrete topological variations** (variable floor counts) and **distribution shifts in structural modal properties** (fundamental natural period $T_1$ and circular frequency $\omega_1$)?

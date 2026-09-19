@@ -94,4 +94,4 @@ EXP6 demonstrates **exceptional scientific rigor, methodological integrity, and 
 3. **Repository Integrity:**
    EXP4 and EXP5 checkpoints and reports remain completely frozen and unmodified.
 
-**Final Verdict:** **PASS WITH SCIENTIFIC CAVEATS** — Verified for IIT Delhi CSE research standards.
+**Final Verdict:** **PASS WITH SCIENTIFIC CAVEATS** — Verified for Academic research standards.

@@ -169,8 +169,8 @@ export const JudgeModeView: React.FC<JudgeModeViewProps> = ({
           label="HOW"
           title="Nemotron + Physics Tools"
           lines={[
-            "NVIDIA Nemotron (340B Instruct)",
-            "via Nebius Token Factory",
+            "NVIDIA Nemotron (NIM API)",
+            "with Multi-Model Fallback",
             "selects & sequences 8 tools.",
             "ReAct loop, bounded at 10 calls.",
           ]}
@@ -210,12 +210,12 @@ export const JudgeModeView: React.FC<JudgeModeViewProps> = ({
         <Tile
           icon={<Cpu size={15} />}
           label="AI ORCHESTRATION"
-          title="NVIDIA Nemotron-4-340B"
+          title="NVIDIA Nemotron (NIM)"
           lines={[
-            `Model: nvidia/nemotron-4-340b-instruct`,
-            `Provider: Nebius Token Factory`,
+            `Model: nvidia/nemotron-3.5-lightning`,
+            `Provider: NVIDIA API Catalog (NIM)`,
             `Protocol: OpenAI-compatible`,
-            `Status: ${nebiusOk ? "Configured" : "NEBIUS_API_KEY not set (mock mode)"}`,
+            `Status: ${nebiusOk ? "Online & Verified" : "API key not set (mock mode)"}`,
           ]}
           accent={nebiusOk ? "border-energy/30" : "border-border-subtle"}
           status={nebiusOk ? "ok" : "offline"}

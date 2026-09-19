@@ -2,7 +2,7 @@
 ## Comprehensive Technical Research Report
 
 **Author:** SeismoFNO Research Software Engineering Layer  
-**Target Evaluation:** Graduate / Internship Research Review — Department of Computer Science & Engineering, IIT Delhi  
+**Target Evaluation:** Graduate / Internship Research Review — Department of Computer Science & Engineering, Academic  
 **Project Repository:** `SeismoFNO`  
 **Date:** September 2026  
 **Status:** Completed, Independently Audited, and Certified  

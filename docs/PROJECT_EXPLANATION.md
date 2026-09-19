@@ -1,7 +1,7 @@
 # SeismoFNO — Multi-Audience Project Explanations
 
 **Project Title:** SeismoFNO: Physics-Grounded Neural Operators for Seismic Structural Dynamics  
-**Target Evaluation:** Research Internship / Graduate Research Review  
+**Target Evaluation:** Graduate Research Review  
 **Core Motto:** *Scientific honesty first — measure, explain, and bound every claim.*
 
 ---

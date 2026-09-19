@@ -1,7 +1,7 @@
 # PDF Build Documentation: SeismoFNO Research Brief
 
-**Target Output:** `docs/IIT_DELHI_CSE_RESEARCH_BRIEF.pdf`  
-**Markdown Source:** `docs/IIT_DELHI_CSE_RESEARCH_BRIEF.md`  
+**Target Output:** `docs/RESEARCH_BRIEF.pdf`  
+**Markdown Source:** `docs/RESEARCH_BRIEF.md`  
 **Build Script:** `scripts/generate_research_brief_pdf.py`  
 **Version:** September 2026 | **Scientific Core:** FROZEN / AUDITED  
 
@@ -9,7 +9,7 @@
 
 ## 1. Overview
 
-The SeismoFNO Research Brief is a 2-page, publication-grade academic research summary tailored for professor-level evaluation (specifically for research internship review at the Department of Computer Science & Engineering, IIT Delhi).
+The SeismoFNO Research Brief is a 2-page, publication-grade academic research summary tailored for professor-level evaluation (specifically for research research review at the Department of Computer Science & Engineering, Academic).
 
 The PDF is generated using a reproducible, vector-based build pipeline that ensures:
 1. **Pixel-perfect layout** fitting precisely on 2 pages (A4 format).
@@ -42,7 +42,7 @@ python3 scripts/generate_research_brief_pdf.py
 ==> Generating SeismoFNO Research Brief HTML...
     Wrote temporary HTML to docs/_temp_research_brief.html
 ==> Compiling PDF via headless Google Chrome...
-    Compiled PDF: docs/IIT_DELHI_CSE_RESEARCH_BRIEF.pdf
+    Compiled PDF: docs/RESEARCH_BRIEF.pdf
 ==> Patching PDF Metadata (Title, Author, Subject, Keywords)...
 ==> Auditing PDF structure & metrics...
     Page count: 2 (Target: 2, Max: 3)
@@ -71,7 +71,7 @@ To verify that the generated PDF conforms to all publication and academic standa
    ```bash
    python3 -c "
    import re
-   with open('docs/IIT_DELHI_CSE_RESEARCH_BRIEF.pdf', 'rb') as f:
+   with open('docs/RESEARCH_BRIEF.pdf', 'rb') as f:
        data = f.read()
    pages = len(re.findall(rb'/Type\s*/Page\b', data))
    print(f'Page count: {pages} (Must be 2 or 3)')

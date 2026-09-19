@@ -3,7 +3,7 @@
 ## Mission
 Build a Fourier Neural Operator surrogate for nonlinear SDOF/MDOF seismic
 response and hysteretic energy dissipation, validated against OpenSeesPy
-ground truth. This is a research project for an undergraduate internship
+ground truth. This is a research project for an undergraduate research
 application — scientific honesty matters more than a clean-looking result.
 
 ## Hard rules (do not violate these even if it seems slower)
@@ -35,4 +35,4 @@ benchmark -> 10. Error analysis + report -> 11. Dashboard (optional,
 last).
 
 ## Current phase
-Current phase: EXP6 Complete (Advanced Research Layer: Physics/Modal-Conditioned Spatiotemporal Graph Neural Operator for multi-story seismic dynamics; FiLM modulation on eigenvalue invariants evaluated across 2,160 physical simulations; 62.9% relative peak displacement error reduction on unseen flexible structures; full independent forensic audit completed; all 284 unit tests passing)
+Current phase: Hackathon Integration Complete (NVIDIA Nemotron ReAct agent and 8 deterministic engineering tools unified into main FastAPI application gateway and exposed via Judge Mode /judge workstation; live NVIDIA API integration verified; all 288 unit and integration tests passing)

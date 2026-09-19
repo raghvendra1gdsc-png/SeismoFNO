@@ -2,7 +2,7 @@
 
 **Audit Date:** September 8, 2026  
 **Auditor:** Senior Scientific ML Researcher & Research-Software Maintainer  
-**Target Evaluation:** Academic Research Evaluation — Department of Computer Science & Engineering, IIT Delhi  
+**Target Evaluation:** Academic Research Evaluation — Department of Computer Science & Engineering, Academic  
 **Repository:** `SeismoFNO`  
 **Overall Package Status:** **FROZEN & VERIFIED — STRONG RESEARCH PACKAGE**  
 
@@ -55,7 +55,7 @@ This document certifies that the SeismoFNO research codebase has successfully co
 
 ## 3. Files Created
 
-1. **`docs/IIT_DELHI_CSE_RESEARCH_BRIEF.md`**: 2-page professor-facing research brief detailing computational problem, hypotheses, baseline failures, algorithmic solutions, results, limitations, and future directions.
+1. **`docs/RESEARCH_BRIEF.md`**: 2-page professor-facing research brief detailing computational problem, hypotheses, baseline failures, algorithmic solutions, results, limitations, and future directions.
 2. **`docs/SEISMOFNO_TECHNICAL_REPORT.md`**: Comprehensive 18-section publication-style technical report with formal mathematics, numerical validation, and full result matrices.
 3. **`docs/PROJECT_EXPLANATION.md`**: Tailored multi-audience project explanations (30-second elevator pitch, 2-minute overview, CSE professor version, Civil engineering professor version, and technical interview script).
 4. **`docs/RESEARCH_ARCHITECTURE_DIAGRAM.md`**: Publication-quality Mermaid diagram and ASCII flowchart illustrating the OpenSeesPy ground-truth pipeline, GNO learning pipeline, EXP6 modal conditioning branch, and multi-metric OOD evaluation.

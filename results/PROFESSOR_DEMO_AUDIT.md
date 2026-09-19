@@ -7,7 +7,7 @@
 
 - **Audit Date**: 2026-09-08
 - **Audit Target**: Professor-Facing Interactive Research Demonstration Layer
-- **Target Audience**: IIT Delhi CSE / AI Professors, Scientific ML Researchers, Computational Mechanics Faculty
+- **Target Audience**: Academic / AI Professors, Scientific ML Researchers, Computational Mechanics Faculty
 - **Audit Conclusion**: **FULLY VERIFIED — PASS WITH ZERO REGRESSIONS**
 - **Research Core Freeze Status**: **100% IMMUTABLE & UNTOUCHED** (EXP4, EXP5, EXP6 checkpoints, datasets, CSVs, and metrics are unmodified)
 

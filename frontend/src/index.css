@@ -18,6 +18,11 @@
   --color-accent-amber-bg: #FFFBEB;
   --color-accent-danger: #DC2626;
   --color-accent-danger-bg: #FEF2F2;
+  --color-panel-base: #FFFFFF;
+  --color-fno: #047857;
+  --color-energy: #059669;
+  --color-physics: #2563EB;
+  --color-danger: #DC2626;
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: "JetBrains Mono", "IBM Plex Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }

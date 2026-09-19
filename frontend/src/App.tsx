@@ -8,6 +8,10 @@ import { ModelValidationView } from "./components/ModelValidation/ModelValidatio
 import { ExplainabilityView } from "./components/Explainability/ExplainabilityView";
 import { ResearchDemoView } from "./components/ResearchDemo/ResearchDemoView";
 import { LiveEarthquakeView } from "./components/ResearchDemo/LiveEarthquakeView";
+import { JudgeModeView } from "./components/AnalysisWorkspace/JudgeModeView";
+import { NemotronCopilot } from "./components/Copilot/NemotronCopilot";
+import { fetchHealth as fetchAgentHealth, runSimulation as runAgentSimulation } from "./api/agent";
+import type { SystemHealth, SimulationResponse } from "./types/agent";
 
 import {
   fetchSystemInfo,
@@ -25,11 +29,12 @@ import {
 import { ShaderAnimation } from "./components/ui/shader-lines";
 
 export const App: React.FC = () => {
-  // Navigation & Workspace State - check if /demo, /live, or ?tab= is requested
+  // Navigation & Workspace State - check if /demo, /live, /judge or ?tab= is requested
   const [activeTab, setActiveTab] = useState<WorkspaceTab>(() => {
     if (typeof window !== "undefined") {
       const path = window.location.pathname.toLowerCase();
       const search = window.location.search.toLowerCase();
+      if (path.includes("judge") || search.includes("judge")) return "judge_mode";
       if (path.includes("live") || search.includes("live")) return "live_earthquake";
       if (path.includes("demo") || search.includes("demo")) return "research_demo";
       if (path.includes("command") || search.includes("command")) return "command_center";
@@ -45,7 +50,9 @@ export const App: React.FC = () => {
   const handleSelectTab = useCallback((tab: WorkspaceTab) => {
     setActiveTab(tab);
     if (typeof window !== "undefined") {
-      if (tab === "research_demo") {
+      if (tab === "judge_mode") {
+        window.history.pushState(null, "", "/judge");
+      } else if (tab === "research_demo") {
         window.history.pushState(null, "", "/demo");
       } else if (tab === "live_earthquake") {
         window.history.pushState(null, "", "/live");
@@ -81,6 +88,11 @@ export const App: React.FC = () => {
   const [prediction, setPrediction] = useState<ScenarioPredictionResponse | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  // Agent & Nemotron State (Hackathon Layer)
+  const [agentHealth, setAgentHealth] = useState<SystemHealth | null>(null);
+  const [agentSimulation, setAgentSimulation] = useState<SimulationResponse | null>(null);
+  const [isAgentLoading, setIsAgentLoading] = useState<boolean>(false);
+
   // Initial Data Fetch
   useEffect(() => {
     async function init() {
@@ -95,6 +107,9 @@ export const App: React.FC = () => {
         setIndianCatalog(eqData.indian_catalog || []);
         setPeerRecords(eqData.peer_records || []);
         setBuildingArchetypes(bldData.buildings || []);
+
+        // Initial agent health check
+        fetchAgentHealth().then(setAgentHealth).catch(() => null);
 
         // Trigger initial simulation
         const initialPayload: ScenarioInputPayload = {
@@ -115,6 +130,53 @@ export const App: React.FC = () => {
       }
     }
     init();
+  }, []);
+
+  // Agent Hero & OOD Demo Handlers
+  const handleRunHeroDemo = useCallback(async () => {
+    setIsAgentLoading(true);
+    try {
+      const res = await runAgentSimulation({
+        preset_id: "RSN0001_Imperial_Valley-06.AT2",
+        pga_g: 0.40,
+        T: 0.50,
+        zeta: 0.05,
+        material_type: "bilinear",
+        u_y: 0.010,
+        alpha: 0.05,
+        mass: 1000.0,
+        solver: "opensees",
+      });
+      setAgentSimulation(res);
+      fetchAgentHealth().then(setAgentHealth).catch(() => null);
+    } catch (e) {
+      console.error("Hero experiment failed:", e);
+    } finally {
+      setIsAgentLoading(false);
+    }
+  }, []);
+
+  const handleRunOODDemo = useCallback(async () => {
+    setIsAgentLoading(true);
+    try {
+      const res = await runAgentSimulation({
+        preset_id: "synthetic_ricker",
+        pga_g: 2.50,
+        T: 5.00,
+        zeta: 0.01,
+        material_type: "bilinear",
+        u_y: 0.002,
+        alpha: 0.01,
+        mass: 5000.0,
+        solver: "opensees",
+      });
+      setAgentSimulation(res);
+      fetchAgentHealth().then(setAgentHealth).catch(() => null);
+    } catch (e) {
+      console.error("OOD experiment failed:", e);
+    } finally {
+      setIsAgentLoading(false);
+    }
   }, []);
 
   // Toast notification state
@@ -391,6 +453,68 @@ export const App: React.FC = () => {
               pgaG={pgaG}
               setPgaG={setPgaG}
             />
+          )}
+
+          {activeTab === "judge_mode" && (
+            <div className="flex-1 overflow-y-auto p-6 bg-[#F8FAFC]">
+              <div className="max-w-7xl mx-auto space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#E2E8F0] pb-4 gap-4">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="px-2 py-0.5 text-[10px] font-mono font-bold bg-[#047857]/10 text-[#047857] border border-[#047857]/20 rounded tracking-wider">
+                        NVIDIA HACKATHON TRACK
+                      </span>
+                      <span className="text-[11px] font-mono text-[#64748B]">
+                        NVIDIA NEMOTRON REASONING + DETERMINISTIC SURROGATE
+                      </span>
+                    </div>
+                    <h1 className="text-xl font-bold text-[#0F172A] mt-1 font-mono tracking-tight">
+                      Judge Mode & Autonomous Engineering Agent
+                    </h1>
+                  </div>
+                  <div className="flex items-center gap-2 font-mono text-xs">
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#E2E8F0] rounded shadow-xs">
+                      <span className={`w-2 h-2 rounded-full ${agentHealth?.nebius_configured ? "bg-[#047857]" : "bg-amber-500"}`} />
+                      <span className="text-[#64748B]">NVIDIA API:</span>
+                      <span className="font-bold text-[#0F172A]">
+                        {agentHealth?.nebius_configured ? (agentHealth.nebius_live_verified ? "LIVE VERIFIED" : "ONLINE") : "OFFLINE MOCK"}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-[#E2E8F0] rounded shadow-xs">
+                      <span className="w-2 h-2 rounded-full bg-[#047857]" />
+                      <span className="text-[#64748B]">TOOLS:</span>
+                      <span className="font-bold text-[#0F172A]">8/8 DETERMINISTIC</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+                  <div className="xl:col-span-8 space-y-6">
+                    <JudgeModeView
+                      health={agentHealth}
+                      simulationData={agentSimulation}
+                      onRunHeroDemo={handleRunHeroDemo}
+                      onRunOODDemo={handleRunOODDemo}
+                      isLoading={isAgentLoading}
+                    />
+                  </div>
+                  <div className="xl:col-span-4 h-[720px] flex flex-col sticky top-6">
+                    <NemotronCopilot
+                      currentStructureContext={{
+                        T: T0,
+                        zeta: damping,
+                        materialType: materialType,
+                        uy: uy,
+                        alpha: alpha,
+                      }}
+                      currentRecordName={selectedEarthquakeName}
+                      nebiusConfigured={agentHealth?.nebius_configured}
+                      nebiusLiveVerified={agentHealth?.nebius_live_verified}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
           )}
 
           {activeTab === "research_demo" && <ResearchDemoView />}

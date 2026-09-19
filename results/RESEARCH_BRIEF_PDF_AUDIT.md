@@ -2,8 +2,8 @@
 
 **Audit Date:** September 8, 2026  
 **Auditor:** Senior Scientific ML Researcher & Packaging Engineer  
-**Target Evaluation:** Research Brief Packaging — Department of Computer Science & Engineering, IIT Delhi Application  
-**Output Document:** `docs/IIT_DELHI_CSE_RESEARCH_BRIEF.pdf`  
+**Target Evaluation:** Research Brief Packaging — Department of Computer Science & Engineering, Academic Application  
+**Output Document:** `docs/RESEARCH_BRIEF.pdf`  
 **Overall Status:** **VERIFIED — ALL SPECIFICATIONS SATISFIED (FROZEN RESEARCH CORE)**  
 
 ---
@@ -12,8 +12,8 @@
 
 | Property | Value | Requirement / Constraint | Verification Status |
 |---|---|---|---|
-| **Primary PDF Path** | `docs/IIT_DELHI_CSE_RESEARCH_BRIEF.pdf` | `docs/IIT_DELHI_CSE_RESEARCH_BRIEF.pdf` | **MATCH** |
-| **Markdown Source** | `docs/IIT_DELHI_CSE_RESEARCH_BRIEF.md` | Preserved and synchronized | **MATCH** |
+| **Primary PDF Path** | `docs/RESEARCH_BRIEF.pdf` | `docs/RESEARCH_BRIEF.pdf` | **MATCH** |
+| **Markdown Source** | `docs/RESEARCH_BRIEF.md` | Preserved and synchronized | **MATCH** |
 | **Build Script** | `scripts/generate_research_brief_pdf.py` | Reproducible Python generator | **MATCH** |
 | **Page Count** | **2 pages** | Target: 2 pages, Max: 3 pages | **EXACT TARGET** |
 | **File Size** | **969,327 bytes (947 KB)** | Vector-rendered standalone document | **PASS** |
@@ -27,7 +27,7 @@
 
 ## 2. Empirical Value Reconciliation & Metric Traceability
 
-Every quantitative metric reported in `docs/IIT_DELHI_CSE_RESEARCH_BRIEF.pdf` matches frozen historical evaluation records:
+Every quantitative metric reported in `docs/RESEARCH_BRIEF.pdf` matches frozen historical evaluation records:
 
 | Required Metric | Location in PDF | Value | Primary Source | Reconciliation |
 |---|---|---|---|---|

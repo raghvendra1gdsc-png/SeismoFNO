@@ -964,7 +964,7 @@ def write_master_research_report(
     bench_df: pd.DataFrame,
     output_dir: Path,
 ) -> None:
-    """Generate master comprehensive research report for IIT Delhi CSE evaluation."""
+    """Generate master comprehensive research report for Academic evaluation."""
     rep_path = output_dir / "EXP6_REPORT.md"
 
     content = f"""# SEISMOFNO EXP6 — PHYSICS/MODAL-CONDITIONED GRAPH NEURAL OPERATOR
@@ -972,7 +972,7 @@ def write_master_research_report(
 
 **Author:** SeismoFNO Research Software Engineering Layer  
 **Affiliation:** Advanced Computational Mechanics & Scientific Machine Learning  
-**Target Evaluation:** IIT Delhi CSE Research Internship Layer  
+**Target Evaluation:** Academic Research Layer  
 **Date:** September 7, 2026  
 **Status:** Completed & Validated  
 

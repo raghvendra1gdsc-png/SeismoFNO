@@ -487,6 +487,13 @@ def run_demo_simulation(req: DemoSimulationRequest) -> Dict[str, Any]:
 
 
 # -----------------------------------------------------------------------------
+# 4.5. SeismoAgent Autonomous Engineering Gateway (NVIDIA Nemotron & Tools)
+# -----------------------------------------------------------------------------
+from seismo_agent.server.app import agent_router
+app.include_router(agent_router)
+
+
+# -----------------------------------------------------------------------------
 # 5. Frontend SPA & Static Asset Serving (Production & Cloud Deployment)
 # -----------------------------------------------------------------------------
 from fastapi.staticfiles import StaticFiles

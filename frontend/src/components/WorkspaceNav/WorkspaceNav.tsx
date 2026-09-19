@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { ArrowUpRight, Activity, ShieldCheck, MapPin, Sliders, Radio, Cpu, BookOpen, Layers } from "lucide-react";
+import { ArrowUpRight, Activity, ShieldCheck, MapPin, Sliders, Radio, Cpu, BookOpen, Layers, Sparkles } from "lucide-react";
 
 export type WorkspaceTab =
+  | "judge_mode"
   | "structural_twin"
   | "model_validation"
   | "earthquake_intel"
@@ -32,6 +33,14 @@ export const WorkspaceNav: React.FC<WorkspaceNavProps> = ({
     previewSummary: string;
     icon: React.ComponentType<{ size?: number; className?: string }>;
   }[] = [
+    {
+      id: "judge_mode",
+      code: "★",
+      label: "Judge Mode / Agent",
+      category: "NVIDIA NEMOTRON (NIM)",
+      previewSummary: "Autonomous ReAct agent with 8 deterministic civil engineering tools",
+      icon: Sparkles,
+    },
     {
       id: "structural_twin",
       code: "01",

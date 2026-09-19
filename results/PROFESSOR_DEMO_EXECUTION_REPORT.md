@@ -7,7 +7,7 @@
 
 The **Professor-Facing Interactive Research Demonstration Layer** is **COMPLETE, AUDITED, VERIFIED, and FROZEN**.
 
-The demonstration layer wraps the verified research artifacts (`EXP4` $\to$ `EXP5` $\to$ `EXP6`) into an academically rigorous, restrained, dark engineering interface suitable for review by IIT Delhi CSE professors, Scientific ML faculty, and computational mechanics researchers.
+The demonstration layer wraps the verified research artifacts (`EXP4` $\to$ `EXP5` $\to$ `EXP6`) into an academically rigorous, restrained, dark engineering interface suitable for review by Academic professors, Scientific ML faculty, and computational mechanics researchers.
 
 - **Scientific Core Freeze**: **100% Intact**. No models were retrained; no historical datasets or metrics were modified; EXP7 was not started.
 - **Automated Tests**: **294 passed, 2 skipped, 0 failed** (10 new demonstration tests + 284 original unit tests).

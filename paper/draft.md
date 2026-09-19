@@ -2,7 +2,7 @@
 
 **Author:** Rahul Sharma  
 **Affiliation:** Department of Civil and Environmental Engineering  
-**Target Venue:** Research Internship Application / Technical Manuscript  
+**Target Venue:** Research Application / Technical Manuscript  
 **Keywords:** Fourier Neural Operators, Scientific Machine Learning, Nonlinear Structural Dynamics, Hysteretic Energy, OpenSeesPy, Seismic Risk Assessment.
 
 ---

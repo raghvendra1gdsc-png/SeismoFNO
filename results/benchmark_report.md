@@ -2,7 +2,7 @@
 ## Comprehensive Benchmark Report & Error Analysis (Phases 1–10)
 
 **Project:** SeismoFNO — Physics-Informed Operator Learning for Seismic Response Simulation  
-**Author:** Undergraduate Research Internship Candidate  
+**Author:** Undergraduate Research Candidate  
 **Repository:** `seismoFNO`  
 **Date:** August 2026  
 **Hardware Platform:** Apple Silicon GPU (`mps`) / 10-core CPU, 16 GB Unified Memory  
