@@ -36,7 +36,7 @@ The project ran from mid-2025 through September 2026. Six experiments. Two major
 
 If you're a professor or researcher reviewing this work, here is the recommended reading path:
 
-- **[IIT Delhi CSE Research Statement (PDF)](docs/IIT_DELHI_CSE_RESEARCH_BRIEF.pdf)** ([Markdown](docs/IIT_DELHI_CSE_RESEARCH_BRIEF.md)) — Research statement formulated for faculty reviewing Scientific ML, neural operator architectures, and structural dynamics.
+- **[Research Statement (PDF)](docs/IIT_DELHI_CSE_RESEARCH_BRIEF.pdf)** ([Markdown](docs/IIT_DELHI_CSE_RESEARCH_BRIEF.md)) — Research statement formulated for faculty reviewing Scientific ML, neural operator architectures, and structural dynamics.
 - **[Research Brief (PDF)](docs/RESEARCH_BRIEF.pdf)** ([Markdown](docs/RESEARCH_BRIEF.md)) — 2-page paper-style executive summary of problem, hypothesis, results, and limitations.
 - **[Research Walkthrough (PDF)](docs/RESEARCH_WALKTHROUGH.pdf)** ([Markdown](docs/RESEARCH_WALKTHROUGH.md)) — 6-page comprehensive technical report with structural mechanics derivations, architecture schematics, and full evaluation tables.
 - **[Personal Statement (PDF)](docs/PERSONAL_STATEMENT.pdf)** ([Markdown](docs/PERSONAL_STATEMENT.md)) — Candidate background, motivation, research philosophy, and research interests.
