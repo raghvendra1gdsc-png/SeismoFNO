@@ -14,7 +14,7 @@ addpath(fullfile(appDir, 'src'));
 
 fprintf('-----------------------------------------------------------------\n');
 fprintf('  Multi-Channel Experimental Signal & Spectral Analyzer (v1.0)   \n');
-fprintf('  Undergraduate Research Internship Candidate Evaluation Package \n');
+fprintf('  Time-Domain & Frequency-Domain Spectral Analysis Workstation   \n');
 fprintf('-----------------------------------------------------------------\n');
 fprintf('Starting MATLAB App...\n');
 

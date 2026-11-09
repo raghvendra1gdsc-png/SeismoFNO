@@ -7,7 +7,7 @@ classdef SignalAnalyzerApp < handle
     % windowing, coherent gain compensation, and automated modal peak picking.
     %
     % Launch commands:
-    %   SignalAnalyzerApp                          % Launches GUI with default sample prompt
+    %   SignalAnalyzerApp                          % Launches GUI and loads default sample dataset
     %   SignalAnalyzerApp('path/to/datafile.mat')   % Directly opens and visualizes file
     
     properties (Access = public)

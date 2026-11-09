@@ -1,7 +1,7 @@
 # Multi-Channel Experimental Signal & Spectral Analyzer
 **A Research-Grade MATLAB Application for Time-Domain and Frequency-Domain Modal Analysis**
 
-Developed as an evaluation submission for an Undergraduate Research Internship.
+A standalone MATLAB application for multi-channel experimental signal processing, dynamic time-domain response visualization, and Fast Fourier Transform (FFT) modal spectral analysis.
 
 ---
 
@@ -9,7 +9,7 @@ Developed as an evaluation submission for an Undergraduate Research Internship.
 
 This application is an interactive, scientifically rigorous MATLAB tool designed to import multi-channel experimental data from disparate file formats, visualize dynamic time-domain responses, and execute Fast Fourier Transform (FFT) spectral decomposition with windowing corrections, DC bias suppression, and automated modal parameter extraction.
 
-### Core Deliverables Mapped to Evaluation Requirements:
+### Key Capabilities:
 - [x] **Universal Multi-Channel Import:** Full native ingestion of MATLAB binary files (`.mat`), Excel workbooks (`.xlsx`, `.xls`), and delimited text/comma-separated files (`.csv`, `.txt`, `.dat`).
 - [x] **Multi-Channel Time-Domain Visualization:** Interactive time-history responses with synchronized multi-channel overlays, custom color palettes, and linked cursor exploration.
 - [x] **Calibrated Fast Fourier Transform (FFT):** True single-sided amplitude scaling ($2/N$ normalization), Coherent Gain ($CG$) amplitude compensation, and Energy Gain ($EG$) Power Spectral Density.
@@ -264,7 +264,7 @@ Running `tests/verify_accuracy.m` tests the numerical precision against syntheti
 
 ---
 
-## 8. Author & Internship Application Notes
+## 8. Implementation Notes & Mathematical References
 
-This project was developed with a focus on scientific integrity, numerical precision, and clean software architecture. Every equation implemented is detailed in [docs/DSP_Theory_and_Validation.md](docs/DSP_Theory_and_Validation.md).
+This application was developed with an emphasis on research-grade mathematical accuracy, numerical stability, and clean software architecture. Mathematical formulations, window scaling corrections, and spectral derivations are documented in [docs/DSP_Theory_and_Validation.md](docs/DSP_Theory_and_Validation.md).
 
